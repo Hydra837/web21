@@ -1,0 +1,33 @@
+<div class="container mt-5">
+  <h2 class="mb-4">Dashboard</h2>
+
+  <!-- Section pour les étudiants -->
+  <div *ngIf="userRole === 'student'">
+    <h3 class="mb-3">Your Enrolled Courses</h3>
+    <ul class="list-group">
+      <li *ngFor="let course of courses" class="list-group-item">
+        {{ course.Nom }}
+      </li>
+    </ul>
+  </div>
+
+  <!-- Section pour les professeurs -->
+  <div *ngIf="userRole === 'professor'">
+    <h3 class="mb-3">Your Teaching Courses</h3>
+    <ul class="list-group">
+      <li *ngFor="let course of courses" class="list-group-item">
+        {{ course.name }}
+      </li>
+    </ul>
+  </div>
+
+  <!-- Section pour les administrateurs -->
+  <div *ngIf="userRole === 'admin'">
+    <h3 class="mb-3">All Courses</h3>
+    <ul class="list-group">
+      <li *ngFor="let course of courses" class="list-group-item">
+        {{ course.name }}
+      </li>
+    </ul>
+  </div>
+</div>

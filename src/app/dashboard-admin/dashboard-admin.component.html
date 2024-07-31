@@ -1,0 +1,15 @@
+<h2>Admin Dashboard</h2>
+
+<div>
+  <h3>Courses</h3>
+  <ul>
+    <li *ngFor="let course of courses">{{ course.Nom }}</li>
+  </ul>
+</div>
+
+<div>
+  <h3>Users</h3>
+  <ul>
+    <li *ngFor="let user of users">{{ user.prenom }} - {{ user.role }}</li>
+  </ul>
+</div>

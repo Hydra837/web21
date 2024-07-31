@@ -1,0 +1,102 @@
+<!-- 
+
+
+
+
+<div class="app-component">
+  <h2>FILE ESSAI</h2>
+  <table>
+  <thead>
+  <tr>
+  <th>id</th>
+  <th>titre</th>
+  <th>description</th>
+  <th>DateDeSortie</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let comment of filmList">
+  <td>{{ comment.id }}</td>
+  <td>{{ comment.titre }}</td>
+  <td>{{ comment.description }}</td>
+  <td>{{ comment.DateDeSortie }}</td>
+  </tr>
+  </tbody>
+  </table>
+ </div>
+
+
+
+
+
+<nav>
+  <h1>TEstNAv</h1>
+  <ul>
+    <li><a href="#">Item 1</a></li>
+    <li><a href="#">Item 2</a></li>
+    <li><a href="#">Item 3</a></li>
+  </ul>
+</nav>
+<div>
+
+  </div>
+<h2>Créer une Armée</h2>
+
+<form id="formulaireArmee">
+  <div>
+    <label for="nom">Nom de l'Armée :</label>
+    <input type="text" id="nom" name="nom" required>
+  </div>
+  <div>
+    <label for="type">Type d'Armée :</label>
+    <input type="text" id="type" name="type" required>
+  </div>
+  <div>
+    <label for="race">Race :</label>
+    <input type="text" id="race" name="race" required>
+  </div>
+
+  <div>
+    <button type="submit">Créer Armée</button>
+  </div>
+</form>
+<p> Vous avez choisi l'espèce : <span id="raceValue"></span>, le type : <span id="typeValue"></span> et le nom : <span id="nomValue"></span> </p>
+<div>
+
+</div>
+<app-test></app-test>
+<script>
+  // Code JavaScript pour gérer la soumission du formulaire
+  document.getElementById('formulaireArmee').addEventListener('submit', function(event) {
+    event.preventDefault(); // Empêcher l'envoi par défaut du formulaire
+
+    // Récupérer les valeurs du formulaire
+    let nom = document.getElementById('nom').value;
+    let type = document.getElementById('type').value;
+    let race = document.getElementById('race').value;
+
+    // Afficher les détails dans les éléments <span>
+    document.getElementById('nomValue').textContent = nom;
+    document.getElementById('typeValue').textContent = type;
+    document.getElementById('raceValue').textContent = race;
+
+    // Réinitialiser le formulaire après soumission
+    this.reset();
+  });
+</script> -->
+
+<!-- <app-courses></app-courses> -->
+ <!-- <app-dashboard></app-dashboard> -->
+ <!-- <nav>
+  <a routerLink="dashboard" routerLinkActive="active">Dashboard</a>
+  <a routerLink="course-catalog" routerLinkActive="active">Course Catalog</a>
+  <a routerLink="course-detail/1" routerLinkActive="active">Course Detail</a>
+</nav>
+
+<router-outlet></router-outlet> -->
+<app-navbar></app-navbar>
+<div class="container mt-4">
+  <router-outlet></router-outlet>
+</div>
+
+

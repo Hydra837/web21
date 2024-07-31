@@ -1,0 +1,19 @@
+nav {
+  margin-bottom: 20px;
+}
+
+nav a {
+  margin-right: 15px;
+  text-decoration: none;
+  padding: 10px;
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+nav a.active {
+  font-weight: bold;
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}

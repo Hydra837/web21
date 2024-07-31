@@ -1,0 +1,24 @@
+<div class="container mt-5">
+  <h2>Search Courses</h2>
+  <form class="form-inline mb-4" (ngSubmit)="searchCourses()">
+    <div class="form-group mx-sm-3 mb-2">
+      <input type="text" class="form-control" [(ngModel)]="searchTerm" name="searchTerm" placeholder="Search by course name or description" />
+    </div>
+    <button type="submit" class="btn btn-primary mb-2">Search</button>
+  </form>
+
+  <div *ngIf="courses.length">
+    <h3>Search Results:</h3>
+    <div *ngFor="let course of courses" class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">{{ course.Nom }}</h5>
+        <p class="card-text">{{ course.description }}</p>
+        <button class="btn btn-secondary" (click)="viewCourseDetail(course.id)">View Details</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!courses.length && searchTerm">
+    <p>No results found for "{{ searchTerm }}"</p>
+  </div>
+</div>

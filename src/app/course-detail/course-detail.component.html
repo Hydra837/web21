@@ -1,0 +1,27 @@
+<div class="container mt-5">
+  <!-- Détails du cours -->
+  <div *ngIf="course; else loading">
+    <h2 class="mb-4">{{ course.Nom }}</h2>
+    <p class="lead">{{ course.dateDebut | date }}</p>
+    <!-- Ajoutez d'autres détails du cours ici -->
+
+    <h3 class="mt-4 mb-3">Enrolled Users</h3>
+    <ul class="list-group">
+      <li *ngFor="let user of enrolledUsers" class="list-group-item">
+        {{ user.nom }} <!-- Ajustez en fonction de votre modèle UsersData -->
+      </li>
+    </ul>
+  </div>
+
+  <!-- Template de chargement -->
+  <ng-template #loading>
+    <div class="alert alert-info mt-4">Loading...</div>
+  </ng-template>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="errorMessage">
+    <div class="alert alert-danger mt-4">
+      {{ errorMessage }}
+    </div>
+  </div>
+</div>

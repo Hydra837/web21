@@ -1,0 +1,14 @@
+<div *ngFor="let course of courses" class="card mb-3">
+  <div class="card-body">
+    <h2 class="card-title">{{ course.Nom }}</h2>
+    <p class="card-text">{{ course.description }}</p>
+    <!-- Ajoutez ici d'autres champs selon votre modèle Course -->
+
+    <button class="btn btn-primary mr-2" (click)="enroll(course.id)">S'inscrire</button>
+    <button class="btn btn-secondary" (click)="viewCourseDetail(course.id)">Détails</button>
+  </div>
+</div>
+
+<div *ngIf="errorMessage" class="alert alert-danger mt-3">
+  {{ errorMessage }}
+</div>

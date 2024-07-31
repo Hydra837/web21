@@ -1,0 +1,76 @@
+<div class="container my-4 courses-container">
+  <!-- Affichage des erreurs -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <!-- Formulaire pour créer un nouveau cours -->
+  <div class="card mb-4 create-course-form shadow">
+    <div class="card-header bg-primary text-white">
+      <h2>Créer un Nouveau Cours</h2>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="createCourse()">
+        <div class="form-group">
+          <label for="courseName">Nom du Cours:</label>
+          <input id="courseName" class="form-control" [(ngModel)]="newCourse.Nom" name="courseName" required>
+        </div>
+        <div class="form-group">
+          <label for="courseDescription">Description:</label>
+          <textarea id="courseDescription" class="form-control" [(ngModel)]="newCourse.description" name="courseDescription" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="courseStartDate">Date de Début:</label>
+          <input type="date" id="courseStartDate" class="form-control" [(ngModel)]="newCourse.dateDebut" name="courseStartDate" required>
+        </div>
+        <div class="form-group">
+          <label for="courseEndDate">Date de Fin:</label>
+          <input type="date" id="courseEndDate" class="form-control" [(ngModel)]="newCourse.dateFin" name="courseEndDate" required>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="courseAvailable" class="form-check-input" [(ngModel)]="newCourse.available" name="courseAvailable">
+          <label for="courseAvailable" class="form-check-label">Disponible</label>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Créer</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Section pour afficher la liste des cours -->
+  <div class="card courses-list shadow">
+    <div class="card-header bg-success text-white">
+      <h2>Liste des Cours</h2>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Date de Début</th>
+            <th>Date de Fin</th>
+            <th>Disponible</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let course of courses">
+            <td>{{ course.id }}</td>
+            <td>{{ course.Nom }}</td>
+            <td>{{ course.description }}</td>
+            <td>{{ course.dateDebut | date:'shortDate' }}</td>
+            <td>{{ course.dateFin | date:'shortDate' }}</td>
+            <td>{{ course.available ? 'Oui' : 'Non' }}</td>
+            <td>
+              <!-- Bouton pour mettre à jour le cours -->
+              <button class="btn btn-warning btn-sm mr-1" (click)="updateCourse(course.id)">Modifier</button>
+              <!-- Bouton pour supprimer le cours -->
+              <button class="btn btn-danger btn-sm" (click)="deleteCourse(course.id)">Supprimer</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
