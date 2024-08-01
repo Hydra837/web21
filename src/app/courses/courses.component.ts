@@ -23,37 +23,37 @@ export class CoursesComponent implements OnInit {
     this.getCoursEachUser();
   }
 
+  private handleError(operation: string) {
+    return (error: any) => {
+      this.errorMessage = `Erreur lors de ${operation}.`;
+      console.error(`${operation} échoué:`, error);
+      return of(null); 
+    };
+  }
+
   loadCourses(): void {
     this.courseService.getCourses().pipe(
-      catchError(error => {
-        this.errorMessage = 'Erreur lors du chargement des cours.';
-        console.error('Erreur lors du chargement des cours:', error);
-        return of([]); 
-      })
+      catchError(this.handleError('chargement des cours'))
     ).subscribe(data => {
-      this.courses = data;
+      if (data) {
+        this.courses = data;
+      }
     });
   }
 
   getCoursEachUser(): void {
     this.courseService.getAllCoursesForEachUsers().pipe(
-      catchError(error => {
-        this.errorMessage = 'Erreur lors de la récupération des cours pour chaque utilisateur.';
-        console.error('Erreur lors de la récupération des cours pour chaque utilisateur:', error);
-        return of([]); 
-      })
+      catchError(this.handleError('récupération des cours pour chaque utilisateur'))
     ).subscribe(data => {
-      this.courseUser = data;
+      if (data) {
+        this.courseUser = data;
+      }
     });
   }
 
   createCourse(): void {
     this.courseService.createCourse(this.newCourse).pipe(
-      catchError(error => {
-        this.errorMessage = 'Erreur lors de la création du cours.';
-        console.error('Erreur lors de la création du cours:', error);
-        return of(null); 
-      })
+      catchError(this.handleError('création du cours'))
     ).subscribe(() => {
       this.loadCourses();
       this.newCourse = {} as Course; 
@@ -70,9 +70,26 @@ export class CoursesComponent implements OnInit {
 
   deleteCourse(id: number | undefined): void {
     if (id !== undefined) {
-      this.router.navigate(['/delete-user-admin', id.toString()]);
+      const confirmed = window.confirm('Êtes-vous sûr de vouloir supprimer ce cours ?');
+      if (confirmed) {
+        this.courseService.deleteCourse(id.toString()).pipe(
+          catchError(this.handleError('suppression du cours'))
+        ).subscribe(() => {
+          this.loadCourses(); // Recharger la liste des cours après suppression
+        });
+      }
     } else {
       this.errorMessage = 'ID du cours est introuvable.';
     }
   }
 }
+
+
+  // deleteCourse(id: number | undefined): void {
+  //   if (id !== undefined) {
+  //     this.router.navigate(['/delete-user-admin', id.toString()]);
+  //   } else {
+  //     this.errorMessage = 'ID du cours est introuvable.';
+  //   }
+ // }
+

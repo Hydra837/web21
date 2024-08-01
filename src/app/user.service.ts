@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { User } from './Models/User';
+import { UserFORM } from './Models/User';
 import { mapUser } from './Outils/mapper'; // Assurez-vous que le chemin est correct
 
 @Injectable({
@@ -10,8 +11,8 @@ import { mapUser } from './Outils/mapper'; // Assurez-vous que le chemin est cor
 })
 export class UserService {
   private apiUrl = 'https://localhost:7233/api/Users'; // Base URL pour l'API des utilisateurs
-  private getall = 'https://localhost:7233/api/UsersContoller'
-  private del = 'https://localhost:7233/api/UsersContoller/';
+  private getall = 'https://localhost:7233/api/UsersContoller';
+  private del = 'https://localhost:7233/api/UsersContoller';
 
   constructor(private http: HttpClient) { }
 
@@ -32,14 +33,14 @@ export class UserService {
   }
 
   // Ajouter un nouvel utilisateur
-  addUser(user: User): Observable<User> {
+  addUser(user: UserFORM): Observable<User> { 
     return this.http.post<User>(`${this.apiUrl}/Create`, user).pipe(
       catchError(this.handleError<User>('addUser'))
     );
   }
 
   // Mettre à jour un utilisateur
-  updateUser(id: number, user: User): Observable<User> {
+  updateUser(id: number, user: UserFORM): Observable<User> { 
     return this.http.put<User>(`${this.apiUrl}/Update/${id}`, user).pipe(
       catchError(this.handleError<User>('updateUser'))
     );
@@ -59,6 +60,7 @@ export class UserService {
       return of(result as T);
     };
   }
+
   searchUsers(searchTerm: string): Observable<User[]> {
     let params = new HttpParams().set('q', searchTerm);
     return this.http.get<User[]>(`${this.apiUrl}/search`, { params });

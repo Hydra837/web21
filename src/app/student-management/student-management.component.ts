@@ -1,7 +1,9 @@
-// src/app/user-management/user-management.component.ts
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '../user.service';
 import { User } from '../Models/User';
+import { UserFORM } from '../Models/User'; // Assurez-vous que le chemin est correct
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-student-management',
@@ -10,10 +12,14 @@ import { User } from '../Models/User';
 })
 export class StudentManagementComponent implements OnInit {
   users: User[] = [];
-  selectedUser: User | null = null;
+  selectedUser: User | null = null; // Utilisé pour les utilisateurs existants
+  userForm: UserFORM | null = null; // Utilisé pour les nouveaux utilisateurs
   errorMessage: string | null = null;
 
-  constructor(private userService: UserService) { }
+  constructor(
+    private userService: UserService,
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -22,46 +28,59 @@ export class StudentManagementComponent implements OnInit {
   loadUsers(): void {
     this.userService.getUsers().subscribe({
       next: (users: User[]) => this.users = users,
-      error: (err: any) => this.errorMessage = 'Error loading users'
+      error: (err: any) => this.errorMessage = 'Erreur lors du chargement des utilisateurs.'
     });
   }
 
   selectUser(user: User): void {
-    this.selectedUser = { ...user };
+    this.selectedUser = { ...user }; // Copier les données de l'utilisateur existant
+    this.userForm = null; // Réinitialiser le formulaire pour un nouvel utilisateur
   }
 
   saveUser(): void {
     if (this.selectedUser) {
-      if (this.selectedUser.id) {
-        this.userService.updateUser(this.selectedUser.id, this.selectedUser).subscribe({
-          next: () => this.loadUsers(),
-          error: (err: any) => this.errorMessage = 'Error saving user'
-        });
-      } else {
-        this.userService.addUser(this.selectedUser).subscribe({
-          next: () => this.loadUsers(),
-          error: (err: any) => this.errorMessage = 'Error creating user'
-        });
-      }
-      this.selectedUser = null;
+      this.userService.updateUser(this.selectedUser.id, this.selectedUser).subscribe({
+        next: () => {
+          this.loadUsers();
+          this.selectedUser = null; // Réinitialiser l'utilisateur sélectionné
+        },
+        error: (err: any) => this.errorMessage = 'Erreur lors de la sauvegarde de l’utilisateur.'
+      });
+    }
+  }
+
+  addUser(): void {
+    this.userForm = {
+      prenom: '',
+      nom: '',
+      password: '',
+      role: ''
+    };
+    this.selectedUser = null; // Réinitialiser l'utilisateur sélectionné
+  }
+
+  saveNewUser(): void {
+    if (this.userForm) {
+      this.userService.addUser(this.userForm).subscribe({
+        next: () => {
+          this.loadUsers();
+          this.userForm = null; // Réinitialiser le formulaire après l'ajout
+        },
+        error: (err: any) => this.errorMessage = 'Erreur lors de la création de l’utilisateur.'
+      });
     }
   }
 
   deleteUser(id: number): void {
-    this.userService.deleteUser(id).subscribe({
-      next: () => this.loadUsers(),
-      error: (err: any) => this.errorMessage = 'Error deleting user'
-    });
-  }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
 
-  addUser(): void {
-    this.selectedUser = {
-      id: 0,
-      prenom: 'Jon',
-      nom: 'suit',
-      password: '1111',
-      //email: '',
-      role: 'student'
-    };
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.userService.deleteUser(id).subscribe({
+          next: () => this.loadUsers(),
+          error: (err: any) => this.errorMessage = 'Erreur lors de la suppression de l’utilisateur.'
+        });
+      }
+    });
   }
 }

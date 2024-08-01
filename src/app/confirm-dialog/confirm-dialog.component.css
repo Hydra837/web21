@@ -1,0 +1,9 @@
+/* confirm-dialog.component.css */
+.mat-dialog-title {
+    font-weight: bold;
+  }
+  
+  .mat-dialog-actions {
+    justify-content: space-between;
+  }
+  

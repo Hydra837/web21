@@ -2,67 +2,63 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Course } from '../Models/courseModel'; // Assurez-vous que le chemin est correct
-import { GetAllCoursForEachUsers } from '../Models/GetAllCoursForEachUsers'; // Assurez-vous que le chemin est correct
+import { Course } from '../Models/courseModel'; 
+import { GetAllCoursForEachUsers } from '../Models/GetAllCoursForEachUsers'; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class CourseService {
 
-  private apiUrl = 'https://localhost:7233/api/Cours/GetAll'; // Remplacez par l'URL de votre API
-  private api1 = 'https://localhost:7233/api/UsersContoller/GetAllCourseEachCourse';
-  private create_course = 'https://localhost:7233/api/Cours/Cours';
-  private a_cours = 'https://localhost:7233/api/Cours/available';
-  private enroll_cours = 'https://localhost:7233/api/StudentEnrollment/Insert?studentId=1&courseId={{{id}}}';
-  private courseByIdUrl = 'https://localhost:7233/api/Cours'; // Base URL pour récupérer un cours par ID
+  private apiUrl = 'https://localhost:7233/api/Cours'; 
+  private apiCoursesForUsers = 'https://localhost:7233/api/UsersContoller/GetAllCourseEachCourse';
+  private createCourseUrl = `${this.apiUrl}/Cours`;
+  private availableCoursesUrl = `${this.apiUrl}/available`;
+  private enrollCourseUrl = 'https://localhost:7233/api/StudentEnrollment/Insert?studentId=1&courseId={{{id}}}';
 
   constructor(private http: HttpClient) {}
 
   getCourses(): Observable<Course[]> {
-    return this.http.get<Course[]>(this.apiUrl).pipe(
-      map((data: any) => data.map((item: any) => this.mapToCourseModel(item))),
+    return this.http.get<Course[]>(`${this.apiUrl}/GetAll`).pipe(
+      map(data => data.map(item => this.mapToCourseModel(item))),
       catchError(this.handleError)
     );
   }
 
   createCourse(course: Course): Observable<any> {
-    return this.http.post(this.create_course, course).pipe(
+    return this.http.post(this.createCourseUrl, course).pipe(
       catchError(this.handleError)
     );
   }
 
   updateCourse(id: string, course: Course): Observable<any> {
-    const updateUrl = `${this.apiUrl}/${id}`;
-    return this.http.put(updateUrl, course).pipe(
+    return this.http.put(`${this.apiUrl}/${id}`, course).pipe(
       catchError(this.handleError)
     );
   }
 
   deleteCourse(id: string): Observable<any> {
-    const deleteUrl = `${this.apiUrl}/${id}`;
-    return this.http.delete(deleteUrl).pipe(
+    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
   getAvailableCourses(): Observable<Course[]> {
-    return this.http.get<Course[]>(this.a_cours).pipe(
-      map((data: any) => data.map((item: any) => this.mapToCourseModel(item))),
+    return this.http.get<Course[]>(this.availableCoursesUrl).pipe(
+      map(data => data.map(item => this.mapToCourseModel(item))),
       catchError(this.handleError)
     );
   }
 
   getCourseById(id: number): Observable<Course> {
-    const url = `https://localhost:7233/api/Cours/${id}`;
-    return this.http.get<any>(url).pipe(
+    return this.http.get<Course>(`${this.apiUrl}/${id}`).pipe(
       map(data => this.mapToCourseModel(data)),
       catchError(this.handleError)
     );
   }
 
   getAllCoursesForEachUsers(): Observable<GetAllCoursForEachUsers[]> {
-    return this.http.get<any[]>(this.api1).pipe(
+    return this.http.get<GetAllCoursForEachUsers[]>(this.apiCoursesForUsers).pipe(
       map(response => response.map(data => this.mapToGetAllCoursForEachUsers(data))),
       catchError(this.handleError)
     );
@@ -91,11 +87,10 @@ export class CourseService {
   }
 
   searchCourses(term: string): Observable<any> {
-    const url = `${this.apiUrl}?search=${term}`;
-    return this.http.get<any>(url).pipe(
-      catchError((error: any) => {
-        console.error('An error occurred:', error);
-        return [];
+    return this.http.get<any>(`${this.apiUrl}?search=${term}`).pipe(
+      catchError(error => {
+        console.error('Search error:', error);
+        return throwError('Search failed; please try again later.');
       })
     );
   }

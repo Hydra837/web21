@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';  // Import the necessary functions
 
@@ -25,7 +25,8 @@ import { CourseSearchComponent } from './course-search/course-search.component';
 import { StudentSearchComponent } from './student-search/student-search.component';
 import { ProfesseurSearchComponent } from './professeur-search/professeur-search.component';
 import { UserSearchComponent } from './user-search/user-search.component';
-
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -36,8 +37,18 @@ import { UserSearchComponent } from './user-search/user-search.component';
     CourseDetailComponent,
     StudentManagementComponent, 
     CoursesComponent, 
-    DashboardComponent, 
-    DashboardAdminComponent, NavbarStudentComponent, NavbarAdminComponent, NavbarProfesseurComponent, NavbarComponent, GradeComponent, SearchComponent, CourseSearchComponent, StudentSearchComponent, ProfesseurSearchComponent, UserSearchComponent
+    DashboardAdminComponent, 
+    NavbarStudentComponent, 
+    NavbarAdminComponent, 
+    NavbarProfesseurComponent, 
+    NavbarComponent, 
+    GradeComponent, 
+    SearchComponent, 
+    CourseSearchComponent, 
+    StudentSearchComponent, 
+    ProfesseurSearchComponent, 
+    UserSearchComponent, 
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -50,9 +61,9 @@ import { UserSearchComponent } from './user-search/user-search.component';
     CourseService,
     UserService,
     DashboardService, 
-    DashboardService,
     provideHttpClient(),
-    provideHttpClient(withFetch())  // Configure HttpClient to use fetch
+    provideHttpClient(withFetch()),
+    provideAnimationsAsync()  // Configure HttpClient to use fetch
   ],
   bootstrap: [AppComponent]
 })
