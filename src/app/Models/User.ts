@@ -4,6 +4,8 @@ export interface User {
     prenom: string;
     role: string;
     password: string;
+    pseudo: string; 
+    mail: string
   }
 
   export interface UserFORM {
@@ -12,5 +14,7 @@ export interface User {
     prenom: string;
     role: string;
     password: string;
+    pseudo: string; 
+    mail: string
   }
   

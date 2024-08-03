@@ -54,7 +54,9 @@ export class StudentManagementComponent implements OnInit {
       prenom: '',
       nom: '',
       password: '',
-      role: ''
+      role: '', 
+      mail: '', 
+      pseudo: ''
     };
     this.selectedUser = null; // Réinitialiser l'utilisateur sélectionné
   }
