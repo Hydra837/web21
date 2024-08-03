@@ -36,7 +36,9 @@ export function mapUser(data: any): User {
         nom: data.name ?? 'Unknown', // Default value if not defined
         // email: data.email ?? 'unknown@example.com', // Default value if not defined
         password: data.password ?? '', // Default value if not defined
-        role: data.role ?? 'user' // Default value if not defined
+        role: data.role ?? 'user', // Default value if not defined, 
+        mail: data.mail ?? 'inconuu',
+        pseudo: data.user ?? 'user123456'
     };
 }
 
