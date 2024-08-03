@@ -15,6 +15,7 @@ export class CourseService {
   private createCourseUrl = `${this.apiUrl}/Cours`;
   private availableCoursesUrl = `${this.apiUrl}/available`;
   private enrollCourseUrl = 'https://localhost:7233/api/StudentEnrollment/Insert?studentId=1&courseId={{{id}}}';
+  private apiUpdate = 'https://localhost:7233/api/Cours/update'
 
   constructor(private http: HttpClient) {}
 
@@ -32,7 +33,7 @@ export class CourseService {
   }
 
   updateCourse(id: string, course: Course): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, course).pipe(
+    return this.http.put(`${this.apiUpdate}/${id}`, course).pipe(
       catchError(this.handleError)
     );
   }

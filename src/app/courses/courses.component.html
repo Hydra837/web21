@@ -36,6 +36,39 @@
     </div>
   </div>
 
+  <!-- Formulaire pour mettre à jour un cours -->
+  <div *ngIf="selectedCourse" class="card mb-4 update-course-form shadow">
+    <div class="card-header bg-warning text-white">
+      <h2>Modifier le Cours</h2>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="updateCourseForm" (ngSubmit)="saveUpdatedCourse()">
+        <div class="form-group">
+          <label for="updateCourseName">Nom du Cours:</label>
+          <input id="updateCourseName" class="form-control" formControlName="Nom" required>
+        </div>
+        <div class="form-group">
+          <label for="updateCourseDescription">Description:</label>
+          <textarea id="updateCourseDescription" class="form-control" formControlName="description" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="updateCourseStartDate">Date de Début:</label>
+          <input type="date" id="updateCourseStartDate" class="form-control" formControlName="dateDebut" required>
+        </div>
+        <div class="form-group">
+          <label for="updateCourseEndDate">Date de Fin:</label>
+          <input type="date" id="updateCourseEndDate" class="form-control" formControlName="dateFin" required>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="updateCourseAvailable" class="form-check-input" formControlName="available">
+          <label for="updateCourseAvailable" class="form-check-label">Disponible</label>
+        </div>
+        <button type="submit" class="btn btn-warning mt-3">Mettre à jour</button>
+        <button type="button" class="btn btn-secondary mt-3" (click)="cancelUpdate()">Annuler</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Section pour afficher la liste des cours -->
   <div class="card courses-list shadow">
     <div class="card-header bg-success text-white">

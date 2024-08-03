@@ -4,6 +4,7 @@ import { CourseService } from '../services/course.service';
 import { Course } from '../Models/courseModel'; 
 import { GetAllCoursForEachUsers } from '../Models/GetAllCoursForEachUsers'; 
 import { catchError, of } from 'rxjs';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-courses',
@@ -15,8 +16,19 @@ export class CoursesComponent implements OnInit {
   newCourse: Course = {} as Course; 
   errorMessage: string = '';
   courseUser: GetAllCoursForEachUsers[] = []; 
+  selectedCourse: Course | null = null; 
+  updateCourseForm: FormGroup;
 
-  constructor(private courseService: CourseService, private router: Router) { }
+  constructor(private courseService: CourseService, private router: Router, private fb: FormBuilder) {
+    this.updateCourseForm = this.fb.group({
+      id: [''],
+      Nom: ['', Validators.required],
+      description: ['', Validators.required],
+      dateDebut: ['', Validators.required],
+      dateFin: ['', Validators.required],
+      available: [false]
+    });
+  }
 
   ngOnInit(): void {
     this.loadCourses();
@@ -62,10 +74,41 @@ export class CoursesComponent implements OnInit {
 
   updateCourse(id: number | undefined): void {
     if (id !== undefined) {
-      this.router.navigate(['/update-course-admin', id.toString()]);
+      const course = this.courses.find(c => c.id === id);
+      if (course) {
+        this.selectedCourse = course;
+        this.updateCourseForm.setValue({
+          id: course.id,
+          Nom: course.Nom,
+          description: course.description,
+          dateDebut: course.dateDebut,
+          dateFin: course.dateFin,
+          available: course.available
+        });
+      } else {
+        this.errorMessage = 'Cours introuvable.';
+      }
     } else {
       this.errorMessage = 'ID du cours est introuvable.';
     }
+  }
+
+  saveUpdatedCourse(): void {
+    if (this.updateCourseForm.valid) {
+      const updatedCourse = this.updateCourseForm.value;
+      this.courseService.updateCourse(updatedCourse.id, updatedCourse).pipe(
+        catchError(this.handleError('mise à jour du cours'))
+      ).subscribe(() => {
+        this.loadCourses();
+        this.selectedCourse = null; 
+      });
+    } else {
+      this.errorMessage = 'Le formulaire de mise à jour contient des erreurs.';
+    }
+  }
+
+  cancelUpdate(): void {
+    this.selectedCourse = null;
   }
 
   deleteCourse(id: number | undefined): void {
@@ -83,6 +126,7 @@ export class CoursesComponent implements OnInit {
     }
   }
 }
+
 
 
   // deleteCourse(id: number | undefined): void {
