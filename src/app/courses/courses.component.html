@@ -99,7 +99,9 @@
               <!-- Bouton pour mettre à jour le cours -->
               <button class="btn btn-warning btn-sm mr-1" (click)="updateCourse(course.id)">Modifier</button>
               <!-- Bouton pour supprimer le cours -->
-              <button class="btn btn-danger btn-sm" (click)="deleteCourse(course.id)">Supprimer</button>
+              <button class="btn btn-danger btn-sm mr-1" (click)="deleteCourse(course.id)">Supprimer</button>
+              <!-- Bouton pour ajouter un professeur -->
+              <button class="btn btn-primary btn-sm" (click)="addUserToCourse(professorId, course.id)">Ajouter un Professeur</button>
             </td>
           </tr>
         </tbody>

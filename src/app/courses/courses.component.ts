@@ -5,6 +5,7 @@ import { Course } from '../Models/courseModel';
 import { GetAllCoursForEachUsers } from '../Models/GetAllCoursForEachUsers'; 
 import { catchError, of } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CourseManagementService } from '../course-management.service';
 
 @Component({
   selector: 'app-courses',
@@ -18,8 +19,14 @@ export class CoursesComponent implements OnInit {
   courseUser: GetAllCoursForEachUsers[] = []; 
   selectedCourse: Course | null = null; 
   updateCourseForm: FormGroup;
+  professorId: number = 1; // Example professor ID, replace with actual logic for selecting professor
 
-  constructor(private courseService: CourseService, private router: Router, private fb: FormBuilder) {
+  constructor(
+    private courseService: CourseService, 
+    private courseManagementService: CourseManagementService, 
+    private router: Router, 
+    private fb: FormBuilder
+  ) {
     this.updateCourseForm = this.fb.group({
       id: [''],
       Nom: ['', Validators.required],
@@ -125,9 +132,15 @@ export class CoursesComponent implements OnInit {
       this.errorMessage = 'ID du cours est introuvable.';
     }
   }
+
+  addUserToCourse(userId: number, courseId: number): void {
+    this.courseManagementService.addUserToCourse(userId, courseId).pipe(
+      catchError(this.handleError("ajout de l'utilisateur au cours"))
+    ).subscribe(() => {
+      console.log(`Utilisateur ${userId} ajouté au cours ${courseId} avec succès.`);
+    });
+  }
 }
-
-
 
   // deleteCourse(id: number | undefined): void {
   //   if (id !== undefined) {
@@ -136,4 +149,5 @@ export class CoursesComponent implements OnInit {
   //     this.errorMessage = 'ID du cours est introuvable.';
   //   }
  // }
+
 

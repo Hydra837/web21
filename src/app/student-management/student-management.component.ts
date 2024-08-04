@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '../user.service';
 import { User } from '../Models/User';
-import { UserFORM } from '../Models/User'; // Assurez-vous que le chemin est correct
+import { UserFORM } from '../Models/User';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { StudentManagementService } from '../student-management.service'; // Import du service
 
 @Component({
   selector: 'app-student-management',
@@ -18,7 +19,8 @@ export class StudentManagementComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private studentManagementService: StudentManagementService // Injection du service
   ) { }
 
   ngOnInit(): void {
@@ -54,8 +56,8 @@ export class StudentManagementComponent implements OnInit {
       prenom: '',
       nom: '',
       password: '',
-      role: '', 
-      mail: '', 
+      role: '',
+      mail: '',
       pseudo: ''
     };
     this.selectedUser = null; // Réinitialiser l'utilisateur sélectionné
@@ -83,6 +85,16 @@ export class StudentManagementComponent implements OnInit {
           error: (err: any) => this.errorMessage = 'Erreur lors de la suppression de l’utilisateur.'
         });
       }
+    });
+  }
+
+  // Nouvelle méthode pour ajouter un utilisateur à un cours
+  addUserToCourse(userId: number, courseId: number): void {
+    this.studentManagementService.addUserToCourse(userId, courseId).subscribe({
+      next: () => {
+        console.log(`Utilisateur ${userId} ajouté au cours ${courseId} avec succès.`);
+      },
+      error: (err: any) => this.errorMessage = `Erreur lors de l'ajout de l'utilisateur au cours: ${err.message}`
     });
   }
 }

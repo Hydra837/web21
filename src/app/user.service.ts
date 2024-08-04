@@ -10,17 +10,17 @@ import { mapUser } from './Outils/mapper'; // Assurez-vous que le chemin est cor
 })
 export class UserService {
   private apiUrl = 'https://localhost:7233/api/Users'; // Base URL pour l'API des utilisateurs
+  private usersUrl = 'https://localhost:7233/api/Users/GetAll';
 
   constructor(private http: HttpClient) { }
 
   // Récupérer tous les utilisateurs
   getUsers(): Observable<User[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/GetAll`).pipe(
-      map(data => data.map(user => mapUser(user))), // Utiliser le mapper ici
+    return this.http.get<any[]>(this.usersUrl).pipe(
+      map(data => data.map(user => mapUser(user))), // Use the mapper here
       catchError(this.handleError<User[]>('getUsers', []))
     );
   }
-
   // Récupérer un utilisateur par ID
   getUserById(id: number): Observable<User> {
     return this.http.get<any>(`${this.apiUrl}/GetById/${id}`).pipe(

@@ -5,7 +5,8 @@ export interface User {
     role: string;
     password: string;
     pseudo: string; 
-    mail: string
+    mail: string; 
+    //salt: string;
   }
 
   export interface UserFORM {
@@ -16,5 +17,6 @@ export interface User {
     password: string;
     pseudo: string; 
     mail: string
+    
   }
   
