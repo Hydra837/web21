@@ -13,9 +13,11 @@ import { StudentManagementService } from '../student-management.service'; // Imp
 })
 export class StudentManagementComponent implements OnInit {
   users: User[] = [];
+  filteredUsers: User[] = []; // Utilisé pour les utilisateurs filtrés
   selectedUser: User | null = null; // Utilisé pour les utilisateurs existants
   userForm: UserFORM | null = null; // Utilisé pour les nouveaux utilisateurs
   errorMessage: string | null = null;
+  selectedRole: string = ''; // Valeur pour filtrer par rôle
 
   constructor(
     private userService: UserService,
@@ -29,9 +31,20 @@ export class StudentManagementComponent implements OnInit {
 
   loadUsers(): void {
     this.userService.getUsers().subscribe({
-      next: (users: User[]) => this.users = users,
+      next: (users: User[]) => {
+        this.users = users;
+        this.filterUsers(); // Appliquer le filtre initialement
+      },
       error: (err: any) => this.errorMessage = 'Erreur lors du chargement des utilisateurs.'
     });
+  }
+
+  filterUsers(): void {
+    if (this.selectedRole) {
+      this.filteredUsers = this.users.filter(user => user.role === this.selectedRole);
+    } else {
+      this.filteredUsers = this.users; // Afficher tous les utilisateurs si aucun filtre
+    }
   }
 
   selectUser(user: User): void {
@@ -88,7 +101,6 @@ export class StudentManagementComponent implements OnInit {
     });
   }
 
-  // Nouvelle méthode pour ajouter un utilisateur à un cours
   addUserToCourse(userId: number, courseId: number): void {
     this.studentManagementService.addUserToCourse(userId, courseId).subscribe({
       next: () => {
