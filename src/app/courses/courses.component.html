@@ -1,112 +1,93 @@
-<div class="container my-4 courses-container">
-  <!-- Affichage des erreurs -->
-  <div *ngIf="errorMessage" class="alert alert-danger">
-    <p>{{ errorMessage }}</p>
+<!-- Section pour afficher la liste des cours -->
+<div class="card courses-list shadow">
+  <div class="card-header bg-success text-white">
+    <h2>Liste des Cours</h2>
+    <!-- Bouton pour afficher le formulaire d'ajout de professeur -->
+    <button class="btn btn-primary" (click)="showAddProfessorForm()">Ajouter un Professeur à un Cours</button>
   </div>
-
-  <!-- Formulaire pour créer un nouveau cours -->
-  <div class="card mb-4 create-course-form shadow">
-    <div class="card-header bg-primary text-white">
-      <h2>Créer un Nouveau Cours</h2>
-    </div>
-    <div class="card-body">
-      <form (ngSubmit)="createCourse()">
-        <div class="form-group">
-          <label for="courseName">Nom du Cours:</label>
-          <input id="courseName" class="form-control" [(ngModel)]="newCourse.Nom" name="courseName" required>
-        </div>
-        <div class="form-group">
-          <label for="courseDescription">Description:</label>
-          <textarea id="courseDescription" class="form-control" [(ngModel)]="newCourse.description" name="courseDescription" required></textarea>
-        </div>
-        <div class="form-group">
-          <label for="courseStartDate">Date de Début:</label>
-          <input type="date" id="courseStartDate" class="form-control" [(ngModel)]="newCourse.dateDebut" name="courseStartDate" required>
-        </div>
-        <div class="form-group">
-          <label for="courseEndDate">Date de Fin:</label>
-          <input type="date" id="courseEndDate" class="form-control" [(ngModel)]="newCourse.dateFin" name="courseEndDate" required>
-        </div>
-        <div class="form-check">
-          <input type="checkbox" id="courseAvailable" class="form-check-input" [(ngModel)]="newCourse.available" name="courseAvailable">
-          <label for="courseAvailable" class="form-check-label">Disponible</label>
-        </div>
-        <button type="submit" class="btn btn-primary mt-3">Créer</button>
-      </form>
-    </div>
+  <div class="card-body">
+    <table class="table table-striped table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>ID</th>
+          <th>Nom</th>
+          <th>Description</th>
+          <th>Date de Début</th>
+          <th>Date de Fin</th>
+          <th>Disponible</th>
+          <th>Professeur</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let course of courses">
+          <td>{{ course.id }}</td>
+          <td>{{ course.Nom }}</td>
+          <td>{{ course.description }}</td>
+          <td>{{ course.dateDebut | date:'shortDate' }}</td>
+          <td>{{ course.dateFin | date:'shortDate' }}</td>
+          <td>{{ course.available ? 'Oui' : 'Non' }}</td>
+          <td>{{ course.professeurId ? 'Assigné' : 'Non assigné' }}</td>
+          <td>
+            <button class="btn btn-warning btn-sm me-1" (click)="updateCourse(course.id!)">Modifier</button>
+            <button class="btn btn-danger btn-sm me-1" (click)="deleteCourse(course.id!)">Supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+</div>
 
-  <!-- Formulaire pour mettre à jour un cours -->
-  <div *ngIf="selectedCourse" class="card mb-4 update-course-form shadow">
-    <div class="card-header bg-warning text-white">
-      <h2>Modifier le Cours</h2>
+<!-- Formulaire pour sélectionner un professeur et un cours -->
+<div *ngIf="showProfessorForm" class="container mt-4">
+  <h3>Ajouter un Professeur au Cours</h3>
+  <form [formGroup]="addProfessorForm" (ngSubmit)="confirmAddProfessor()">
+    <div class="mb-3">
+      <label for="professorSelect" class="form-label">Sélectionnez un professeur :</label>
+      <select id="professorSelect" formControlName="selectedProfessorId" class="form-select">
+        <option *ngFor="let user of filteredUsers" [value]="user.id">{{ user.nom }}</option>
+      </select>
     </div>
-    <div class="card-body">
-      <form [formGroup]="updateCourseForm" (ngSubmit)="saveUpdatedCourse()">
-        <div class="form-group">
-          <label for="updateCourseName">Nom du Cours:</label>
-          <input id="updateCourseName" class="form-control" formControlName="Nom" required>
-        </div>
-        <div class="form-group">
-          <label for="updateCourseDescription">Description:</label>
-          <textarea id="updateCourseDescription" class="form-control" formControlName="description" required></textarea>
-        </div>
-        <div class="form-group">
-          <label for="updateCourseStartDate">Date de Début:</label>
-          <input type="date" id="updateCourseStartDate" class="form-control" formControlName="dateDebut" required>
-        </div>
-        <div class="form-group">
-          <label for="updateCourseEndDate">Date de Fin:</label>
-          <input type="date" id="updateCourseEndDate" class="form-control" formControlName="dateFin" required>
-        </div>
-        <div class="form-check">
-          <input type="checkbox" id="updateCourseAvailable" class="form-check-input" formControlName="available">
-          <label for="updateCourseAvailable" class="form-check-label">Disponible</label>
-        </div>
-        <button type="submit" class="btn btn-warning mt-3">Mettre à jour</button>
-        <button type="button" class="btn btn-secondary mt-3" (click)="cancelUpdate()">Annuler</button>
-      </form>
+    <div class="mb-3">
+      <label for="courseSelect" class="form-label">Sélectionnez un cours :</label>
+      <select id="courseSelect" formControlName="selectedCourseId" class="form-select">
+        <option *ngFor="let course of courses" [value]="course.id">{{ course.Nom }}</option>
+      </select>
     </div>
+    <button type="submit" class="btn btn-primary">Ajouter Professeur</button>
+    <button type="button" class="btn btn-secondary ms-2" (click)="cancelAddProfessor()">Annuler</button>
+  </form>
+</div>
+
+<!-- Formulaire pour mettre à jour un cours -->
+<div *ngIf="selectedCourse" class="card mb-4 update-course-form shadow">
+  <div class="card-header bg-warning text-white">
+    <h2>Modifier le Cours</h2>
   </div>
-
-  <!-- Section pour afficher la liste des cours -->
-  <div class="card courses-list shadow">
-    <div class="card-header bg-success text-white">
-      <h2>Liste des Cours</h2>
-    </div>
-    <div class="card-body">
-      <table class="table table-striped table-hover">
-        <thead class="thead-dark">
-          <tr>
-            <th>ID</th>
-            <th>Nom</th>
-            <th>Description</th>
-            <th>Date de Début</th>
-            <th>Date de Fin</th>
-            <th>Disponible</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let course of courses">
-            <td>{{ course.id }}</td>
-            <td>{{ course.Nom }}</td>
-            <td>{{ course.description }}</td>
-            <td>{{ course.dateDebut | date:'shortDate' }}</td>
-            <td>{{ course.dateFin | date:'shortDate' }}</td>
-            <td>{{ course.available ? 'Oui' : 'Non' }}</td>
-            <td>
-              <!-- Bouton pour mettre à jour le cours -->
-              <button class="btn btn-warning btn-sm mr-1" (click)="updateCourse(course.id)">Modifier</button>
-              <!-- Bouton pour supprimer le cours -->
-              <button class="btn btn-danger btn-sm mr-1" (click)="deleteCourse(course.id)">Supprimer</button>
-              <!-- Bouton pour ajouter un professeur -->
-              <button class="btn btn-primary btn-sm" (click)="addUserToCourse(professorId, 1)">Ajouter un Professeur</button> 
-              <!-- CHANGER LE 1 PAR COURS ID -->
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div class="card-body">
+    <form [formGroup]="updateCourseForm" (ngSubmit)="saveUpdatedCourse()">
+      <div class="mb-3">
+        <label for="updateCourseName" class="form-label">Nom du Cours:</label>
+        <input id="updateCourseName" class="form-control" formControlName="Nom" required>
+      </div>
+      <div class="mb-3">
+        <label for="updateCourseDescription" class="form-label">Description:</label>
+        <textarea id="updateCourseDescription" class="form-control" formControlName="description" required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="updateCourseStartDate" class="form-label">Date de Début:</label>
+        <input type="date" id="updateCourseStartDate" class="form-control" formControlName="dateDebut" required>
+      </div>
+      <div class="mb-3">
+        <label for="updateCourseEndDate" class="form-label">Date de Fin:</label>
+        <input type="date" id="updateCourseEndDate" class="form-control" formControlName="dateFin" required>
+      </div>
+      <div class="mb-3 form-check">
+        <input type="checkbox" id="updateCourseAvailable" class="form-check-input" formControlName="available">
+        <label for="updateCourseAvailable" class="form-check-label">Disponible</label>
+      </div>
+      <button type="submit" class="btn btn-warning">Mettre à jour</button>
+      <button type="button" class="btn btn-secondary ms-2" (click)="cancelUpdate()">Annuler</button>
+    </form>
   </div>
 </div>

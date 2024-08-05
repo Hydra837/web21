@@ -1,8 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';  // Import the necessary functions
-
+import { HttpClientModule } from '@angular/common/http';  // Import HttpClientModule
+import { MatListModule } from '@angular/material/list';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PokemonsComponent } from './pokemons/pokemons.component';
@@ -25,8 +28,8 @@ import { CourseSearchComponent } from './course-search/course-search.component';
 import { StudentSearchComponent } from './student-search/student-search.component';
 import { ProfesseurSearchComponent } from './professeur-search/professeur-search.component';
 import { UserSearchComponent } from './user-search/user-search.component';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { UserSelectionDialogComponent } from './user-selection-dialog/user-selection-dialog.component';
 
 @NgModule({
   declarations: [
@@ -48,22 +51,24 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
     StudentSearchComponent, 
     ProfesseurSearchComponent, 
     UserSearchComponent, 
-    ConfirmDialogComponent
+    ConfirmDialogComponent, 
+    UserSelectionDialogComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule  // Add HttpClientModule to imports
+    HttpClientModule,  // Add HttpClientModule to imports
+    MatListModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule
   ],
   providers: [
     CourseService,
     UserService,
-    DashboardService, 
-    provideHttpClient(),
-    provideHttpClient(withFetch()),
-    provideAnimationsAsync()  // Configure HttpClient to use fetch
+    DashboardService
   ],
   bootstrap: [AppComponent]
 })

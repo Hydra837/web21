@@ -24,7 +24,8 @@ export function mapToCourseModel(item: any): Course {
         description: item.description,
         dateDebut: new Date(item.dateDebut),
         dateFin: new Date(item.dateFin),
-        available: item.available
+        available: item.available, 
+        professeurId : item.professeurId,
     };
 }
 
@@ -33,12 +34,13 @@ export function mapUser(data: any): User {
     return {
         id: data.id ?? -1, // Default value if not defined
         prenom: data.prenom,
-        nom: data.name ?? 'Unknown', // Default value if not defined
+        nom: data.nom ?? 'Unknown', // Default value if not defined
         // email: data.email ?? 'unknown@example.com', // Default value if not defined
         password: data.password ?? '', // Default value if not defined
         role: data.role ?? 'user', // Default value if not defined, 
         mail: data.mail ?? 'inconuu',
-        pseudo: data.user ?? 'user123456'
+        pseudo: data.user ?? 'userInconnu'
+       //salt: data.salt
     };
 }
 

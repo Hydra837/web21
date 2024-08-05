@@ -72,7 +72,8 @@ export class CourseService {
       description: item.description,
       dateDebut: new Date(item.dateDebut),
       dateFin: new Date(item.dateFin),
-      available: item.available
+      available: item.available, 
+      professeurId: item.professeurId
     };
   }
 

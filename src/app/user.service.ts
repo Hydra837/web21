@@ -65,4 +65,9 @@ export class UserService {
       return of(result as T);
     };
   }
+  getUsersByRole(role: string): Observable<User[]> {
+    return this.getUsers().pipe(
+      map(users => users.filter(user => user.role === role))
+    );
+  }
 }

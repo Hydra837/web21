@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { CourseService } from '../services/course.service';
-import { Course } from '../Models/courseModel'; 
-import { GetAllCoursForEachUsers } from '../Models/GetAllCoursForEachUsers'; 
-import { catchError, of } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { catchError, of } from 'rxjs';
+import { CourseService } from '../services/course.service';
+import { UserService } from '../user.service';
+import { Course } from '../Models/courseModel';
+import { User } from '../Models/User';
 import { CourseManagementService } from '../course-management.service';
 
 @Component({
@@ -13,20 +13,28 @@ import { CourseManagementService } from '../course-management.service';
   styleUrls: ['./courses.component.css']
 })
 export class CoursesComponent implements OnInit {
-  courses: Course[] = []; 
-  newCourse: Course = {} as Course; 
-  errorMessage: string = '';
-  courseUser: GetAllCoursForEachUsers[] = []; 
-  selectedCourse: Course | null = null; 
+  courses: Course[] = [];
+  users: User[] = [];
+  filteredUsers: User[] = [];
+  
+  selectedCourseForProfessor: number | null = null;
+  selectedCourse: Course | null = null; // Variable pour stocker le cours sélectionné pour la mise à jour
+  addProfessorForm: FormGroup;
   updateCourseForm: FormGroup;
-  professorId: number = 1; // Example professor ID, replace with actual logic for selecting professor
+  showProfessorForm: boolean = false; // Variable pour afficher/masquer le formulaire d'ajout de professeur
+  errorMessage: string = '';
 
   constructor(
     private courseService: CourseService, 
+    private userService: UserService,
     private courseManagementService: CourseManagementService, 
-    private router: Router, 
     private fb: FormBuilder
   ) {
+    this.addProfessorForm = this.fb.group({
+      selectedProfessorId: ['', Validators.required],
+      selectedCourseId: ['', Validators.required]
+    });
+
     this.updateCourseForm = this.fb.group({
       id: [''],
       Nom: ['', Validators.required],
@@ -39,14 +47,14 @@ export class CoursesComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCourses();
-    this.getCoursEachUser();
+    this.loadUsers();
   }
 
   private handleError(operation: string) {
     return (error: any) => {
       this.errorMessage = `Erreur lors de ${operation}.`;
       console.error(`${operation} échoué:`, error);
-      return of(null); 
+      return of(null);
     };
   }
 
@@ -60,43 +68,71 @@ export class CoursesComponent implements OnInit {
     });
   }
 
-  getCoursEachUser(): void {
-    this.courseService.getAllCoursesForEachUsers().pipe(
-      catchError(this.handleError('récupération des cours pour chaque utilisateur'))
-    ).subscribe(data => {
+  loadUsers(): void {
+    this.userService.getUsers().pipe(
+      catchError(this.handleError('chargement des utilisateurs'))
+    ).subscribe((data) => {
       if (data) {
-        this.courseUser = data;
+        this.users = data;
+        this.filterUsers(); // Filtrer les utilisateurs après chargement
       }
     });
   }
 
-  createCourse(): void {
-    this.courseService.createCourse(this.newCourse).pipe(
-      catchError(this.handleError('création du cours'))
-    ).subscribe(() => {
-      this.loadCourses();
-      this.newCourse = {} as Course; 
-    });
+  filterUsers(): void {
+    this.filteredUsers = this.users.filter(user => user.role === 'Professeur');
   }
 
-  updateCourse(id: number | undefined): void {
-    if (id !== undefined) {
-      const course = this.courses.find(c => c.id === id);
-      if (course) {
-        this.selectedCourse = course;
-        this.updateCourseForm.setValue({
-          id: course.id,
-          Nom: course.Nom,
-          description: course.description,
-          dateDebut: course.dateDebut,
-          dateFin: course.dateFin,
-          available: course.available
+  showAddProfessorForm(): void {
+    this.showProfessorForm = true;
+  }
+
+  selectCourseForAddingProfessor(courseId: number): void {
+    this.selectedCourseForProfessor = courseId;
+    this.addProfessorForm.patchValue({ selectedCourseId: courseId });
+  }
+
+  confirmAddProfessor(): void {
+    if (this.addProfessorForm.valid) {
+      const { selectedProfessorId, selectedCourseId } = this.addProfessorForm.value;
+
+      if (selectedProfessorId && selectedCourseId) {
+        this.courseManagementService.updateTeacher(selectedProfessorId, selectedCourseId).pipe(
+          catchError(this.handleError('ajout du professeur'))
+        ).subscribe(() => {
+          this.loadCourses();
+          this.addProfessorForm.reset();
+          this.selectedCourseForProfessor = null;
+          this.showProfessorForm = false; // Masquer le formulaire après ajout
         });
       } else {
-        this.errorMessage = 'Cours introuvable.';
+        this.errorMessage = 'Veuillez sélectionner un professeur et un cours.';
       }
     } else {
-      this.errorMessage = 'ID du cours est introuvable.';
+      this.errorMessage = 'Le formulaire contient des erreurs.';
+    }
+  }
+
+  cancelAddProfessor(): void {
+    this.showProfessorForm = false;
+    this.addProfessorForm.reset();
+  }
+
+  updateCourse(id: number): void {
+    console.log('Attempting to update course with ID:', id);
+    const course = this.courses.find(c => c.id === id);
+    if (course) {
+      this.selectedCourse = course;
+      this.updateCourseForm.setValue({
+        id: course.id,
+        Nom: course.Nom,
+        description: course.description,
+        dateDebut: course.dateDebut,
+        dateFin: course.dateFin,
+        available: course.available
+      });
+    } else {
+      this.errorMessage = 'Cours introuvable.';
     }
   }
 
@@ -107,7 +143,8 @@ export class CoursesComponent implements OnInit {
         catchError(this.handleError('mise à jour du cours'))
       ).subscribe(() => {
         this.loadCourses();
-        this.selectedCourse = null; 
+        this.updateCourseForm.reset();
+        this.selectedCourse = null; // Réinitialiser la sélection après mise à jour
       });
     } else {
       this.errorMessage = 'Le formulaire de mise à jour contient des erreurs.';
@@ -115,32 +152,51 @@ export class CoursesComponent implements OnInit {
   }
 
   cancelUpdate(): void {
-    this.selectedCourse = null;
+    this.updateCourseForm.reset();
+    this.selectedCourse = null; // Réinitialiser la sélection
   }
 
-  deleteCourse(id: number | undefined): void {
-    if (id !== undefined) {
+  deleteCourse(id: number): void {
+    if (id) {
       const confirmed = window.confirm('Êtes-vous sûr de vouloir supprimer ce cours ?');
       if (confirmed) {
         this.courseService.deleteCourse(id.toString()).pipe(
           catchError(this.handleError('suppression du cours'))
         ).subscribe(() => {
-          this.loadCourses(); // Recharger la liste des cours après suppression
+          this.loadCourses();
         });
       }
     } else {
       this.errorMessage = 'ID du cours est introuvable.';
     }
   }
-
-  addUserToCourse(userId: number, courseId: number): void {
-    this.courseManagementService.addUserToCourse(userId, courseId).pipe(
-      catchError(this.handleError("ajout de l'utilisateur au cours"))
-    ).subscribe(() => {
-      console.log(`Utilisateur ${userId} ajouté au cours ${courseId} avec succès.`);
-    });
-  }
 }
+
+
+  // Méthodes pour d'autres actions comme updateCourse, deleteCourse, etc.
+
+  // hasTeacher(courseId: number): void {
+  //   this.courseService.getCourseById(courseId).pipe(
+  //     catchError(this.handleError('vérification de l\'enseignant pour le cours'))
+  //   ).subscribe(course => {
+  //     if (course) {
+  //       const hasTeacher = course.professeurId !== null;
+  //       console.log(`Le cours ${courseId} a-t-il un enseignant ? ${hasTeacher}`);
+  //       return hasTeacher;
+  //     } else {
+  //       return false;
+  //     }
+  //   });
+  // }
+
+  
+  // Vérifie si un cours a un enseignant assigné en utilisant les données du composant
+//   hasTeacher(courseId: number): boolean {
+//     const course = this.courses.find(cu => cu.courseId === courseId);
+//     return course ? course.teacherId !== null : false;
+//   }
+// }
+
 
   // deleteCourse(id: number | undefined): void {
   //   if (id !== undefined) {

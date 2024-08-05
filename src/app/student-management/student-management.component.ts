@@ -5,6 +5,7 @@ import { User } from '../Models/User';
 import { UserFORM } from '../Models/User';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { StudentManagementService } from '../student-management.service'; // Import du service
+import { UserSelectionDialogComponent } from '../user-selection-dialog/user-selection-dialog.component'; // Import du dialogue
 
 @Component({
   selector: 'app-student-management',
@@ -18,6 +19,7 @@ export class StudentManagementComponent implements OnInit {
   userForm: UserFORM | null = null; // Utilisé pour les nouveaux utilisateurs
   errorMessage: string | null = null;
   selectedRole: string = ''; // Valeur pour filtrer par rôle
+  selectedCourseId: number | null = null; // ID du cours pour ajouter des utilisateurs
 
   constructor(
     private userService: UserService,
@@ -97,6 +99,20 @@ export class StudentManagementComponent implements OnInit {
           next: () => this.loadUsers(),
           error: (err: any) => this.errorMessage = 'Erreur lors de la suppression de l’utilisateur.'
         });
+      }
+    });
+  }
+
+  // Ouvrir le dialogue pour sélectionner un professeur
+  openUserSelectionDialog(courseId: number): void {
+    const dialogRef = this.dialog.open(UserSelectionDialogComponent, {
+      data: { users: this.filteredUsers, courseId: courseId }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Assurez-vous que `result` contient l'ID de l'utilisateur sélectionné et l'ID du cours
+        this.addUserToCourse(result.userId, result.courseId);
       }
     });
   }

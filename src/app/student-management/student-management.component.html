@@ -41,6 +41,8 @@
         <td>
           <button class="btn btn-warning btn-sm" (click)="selectUser(user)">Edit</button>
           <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">Delete</button>
+          <!-- Bouton pour ajouter l'utilisateur à un cours -->
+          <button class="btn btn-info btn-sm" (click)="openUserSelectionDialog(user.id)">Add to Course</button>
         </td>
       </tr>
     </tbody>

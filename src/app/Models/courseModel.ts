@@ -5,5 +5,6 @@ export interface Course {
   dateDebut?: Date;
   dateFin?: Date;
   available: boolean;
+  professeurId: number;
   }
   

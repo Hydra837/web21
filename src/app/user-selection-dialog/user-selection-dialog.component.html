@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Choisir un Professeur</h1>
+<div mat-dialog-content>
+  <mat-list>
+    <mat-list-item *ngFor="let user of data.users" (click)="selectUser(user.id)">
+      {{ user.nom }} <!-- Remplacez `name` par la propriété appropriée -->
+      <mat-icon *ngIf="selectedUserId === user.id">check_circle</mat-icon> <!-- Indicateur de sélection -->
+    </mat-list-item>
+  </mat-list>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">Annuler</button>
+  <button mat-button (click)="confirmSelection()">Sélectionner</button>
+</div>
