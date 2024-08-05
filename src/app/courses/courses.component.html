@@ -31,6 +31,7 @@
           <td>
             <button class="btn btn-warning btn-sm me-1" (click)="updateCourse(course.id!)">Modifier</button>
             <button class="btn btn-danger btn-sm me-1" (click)="deleteCourse(course.id!)">Supprimer</button>
+            <button class="btn btn-info btn-sm" (click)="showEnrolledUsers(course.id!)">Afficher utilisateurs inscrits</button>
           </td>
         </tr>
       </tbody>
@@ -89,5 +90,36 @@
       <button type="submit" class="btn btn-warning">Mettre à jour</button>
       <button type="button" class="btn btn-secondary ms-2" (click)="cancelUpdate()">Annuler</button>
     </form>
+  </div>
+</div>
+
+<!-- Formulaire pour afficher les utilisateurs inscrits et leurs grades -->
+<div *ngIf="selectedCourseWithUsers" class="card mb-4 enrolled-users-form shadow">
+  <div class="card-header bg-info text-white">
+    <h2>Utilisateurs inscrits pour le cours {{ selectedCourseWithUsers.Nom }}</h2>
+  </div>
+  <div class="card-body">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Grade</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of enrolledUsers">
+          <td>{{ user.nom }} {{ user.prenom }}</td>
+          <td>
+            <input [(ngModel)]="user.grade" type="number" min="0" max="20"/>
+          </td>
+          <td>
+            <button class="btn btn-danger btn-sm me-1" (click)="deleteEnrollment(user.id)">Supprimer inscription</button>
+            <button class="btn btn-success btn-sm" (click)="updateGrade(user.id, user.grade)">Mettre à jour la note</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-secondary" (click)="cancelShowEnrolledUsers()">Annuler</button>
   </div>
 </div>

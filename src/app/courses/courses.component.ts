@@ -6,6 +6,7 @@ import { UserService } from '../user.service';
 import { Course } from '../Models/courseModel';
 import { User } from '../Models/User';
 import { CourseManagementService } from '../course-management.service';
+import { StudentEnrollmentService } from '../services/student-enrollement.service';
 
 @Component({
   selector: 'app-courses',
@@ -16,18 +17,20 @@ export class CoursesComponent implements OnInit {
   courses: Course[] = [];
   users: User[] = [];
   filteredUsers: User[] = [];
-  
+  enrolledUsers: any[] = []; // Stocke les utilisateurs inscrits à un cours
   selectedCourseForProfessor: number | null = null;
   selectedCourse: Course | null = null; // Variable pour stocker le cours sélectionné pour la mise à jour
+  selectedCourseWithUsers: Course | null = null; // Variable pour stocker le cours sélectionné pour afficher les utilisateurs
   addProfessorForm: FormGroup;
   updateCourseForm: FormGroup;
-  showProfessorForm: boolean = false; // Variable pour afficher/masquer le formulaire d'ajout de professeur
+  showProfessorForm: boolean = false;
   errorMessage: string = '';
 
   constructor(
     private courseService: CourseService, 
     private userService: UserService,
     private courseManagementService: CourseManagementService, 
+    private studentEnrollmentService: StudentEnrollmentService,
     private fb: FormBuilder
   ) {
     this.addProfessorForm = this.fb.group({
@@ -103,7 +106,7 @@ export class CoursesComponent implements OnInit {
           this.loadCourses();
           this.addProfessorForm.reset();
           this.selectedCourseForProfessor = null;
-          this.showProfessorForm = false; // Masquer le formulaire après ajout
+          this.showProfessorForm = false;
         });
       } else {
         this.errorMessage = 'Veuillez sélectionner un professeur et un cours.';
@@ -144,7 +147,7 @@ export class CoursesComponent implements OnInit {
       ).subscribe(() => {
         this.loadCourses();
         this.updateCourseForm.reset();
-        this.selectedCourse = null; // Réinitialiser la sélection après mise à jour
+        this.selectedCourse = null;
       });
     } else {
       this.errorMessage = 'Le formulaire de mise à jour contient des erreurs.';
@@ -153,7 +156,7 @@ export class CoursesComponent implements OnInit {
 
   cancelUpdate(): void {
     this.updateCourseForm.reset();
-    this.selectedCourse = null; // Réinitialiser la sélection
+    this.selectedCourse = null;
   }
 
   deleteCourse(id: number): void {
@@ -169,6 +172,49 @@ export class CoursesComponent implements OnInit {
     } else {
       this.errorMessage = 'ID du cours est introuvable.';
     }
+  }
+
+  showEnrolledUsers(courseId: number): void {
+    this.selectedCourseWithUsers = this.courses.find(c => c.id === courseId) || null;
+    if (this.selectedCourseWithUsers) {
+      this.studentEnrollmentService.getAllUserByCourse(courseId).pipe(
+        catchError(this.handleError('chargement des utilisateurs inscrits'))
+      ).subscribe(data => {
+        if (data) {
+          this.enrolledUsers = data;
+        }
+      });
+    }
+  }
+
+  deleteEnrollment(userId: number): void {
+    const confirmed = window.confirm('Êtes-vous sûr de vouloir supprimer cette inscription ?');
+    if (confirmed) {
+      this.studentEnrollmentService.deleteEnrollment(userId).pipe(
+        catchError(this.handleError('suppression de l\'inscription'))
+      ).subscribe(() => {
+        this.loadCourses(); // Recharger les cours après suppression
+        this.showEnrolledUsers(this.selectedCourseWithUsers?.id || 0); // Recharger les utilisateurs pour le cours sélectionné
+      });
+    }
+  }
+
+  updateGrade(userId: number, grade: number): void {
+    if (grade != null) {
+      this.studentEnrollmentService.updateGrade(userId, grade).pipe(
+        catchError(this.handleError('mise à jour de la note'))
+      ).subscribe(() => {
+        this.loadCourses(); // Recharger les cours après mise à jour
+        this.showEnrolledUsers(this.selectedCourseWithUsers?.id || 0); // Recharger les utilisateurs pour le cours sélectionné
+      });
+    } else {
+      this.errorMessage = 'Veuillez entrer une note valide.';
+    }
+  }
+
+  cancelShowEnrolledUsers(): void {
+    this.selectedCourseWithUsers = null;
+    this.enrolledUsers = [];
   }
 }
 
