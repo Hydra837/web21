@@ -1,0 +1,29 @@
+/* Ajoutez des styles personnalisés pour les cartes */
+.card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem; /* Arrondir les coins de la carte */
+    background-color: #fff; /* Fond blanc pour la carte */
+  }
+  
+  .card-title {
+    font-size: 1.5rem; /* Taille du texte du titre de la carte */
+    font-weight: 500; /* Poids du texte du titre */
+  }
+  
+  .card-text {
+    font-size: 1rem; /* Taille du texte de la carte */
+  }
+  
+  /* Styles pour les boutons */
+  .btn {
+    font-size: 0.875rem; /* Taille du texte des boutons */
+    padding: 0.5rem 1rem; /* Espacement interne des boutons */
+  }
+  
+  /* Styles pour l'alerte d'erreur */
+  .alert-danger {
+    font-size: 1rem; /* Taille du texte de l'alerte */
+    background-color: #f8d7da; /* Couleur de fond pour l'alerte d'erreur */
+    color: #721c24; /* Couleur du texte pour l'alerte d'erreur */
+  }
+  

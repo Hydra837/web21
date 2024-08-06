@@ -1,26 +1,36 @@
 <div class="container mt-5">
   <!-- Détails du cours -->
-  <div *ngIf="course; else loading">
+  <div *ngIf="course; else loading" class="course-details">
     <h2 class="mb-4">{{ course.Nom }}</h2>
-    <p class="lead">{{ course.dateDebut | date }}</p>
+    <p class="lead text-muted">{{ course.description }}</p>
+    <p class="lead text-muted"> Date de début : {{ course.dateDebut | date }}</p>
+    <p class="lead text-muted"> Date de fin : {{ course.dateFin| date }}</p>
     <!-- Ajoutez d'autres détails du cours ici -->
-
-    <h3 class="mt-4 mb-3">Enrolled Users</h3>
-    <ul class="list-group">
-      <li *ngFor="let user of enrolledUsers" class="list-group-item">
-        {{ user.nom }} <!-- Ajustez en fonction de votre modèle UsersData -->
-      </li>
-    </ul>
+    
+    <!-- Section Enrolled Users -->
+    <div class="mt-4">
+      <h3 class="mb-3">Enrolled Users</h3>
+      <ul class="list-group">
+        <li *ngFor="let user of enrolledUsers" class="list-group-item d-flex justify-content-between align-items-center">
+          {{ user.nom }}
+          {{ user.prenom}}
+          {{ user.mail}}
+          <button class="btn btn-info btn-sm">View Details</button> <!-- Bouton exemple -->
+        </li>
+      </ul>
+    </div>
   </div>
 
   <!-- Template de chargement -->
   <ng-template #loading>
-    <div class="alert alert-info mt-4">Loading...</div>
+    <div class="alert alert-info mt-4">
+      <i class="fas fa-spinner fa-spin"></i> Loading...
+    </div>
   </ng-template>
 
   <!-- Message d'erreur -->
-  <div *ngIf="errorMessage">
-    <div class="alert alert-danger mt-4">
+  <div *ngIf="errorMessage" class="mt-4">
+    <div class="alert alert-danger">
       {{ errorMessage }}
     </div>
   </div>

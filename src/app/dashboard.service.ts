@@ -6,21 +6,37 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DashboardService {
-  private apiUrl = 'http://localhost:3000/api';
-  private GetAll = 'https://localhost:7233/api/Cours/GetAll'
-  private apiGetCourses = 'https://localhost:7233/api/StudentEnrollment/EnrolledStudent/1'
+  // URLs API
+  private apiUrl = 'http://localhost:3000/api'; // Assurez-vous que cette URL est correcte
+  private getAllCoursesUrl = 'https://localhost:7233/api/Cours/GetAll'; // Obtenir tous les cours
+  private getEnrolledCoursesUrl = 'https://localhost:7233/api/StudentEnrollment/EnrolledStudent';
+  private updateUserUrl = 'https://localhost:7233/api/Users'; // Mise à jour des utilisateurs
+  private getCurrentUserUrl = 'https://localhost:7233/api/Users/GetById'; // Obtenir l'utilisateur actuel
 
   constructor(private http: HttpClient) {}
 
-  getEnrolledCourses(): Observable<any> {
-    return this.http.get(`${this.apiGetCourses}`);
+  // Obtenir les cours auxquels un utilisateur est inscrit
+  getEnrolledCourses(userId: number): Observable<any> {
+    return this.http.get(`${this.getEnrolledCoursesUrl}?userId=${userId}`);
   }
 
+  // Obtenir les cours enseignés par le professeur connecté
   getTeachingCourses(): Observable<any> {
     return this.http.get(`${this.apiUrl}/professor/courses`);
   }
 
+  // Obtenir tous les cours
   getAllCourses(): Observable<any> {
-    return this.http.get(`${this.GetAll}`);
+    return this.http.get(`${this.getAllCoursesUrl}`);
+  }
+
+  // Mettre à jour les informations d'un utilisateur
+  updateUser(userId: number, userData: any): Observable<any> {
+    return this.http.put(`${this.updateUserUrl}/${userId}`, userData);
+  }
+
+  // Obtenir les détails de l'utilisateur actuel par ID
+  getCurrentUser(userId: number): Observable<any> {
+    return this.http.get(`${this.getCurrentUserUrl}/${userId}`);
   }
 }

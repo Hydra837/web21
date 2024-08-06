@@ -1,27 +1,55 @@
 /* course-details.component.css */
 .course-details {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .student {
-    border: 1px solid #ddd;
-    padding: 20px;
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
-  }
-  
-  .progress-bar {
-    width: 100%;
-    background-color: #ddd;
-    height: 20px;
-    border-radius: 5px;
-    overflow: hidden;
-  }
-  
-  .progress {
-    height: 100%;
-    background-color: #4CAF50;
-  }
-  
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.course-details h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #007bff; /* Couleur bleue pour le titre du cours */
+}
+
+.course-details p.lead {
+  font-size: 1.25rem;
+  color: #6c757d; /* Couleur grise pour la date */
+}
+
+.list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.list-group-item:hover {
+  background-color: #f1f3f5; /* Couleur de survol pour les éléments de la liste */
+}
+
+.list-group-item button {
+  margin-left: 10px;
+  background-color: #007bff; /* Couleur bleue pour le bouton */
+  border-color: #007bff;
+}
+
+.list-group-item button:hover {
+  background-color: #0056b3; /* Couleur bleue foncée pour le bouton au survol */
+}
+
+.alert-info {
+  background-color: #e2e3e5;
+  color: #0c5460;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}

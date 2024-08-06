@@ -2,7 +2,7 @@
   <h2 class="mb-4">Dashboard</h2>
 
   <!-- Section pour les étudiants -->
-  <div *ngIf="userRole === 'student'">
+  <div *ngIf="userRole === 'Etudiant'">
     <h3 class="mb-3">Your Enrolled Courses</h3>
     <ul class="list-group">
       <li *ngFor="let course of courses" class="list-group-item">
@@ -16,7 +16,7 @@
     <h3 class="mb-3">Your Teaching Courses</h3>
     <ul class="list-group">
       <li *ngFor="let course of courses" class="list-group-item">
-        {{ course.name }}
+        {{ course.Nom }}
       </li>
     </ul>
   </div>
@@ -26,7 +26,7 @@
     <h3 class="mb-3">All Courses</h3>
     <ul class="list-group">
       <li *ngFor="let course of courses" class="list-group-item">
-        {{ course.name }}
+        {{ course.Nom }}
       </li>
     </ul>
   </div>

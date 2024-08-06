@@ -1,0 +1,87 @@
+/* Styles personnalisés pour la gestion des utilisateurs */
+
+.container {
+    max-width: 1200px; /* Limite la largeur de la container */
+  }
+  
+  h1 {
+    font-size: 2.5rem; /* Augmente la taille du titre */
+  }
+  
+  .card {
+    border: 1px solid #e0e0e0; /* Ajoute une bordure légère aux cartes */
+    border-radius: 0.5rem; /* Bordures arrondies */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère */
+  }
+  
+  .card-title {
+    font-size: 1.5rem; /* Augmente la taille du titre dans la carte */
+    color: #007bff; /* Couleur bleue primaire */
+  }
+  
+  .table {
+    margin-bottom: 0; /* Évite la marge par défaut en bas du tableau */
+  }
+  
+  .table th {
+    background-color: #007bff; /* Couleur de fond bleue pour les en-têtes */
+    color: #fff; /* Couleur du texte blanche pour les en-têtes */
+  }
+  
+  .table td, .table th {
+    vertical-align: middle; /* Aligne verticalement les cellules du tableau */
+  }
+  
+  .table-responsive {
+    overflow-x: auto; /* Ajoute un défilement horizontal si nécessaire */
+  }
+  
+  .btn {
+    border-radius: 0.3rem; /* Bordures légèrement arrondies pour les boutons */
+  }
+  
+  .btn-primary {
+    background-color: #007bff; /* Couleur primaire */
+    border-color: #007bff; /* Bordure couleur primaire */
+  }
+  
+  .btn-warning {
+    background-color: #ffc107; /* Couleur d'avertissement */
+    border-color: #ffc107; /* Bordure couleur d'avertissement */
+  }
+  
+  .btn-info {
+    background-color: #17a2b8; /* Couleur info */
+    border-color: #17a2b8; /* Bordure couleur info */
+  }
+  
+  .btn-danger {
+    background-color: #dc3545; /* Couleur danger */
+    border-color: #dc3545; /* Bordure couleur danger */
+  }
+  
+  .btn-success {
+    background-color: #28a745; /* Couleur succès */
+    border-color: #28a745; /* Bordure couleur succès */
+  }
+  
+  .alert {
+    border-radius: 0.3rem; /* Bordures légèrement arrondies pour les alertes */
+  }
+  
+  .form-control, .form-select {
+    border-radius: 0.3rem; /* Bordures légèrement arrondies pour les champs de formulaire */
+  }
+  
+  .form-group {
+    margin-bottom: 1rem; /* Espacement entre les champs du formulaire */
+  }
+  
+  .mb-4 {
+    margin-bottom: 1.5rem; /* Augmente la marge en bas des éléments */
+  }
+  
+  .me-2 {
+    margin-right: 0.5rem; /* Marge à droite des boutons pour les espacer */
+  }
+  
