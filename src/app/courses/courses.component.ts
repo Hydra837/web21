@@ -102,7 +102,7 @@ export class CoursesComponent implements OnInit {
 
   submitNewCourse(): void {
     if (this.addCourseForm.valid) {
-      const newCourse = this.addCourseForm.value;
+      const newCourse = this.addCourseForm.value as Course;
       this.courseService.createCourse(newCourse).pipe(
         catchError(this.handleError('ajout du cours'))
       ).subscribe(() => {
@@ -165,7 +165,7 @@ export class CoursesComponent implements OnInit {
         description: course.description,
         dateDebut: course.dateDebut,
         dateFin: course.dateFin,
-        available: course.available
+        available: course.available ?? false
       });
     } else {
       this.errorMessage = 'Cours introuvable.';
@@ -174,18 +174,24 @@ export class CoursesComponent implements OnInit {
 
   saveUpdatedCourse(): void {
     if (this.updateCourseForm.valid) {
-      const { id, Nom, description, dateDebut, dateFin, available } = this.updateCourseForm.value;
-      this.courseService.updateCourse(id, Nom).pipe(
-        catchError(this.handleError('mise à jour du cours'))
-      ).subscribe(() => {
-        this.loadCourses();
-        this.updateCourseForm.reset();
-        this.selectedCourse = null;
-      });
+      const updatedCourse = this.updateCourseForm.value as Course;
+      if (updatedCourse.id) { // Assurez-vous que l'ID est défini
+        this.courseService.updateCourse(updatedCourse.id.toString(), updatedCourse).pipe(
+          catchError(this.handleError('mise à jour du cours'))
+        ).subscribe(() => {
+          this.loadCourses();
+          this.updateCourseForm.reset();
+          this.selectedCourse = null;
+        });
+      } else {
+        this.errorMessage = 'L\'ID du cours est manquant.';
+      }
     } else {
       this.errorMessage = 'Le formulaire de mise à jour contient des erreurs.';
     }
   }
+  
+  
 
   cancelUpdate(): void {
     this.updateCourseForm.reset();
@@ -248,6 +254,19 @@ export class CoursesComponent implements OnInit {
   cancelShowEnrolledUsers(): void {
     this.selectedCourseWithUsers = null;
     this.enrolledUsers = [];
+  }
+  private updateTeacher(teacherId: number, courseId: number): void {
+    this.courseManagementService.updateTeacher(teacherId, courseId).subscribe({
+      next: () => {
+        this.loadCourses();
+        this.addProfessorForm.reset();
+        this.selectedCourseForProfessor = null;
+        this.showProfessorForm = false;
+      },
+      error: () => {
+        this.errorMessage = 'Échec de l\'ajout du professeur.';
+      }
+    });
   }
 }
 
