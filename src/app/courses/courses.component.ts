@@ -22,7 +22,9 @@ export class CoursesComponent implements OnInit {
   selectedCourse: Course | null = null; // Variable pour stocker le cours sélectionné pour la mise à jour
   selectedCourseWithUsers: Course | null = null; // Variable pour stocker le cours sélectionné pour afficher les utilisateurs
   addProfessorForm: FormGroup;
+  addCourseForm: FormGroup; // Formulaire pour ajouter un cours
   updateCourseForm: FormGroup;
+  showAddCourseFormFlag: boolean = false; // Renommé pour éviter les conflits
   showProfessorForm: boolean = false;
   errorMessage: string = '';
 
@@ -36,6 +38,14 @@ export class CoursesComponent implements OnInit {
     this.addProfessorForm = this.fb.group({
       selectedProfessorId: ['', Validators.required],
       selectedCourseId: ['', Validators.required]
+    });
+
+    this.addCourseForm = this.fb.group({
+      Nom: ['', Validators.required],
+      description: ['', Validators.required],
+      dateDebut: ['', Validators.required],
+      dateFin: ['', Validators.required],
+      available: [false]
     });
 
     this.updateCourseForm = this.fb.group({
@@ -86,6 +96,30 @@ export class CoursesComponent implements OnInit {
     this.filteredUsers = this.users.filter(user => user.role === 'Professeur');
   }
 
+  showAddCourseForm(): void {
+    this.showAddCourseFormFlag = true;
+  }
+
+  submitNewCourse(): void {
+    if (this.addCourseForm.valid) {
+      const newCourse = this.addCourseForm.value;
+      this.courseService.createCourse(newCourse).pipe(
+        catchError(this.handleError('ajout du cours'))
+      ).subscribe(() => {
+        this.loadCourses();
+        this.addCourseForm.reset();
+        this.showAddCourseFormFlag = false;
+      });
+    } else {
+      this.errorMessage = 'Le formulaire contient des erreurs.';
+    }
+  }
+
+  cancelAddCourse(): void {
+    this.showAddCourseFormFlag = false;
+    this.addCourseForm.reset();
+  }
+
   showAddProfessorForm(): void {
     this.showProfessorForm = true;
   }
@@ -122,7 +156,6 @@ export class CoursesComponent implements OnInit {
   }
 
   updateCourse(id: number): void {
-    console.log('Attempting to update course with ID:', id);
     const course = this.courses.find(c => c.id === id);
     if (course) {
       this.selectedCourse = course;
@@ -141,8 +174,8 @@ export class CoursesComponent implements OnInit {
 
   saveUpdatedCourse(): void {
     if (this.updateCourseForm.valid) {
-      const updatedCourse = this.updateCourseForm.value;
-      this.courseService.updateCourse(updatedCourse.id, updatedCourse).pipe(
+      const { id, Nom, description, dateDebut, dateFin, available } = this.updateCourseForm.value;
+      this.courseService.updateCourse(id, Nom).pipe(
         catchError(this.handleError('mise à jour du cours'))
       ).subscribe(() => {
         this.loadCourses();
@@ -199,9 +232,9 @@ export class CoursesComponent implements OnInit {
     }
   }
 
-  updateGrade(userId: number, grade: number): void {
-    if (grade != null) {
-      this.studentEnrollmentService.updateGrade(userId, grade).pipe(
+  updateGrade(userId: number, idCours: number, grade: number): void {
+    if (grade != null && idCours != null) {
+      this.studentEnrollmentService.updateGrades(userId, idCours, grade).pipe(
         catchError(this.handleError('mise à jour de la note'))
       ).subscribe(() => {
         this.loadCourses(); // Recharger les cours après mise à jour
@@ -217,7 +250,6 @@ export class CoursesComponent implements OnInit {
     this.enrolledUsers = [];
   }
 }
-
 
   // Méthodes pour d'autres actions comme updateCourse, deleteCourse, etc.
 

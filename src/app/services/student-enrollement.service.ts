@@ -12,7 +12,8 @@ export class StudentEnrollmentService {
   private enrolledStudent = 'https://localhost:7233/api/StudentEnrollment/EnrolledStudent'; // À compléter avec un ID dynamique
   private deleteUrl = 'https://localhost:7233/api/StudentEnrollment'; // À compléter avec un ID dynamique
   private GetAllUserFor1course = 'https://localhost:7233/api/StudentEnrollment/GetalluserCourse';
-   private updateGradeUrl = 'https://localhost:7233/api/StudentEnrollment/UpdateGrade'
+  private updateGradeUrl = 'https://localhost:7233/api/StudentEnrollment/UpdateGrade';
+  private updateGradesUrl = 'https://localhost:7233/api/StudentEnrollment/UpdateGrades';
 
   constructor(private http: HttpClient) { }
 
@@ -51,8 +52,16 @@ export class StudentEnrollmentService {
     const url = `${this.GetAllUserFor1course}/${courseId}`;
     return this.http.get(url);
   }
-  updateGrade(id: number, grade: number): Observable<any> {
-    const url = `${this.updateGradeUrl}?id=${id}&grade=${grade}`;
+
+  // Méthode pour mettre à jour la note d'un étudiant
+  updateGrade(userId: number, courseId: number, grade: number): Observable<any> {
+    const url = `${this.updateGradeUrl}?userId=${userId}&courseId=${courseId}&grade=${grade}`;
+    return this.http.put(url, {});
+  }
+
+  // Méthode pour mettre à jour les notes des étudiants
+  updateGrades(idUsers: number, idCours: number, grade: number): Observable<any> {
+    const url = `${this.updateGradesUrl}?idUsers=${idUsers}&idCours=${idCours}&grade=${grade}`;
     return this.http.put(url, {});
   }
 }
