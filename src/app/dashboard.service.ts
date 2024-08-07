@@ -12,31 +12,27 @@ export class DashboardService {
   private getEnrolledCoursesUrl = 'https://localhost:7233/api/StudentEnrollment/EnrolledStudent';
   private updateUserUrl = 'https://localhost:7233/api/Users'; // Mise à jour des utilisateurs
   private getCurrentUserUrl = 'https://localhost:7233/api/Users/GetById'; // Obtenir l'utilisateur actuel
+  private getallcourset = "https://localhost:7233/api/Cours/cours/professeur"
 
   constructor(private http: HttpClient) {}
 
-  // Obtenir les cours auxquels un utilisateur est inscrit
+ 
   getEnrolledCourses(userId: number): Observable<any> {
     return this.http.get(`${this.getEnrolledCoursesUrl}?userId=${userId}`);
   }
-
-  // Obtenir les cours enseignés par le professeur connecté
   getTeachingCourses(): Observable<any> {
     return this.http.get(`${this.apiUrl}/professor/courses`);
   }
-
-  // Obtenir tous les cours
   getAllCourses(): Observable<any> {
     return this.http.get(`${this.getAllCoursesUrl}`);
   }
-
-  // Mettre à jour les informations d'un utilisateur
   updateUser(userId: number, userData: any): Observable<any> {
     return this.http.put(`${this.updateUserUrl}/${userId}`, userData);
   }
-
-  // Obtenir les détails de l'utilisateur actuel par ID
   getCurrentUser(userId: number): Observable<any> {
     return this.http.get(`${this.getCurrentUserUrl}/${userId}`);
+  }
+  getCoursesByTeacher(teacherId: number): Observable<any> {
+    return this.http.get(`${this.getallcourset}/${teacherId}`);
   }
 }

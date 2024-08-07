@@ -29,35 +29,31 @@ export class StudentEnrollmentService {
     return this.http.get(url);
   }
 
-  // Méthode pour obtenir les cours d'un étudiant spécifique
   getCoursesByStudentId(studentId: number): Observable<any> {
     const url = `${this.getbyUser}/${studentId}`;
     return this.http.get(url);
   }
 
-  // Méthode pour obtenir les étudiants inscrits à un cours spécifique
   getEnrolledStudents(courseId: number): Observable<any> {
     const url = `${this.enrolledStudent}/${courseId}`;
     return this.http.get(url);
   }
 
-  // Méthode pour supprimer une inscription d'étudiant à un cours
   deleteEnrollment(id: number): Observable<any> {
     const url = `${this.deleteUrl}/${id}`;
     return this.http.delete(url);
   }
 
-  // Méthode pour obtenir tous les utilisateurs inscrits à un cours spécifique
   getAllUsersForCourse(courseId: number): Observable<any> {
     const url = `${this.GetAllUserFor1course}/${courseId}`;
     return this.http.get(url);
   }
 
   // Méthode pour mettre à jour la note d'un étudiant
-  updateGrade(userId: number, courseId: number, grade: number): Observable<any> {
-    const url = `${this.updateGradeUrl}?userId=${userId}&courseId=${courseId}&grade=${grade}`;
-    return this.http.put(url, {});
-  }
+  // updateGrade(userId: number, courseId: number, grade: number): Observable<any> {
+  //   const url = `${this.updateGradeUrl}?userId=${userId}&courseId=${courseId}&grade=${grade}`;
+  //   return this.http.put(url, {});
+  // }
 
   // Méthode pour mettre à jour les notes des étudiants
   updateGrades(idUsers: number, idCours: number, grade: number): Observable<any> {

@@ -1,0 +1,21 @@
+<!-- Formulaire pour sélectionner un professeur et un cours -->
+<div *ngIf="showProfessorForm" class="container mt-4">
+    <h3>Ajouter un Professeur au Cours</h3>
+    <form [formGroup]="addProfessorForm" (ngSubmit)="confirmAddProfessor()">
+      <div class="mb-3">
+        <label for="professorSelect" class="form-label">Sélectionnez un professeur :</label>
+        <select id="professorSelect" formControlName="selectedProfessorId" class="form-select">
+          <option *ngFor="let user of filteredUsers" [value]="user.id">{{ user.nom }}</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="courseSelect" class="form-label">Sélectionnez un cours :</label>
+        <select id="courseSelect" formControlName="selectedCourseId" class="form-select">
+          <option *ngFor="let course of courses" [value]="course.id">{{ course.Nom }}</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Ajouter Professeur</button>
+      <button type="button" class="btn btn-secondary ms-2" (click)="cancelAddProfessor()">Annuler</button>
+    </form>
+  </div>
+  

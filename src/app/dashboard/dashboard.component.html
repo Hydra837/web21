@@ -1,31 +1,41 @@
 <div class="container mt-5">
-  <h2 class="mb-4">Dashboard</h2>
+  <h2 class="mb-4 text-center">Dashboard</h2>
+
+  <!-- Section pour afficher les informations de l'utilisateur -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h3 class="card-title text-primary">User Information</h3>
+      <p class="card-text"><strong>Name:</strong> {{ userName }}</p>
+      <p class="card-text"><strong>Role:</strong> {{ userRole }}</p>
+      <button class="btn btn-warning" (click)="editUser()">Edit</button>
+    </div>
+  </div>
 
   <!-- Section pour les étudiants -->
-  <div *ngIf="userRole === 'Etudiant'">
-    <h3 class="mb-3">Your Enrolled Courses</h3>
+  <div *ngIf="userRole === 'Etudiant'" class="mb-4">
+    <h3 class="mb-3 text-primary">Your Enrolled Courses</h3>
     <ul class="list-group">
-      <li *ngFor="let course of courses" class="list-group-item">
+      <li *ngFor="let course of courses" class="list-group-item list-group-item-info">
         {{ course.Nom }}
       </li>
     </ul>
   </div>
 
   <!-- Section pour les professeurs -->
-  <div *ngIf="userRole === 'professor'">
-    <h3 class="mb-3">Your Teaching Courses</h3>
+  <div *ngIf="userRole === 'Professeur'" class="mb-4">
+    <h3 class="mb-3 text-success">Your Teaching Courses</h3>
     <ul class="list-group">
-      <li *ngFor="let course of courses" class="list-group-item">
+      <li *ngFor="let course of courses" class="list-group-item list-group-item-success">
         {{ course.Nom }}
       </li>
     </ul>
   </div>
 
   <!-- Section pour les administrateurs -->
-  <div *ngIf="userRole === 'admin'">
-    <h3 class="mb-3">All Courses</h3>
+  <div *ngIf="userRole === 'Admin'" class="mb-4">
+    <h3 class="mb-3 text-danger">All Courses</h3>
     <ul class="list-group">
-      <li *ngFor="let course of courses" class="list-group-item">
+      <li *ngFor="let course of courses" class="list-group-item list-group-item-danger">
         {{ course.Nom }}
       </li>
     </ul>

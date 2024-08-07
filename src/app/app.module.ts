@@ -30,7 +30,7 @@ import { ProfesseurSearchComponent } from './professeur-search/professeur-search
 import { UserSearchComponent } from './user-search/user-search.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { UserSelectionDialogComponent } from './user-selection-dialog/user-selection-dialog.component';
-
+import { EnrollteacherComponent } from './enrollteacher/enrollteacher.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -52,7 +52,8 @@ import { UserSelectionDialogComponent } from './user-selection-dialog/user-selec
     ProfesseurSearchComponent, 
     UserSearchComponent, 
     ConfirmDialogComponent, 
-    UserSelectionDialogComponent
+    UserSelectionDialogComponent,
+    EnrollteacherComponent,
   ],
   imports: [
     BrowserModule,

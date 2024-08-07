@@ -36,16 +36,16 @@
 
 .list-group-item button {
   margin-left: 10px;
-  background-color: #007bff; /* Couleur bleue pour le bouton */
-  border-color: #007bff;
+  background-color: #00ffdd; /* Couleur bleue pour le bouton */
+  border-color: #00eeff;
 }
 
 .list-group-item button:hover {
-  background-color: #0056b3; /* Couleur bleue foncée pour le bouton au survol */
+  background-color: #00b39e; /* Couleur bleue foncée pour le bouton au survol */
 }
 
 .alert-info {
-  background-color: #e2e3e5;
+  background-color: #e3e2e5;
   color: #0c5460;
 }
 

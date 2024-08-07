@@ -29,23 +29,23 @@ export class DashboardComponent implements OnInit {
     this.userRole = user.role;
     this.userName = user.name; // Récupérez le nom de l'utilisateur
 
-    this.loadCourses();
+    this.loadCourses(user.id);
   }
 
-  loadCourses(): void {
+  loadCourses(userId: number): void {
     if (this.userRole === 'Etudiant') {
-      this.getEnrolledCourses();
-    // } else if (this.userRole === 'Professeur') {
-    //   this.getTeachingCourses();
-    // } else if (this.userRole === 'Admin') {
-    //   this.getAllCourses();
+      this.getEnrolledCourses(userId);
+    } else if (this.userRole === 'Professeur') {
+      this.getTeachingCourses(userId);
+    } else if (this.userRole === 'Admin') {
+      this.getAllCourses();
     } else {
       this.errorMessage = 'Role inconnu.';
     }
   }
 
-  getEnrolledCourses(): void {
-    this.dashboardService.getEnrolledCourses(1).pipe(
+  getEnrolledCourses(userId: number): void {
+    this.dashboardService.getEnrolledCourses(userId).pipe(
       catchError(error => {
         this.errorMessage = 'Erreur lors de la récupération des cours inscrits.';
         console.error(error);
@@ -54,8 +54,8 @@ export class DashboardComponent implements OnInit {
     ).subscribe(data => this.courses = data);
   }
 
-  getTeachingCourses(): void {
-    this.dashboardService.getTeachingCourses().pipe(
+  getTeachingCourses(userId: number): void {
+    this.dashboardService.getCoursesByTeacher(userId).pipe(
       catchError(error => {
         this.errorMessage = 'Erreur lors de la récupération des cours enseignés.';
         console.error(error);
@@ -75,8 +75,6 @@ export class DashboardComponent implements OnInit {
   }
 
   editUser(): void {
-    // Logique pour éditer les informations de l'utilisateur
     console.log('Edit user functionality goes here');
-    // Vous pouvez naviguer vers un autre composant pour l'édition ou ouvrir un modal, etc.
   }
 }

@@ -62,6 +62,11 @@
     <i class="fas fa-user-plus me-2"></i>Add User
   </button>
 
+  <!-- Bouton pour afficher le component EnrollTacher -->
+  <button class="btn btn-secondary mb-4" [routerLink]="['enroll-teacher']">
+    <i class="fas fa-chalkboard-teacher me-2"></i>Enroll Teacher
+  </button>
+
   <!-- Formulaire de modification d'utilisateur existant -->
   <div *ngIf="selectedUser" class="card p-4 mb-4 shadow-sm">
     <h2 class="card-title mb-4">Edit User</h2>

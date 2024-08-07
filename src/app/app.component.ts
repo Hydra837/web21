@@ -22,26 +22,4 @@ export class AppComponent implements OnInit {
     // console.table(this.pokemonList)
     //this.GetProducts();
   }
-
-  // selectPokemons(pokeid: string): void {
-  //   const index: Pokemonss | undefined = this.pokemonList.find(pokemon => pokemon.id == +pokeid);
-  //   if (index) {
-  //     console.log(`Vous avez cliqué sur le Pokémon ${index.name}`);
-  //   } else {
-  //     console.log("Le Pokémon que vous avez sélectionné n'existe pas");
-  //   }
-  // }
-
-  // GetProducts(): void {
-  //   this.http.get<Film[]>('https://localhost:7061/api/Film/GetAll')
-  //     .subscribe({
-  //       next: (data: Film[]) => {
-  //         this.filmList = data;
-  //         console.log('Films chargés :', this.filmList);
-  //       },
-  //       error: (error) => {
-  //         console.error('Une erreur est survenue lors du chargement des films :', error);
-  //       }
-  //     });
-  //}
 }

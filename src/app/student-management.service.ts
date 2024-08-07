@@ -8,6 +8,8 @@ import { Observable } from 'rxjs'
 export class StudentManagementService {
 
   private url = "https://localhost:7233/api/StudentManagement";
+  private urlget = "https://localhost:7233/api/StudentEnrollment/GetalluserCourse/2"
+  private pullurl = "https://localhost:7233/api/StudentEnrollment/GetalluserCourse/2"
   constructor(private http: HttpClient) { }
 
   // Méthode pour ajouter un utilisateur à un cours
