@@ -32,7 +32,9 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
 import { UserSelectionDialogComponent } from './user-selection-dialog/user-selection-dialog.component';
 import { EnrollteacherComponent } from './enrollteacher/enrollteacher.component';
 import { LoginComponent } from './login/login.component';
-import { JwtInterceptor, JwtModule } from '@auth0/angular-jwt';  // Importez JwtModule
+import { JwtInterceptor, JwtModule } from '@auth0/angular-jwt';
+import { CourseListComponent } from './course-list/course-list.component';
+import { AddCourseComponent } from './add-course/add-course.component';  // Importez JwtModule
 //import { AuthInterceptor } from './auth.interceptor';  // Importez votre intercepteur d'authentification
 //import { authentication } from './authentication.service';
 export function tokenGetter() {
@@ -61,7 +63,9 @@ export function tokenGetter() {
     ConfirmDialogComponent, 
     UserSelectionDialogComponent,
     EnrollteacherComponent,
-    LoginComponent
+    LoginComponent,
+    CourseListComponent,
+    AddCourseComponent
   ],
   imports: [
     BrowserModule,
