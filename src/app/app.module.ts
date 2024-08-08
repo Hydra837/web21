@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';  // Import HttpClientModule
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';  // Import HttpClientModule
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,6 +31,13 @@ import { UserSearchComponent } from './user-search/user-search.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { UserSelectionDialogComponent } from './user-selection-dialog/user-selection-dialog.component';
 import { EnrollteacherComponent } from './enrollteacher/enrollteacher.component';
+import { LoginComponent } from './login/login.component';
+import { JwtInterceptor, JwtModule } from '@auth0/angular-jwt';  // Importez JwtModule
+//import { AuthInterceptor } from './auth.interceptor';  // Importez votre intercepteur d'authentification
+//import { authentication } from './authentication.service';
+export function tokenGetter() {
+  return sessionStorage.getItem('jwt');
+}
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,6 +61,7 @@ import { EnrollteacherComponent } from './enrollteacher/enrollteacher.component'
     ConfirmDialogComponent, 
     UserSelectionDialogComponent,
     EnrollteacherComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -64,12 +72,20 @@ import { EnrollteacherComponent } from './enrollteacher/enrollteacher.component'
     MatListModule,
     MatDialogModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule, 
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ['localhost:3000'],  // Remplacez par les domaines autorisés pour les requêtes avec JWT
+        disallowedRoutes: ['http://localhost:3000/api/auth/login'],  // Routes pour lesquelles le token ne doit pas être envoyé
+      },
+    }),
   ],
   providers: [
     CourseService,
     UserService,
-    DashboardService
+    DashboardService, 
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

@@ -23,6 +23,7 @@
     "@angular/platform-server": "^18.0.6",
     "@angular/router": "^18.0.6",
     "@angular/ssr": "^18.0.7",
+    "@auth0/angular-jwt": "^5.2.0",
     "@ng-bootstrap/ng-bootstrap": "^17.0.0",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
