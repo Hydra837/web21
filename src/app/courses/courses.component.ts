@@ -17,21 +17,21 @@ export class CoursesComponent implements OnInit {
   courses: Course[] = [];
   users: User[] = [];
   filteredUsers: User[] = [];
-  enrolledUsers: any[] = []; // Stocke les utilisateurs inscrits à un cours
-  selectedCourseForProfessor: number | null = null;
-  selectedCourse: Course | null = null; // Variable pour stocker le cours sélectionné pour la mise à jour
-  selectedCourseWithUsers: Course | null = null; // Variable pour stocker le cours sélectionné pour afficher les utilisateurs
+  enrolledUsers: any[] = [];
+  selectedCourse: Course | null = null;
+  selectedCourseWithUsers: Course | null = null;
+  selectedCourseIdForAssignments: number | null = null;
   addProfessorForm: FormGroup;
-  addCourseForm: FormGroup; // Formulaire pour ajouter un cours
+  addCourseForm: FormGroup;
   updateCourseForm: FormGroup;
-  showAddCourseFormFlag: boolean = false; // Renommé pour éviter les conflits
+  showAddCourseFormFlag: boolean = false;
   showProfessorForm: boolean = false;
   errorMessage: string = '';
 
   constructor(
-    private courseService: CourseService, 
+    private courseService: CourseService,
     private userService: UserService,
-    private courseManagementService: CourseManagementService, 
+    private courseManagementService: CourseManagementService,
     private studentEnrollmentService: StudentEnrollmentService,
     private fb: FormBuilder
   ) {
@@ -87,7 +87,7 @@ export class CoursesComponent implements OnInit {
     ).subscribe((data) => {
       if (data) {
         this.users = data;
-        this.filterUsers(); // Filtrer les utilisateurs après chargement
+        this.filterUsers();
       }
     });
   }
@@ -125,21 +125,18 @@ export class CoursesComponent implements OnInit {
   }
 
   selectCourseForAddingProfessor(courseId: number): void {
-    this.selectedCourseForProfessor = courseId;
     this.addProfessorForm.patchValue({ selectedCourseId: courseId });
   }
 
   confirmAddProfessor(): void {
     if (this.addProfessorForm.valid) {
       const { selectedProfessorId, selectedCourseId } = this.addProfessorForm.value;
-
       if (selectedProfessorId && selectedCourseId) {
         this.courseManagementService.updateTeacher(selectedProfessorId, selectedCourseId).pipe(
           catchError(this.handleError('ajout du professeur'))
         ).subscribe(() => {
           this.loadCourses();
           this.addProfessorForm.reset();
-          this.selectedCourseForProfessor = null;
           this.showProfessorForm = false;
         });
       } else {
@@ -175,7 +172,7 @@ export class CoursesComponent implements OnInit {
   saveUpdatedCourse(): void {
     if (this.updateCourseForm.valid) {
       const updatedCourse = this.updateCourseForm.value as Course;
-      if (updatedCourse.id) { // Assurez-vous que l'ID est défini
+      if (updatedCourse.id) {
         this.courseService.updateCourse(updatedCourse.id.toString(), updatedCourse).pipe(
           catchError(this.handleError('mise à jour du cours'))
         ).subscribe(() => {
@@ -190,8 +187,6 @@ export class CoursesComponent implements OnInit {
       this.errorMessage = 'Le formulaire de mise à jour contient des erreurs.';
     }
   }
-  
-  
 
   cancelUpdate(): void {
     this.updateCourseForm.reset();
@@ -232,8 +227,8 @@ export class CoursesComponent implements OnInit {
       this.studentEnrollmentService.deleteEnrollment(userId).pipe(
         catchError(this.handleError('suppression de l\'inscription'))
       ).subscribe(() => {
-        this.loadCourses(); // Recharger les cours après suppression
-        this.showEnrolledUsers(this.selectedCourseWithUsers?.id || 0); // Recharger les utilisateurs pour le cours sélectionné
+        this.loadCourses();
+        this.showEnrolledUsers(this.selectedCourseWithUsers?.id || 0);
       });
     }
   }
@@ -243,8 +238,8 @@ export class CoursesComponent implements OnInit {
       this.studentEnrollmentService.updateGrades(userId, idCours, grade).pipe(
         catchError(this.handleError('mise à jour de la note'))
       ).subscribe(() => {
-        this.loadCourses(); // Recharger les cours après mise à jour
-        this.showEnrolledUsers(this.selectedCourseWithUsers?.id || 0); // Recharger les utilisateurs pour le cours sélectionné
+        this.loadCourses();
+        this.showEnrolledUsers(this.selectedCourseWithUsers?.id || 0);
       });
     } else {
       this.errorMessage = 'Veuillez entrer une note valide.';
@@ -255,52 +250,8 @@ export class CoursesComponent implements OnInit {
     this.selectedCourseWithUsers = null;
     this.enrolledUsers = [];
   }
-  private updateTeacher(teacherId: number, courseId: number): void {
-    this.courseManagementService.updateTeacher(teacherId, courseId).subscribe({
-      next: () => {
-        this.loadCourses();
-        this.addProfessorForm.reset();
-        this.selectedCourseForProfessor = null;
-        this.showProfessorForm = false;
-      },
-      error: () => {
-        this.errorMessage = 'Échec de l\'ajout du professeur.';
-      }
-    });
+
+  showAssignments(courseId: number): void {
+    this.selectedCourseIdForAssignments = courseId;
   }
 }
-
-  // Méthodes pour d'autres actions comme updateCourse, deleteCourse, etc.
-
-  // hasTeacher(courseId: number): void {
-  //   this.courseService.getCourseById(courseId).pipe(
-  //     catchError(this.handleError('vérification de l\'enseignant pour le cours'))
-  //   ).subscribe(course => {
-  //     if (course) {
-  //       const hasTeacher = course.professeurId !== null;
-  //       console.log(`Le cours ${courseId} a-t-il un enseignant ? ${hasTeacher}`);
-  //       return hasTeacher;
-  //     } else {
-  //       return false;
-  //     }
-  //   });
-  // }
-
-  
-  // Vérifie si un cours a un enseignant assigné en utilisant les données du composant
-//   hasTeacher(courseId: number): boolean {
-//     const course = this.courses.find(cu => cu.courseId === courseId);
-//     return course ? course.teacherId !== null : false;
-//   }
-// }
-
-
-  // deleteCourse(id: number | undefined): void {
-  //   if (id !== undefined) {
-  //     this.router.navigate(['/delete-user-admin', id.toString()]);
-  //   } else {
-  //     this.errorMessage = 'ID du cours est introuvable.';
-  //   }
- // }
-
-

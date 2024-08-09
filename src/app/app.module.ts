@@ -34,7 +34,9 @@ import { EnrollteacherComponent } from './enrollteacher/enrollteacher.component'
 import { LoginComponent } from './login/login.component';
 import { JwtInterceptor, JwtModule } from '@auth0/angular-jwt';
 import { CourseListComponent } from './course-list/course-list.component';
-import { AddCourseComponent } from './add-course/add-course.component';  // Importez JwtModule
+import { AddCourseComponent } from './add-course/add-course.component';
+import { AssignementsComponent } from './assignements/assignements.component';  // Importez JwtModule
+import { AssignementsService } from './assignements.service';
 //import { AuthInterceptor } from './auth.interceptor';  // Importez votre intercepteur d'authentification
 //import { authentication } from './authentication.service';
 export function tokenGetter() {
@@ -65,7 +67,8 @@ export function tokenGetter() {
     EnrollteacherComponent,
     LoginComponent,
     CourseListComponent,
-    AddCourseComponent
+    AddCourseComponent,
+    AssignementsComponent
   ],
   imports: [
     BrowserModule,
@@ -89,6 +92,7 @@ export function tokenGetter() {
     CourseService,
     UserService,
     DashboardService, 
+    AssignementsService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

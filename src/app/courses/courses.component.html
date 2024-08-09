@@ -32,6 +32,7 @@
             <button class="btn btn-warning btn-sm me-1" (click)="updateCourse(course.id!)">Modifier</button>
             <button class="btn btn-danger btn-sm me-1" (click)="deleteCourse(course.id!)">Supprimer</button>
             <button class="btn btn-info btn-sm" (click)="showEnrolledUsers(course.id!)">Afficher utilisateurs inscrits</button>
+            <button class="btn btn-primary btn-sm ms-2" (click)="showAssignments(course.id!)">Voir Assignements</button>
           </td>
         </tr>
       </tbody>
@@ -71,6 +72,7 @@
     </form>
   </div>
 </div>
+
 <!-- Formulaire pour sélectionner un professeur et un cours -->
 <div *ngIf="showProfessorForm" class="container mt-4">
   <h3>Ajouter un Professeur au Cours</h3>
@@ -155,3 +157,6 @@
     <button class="btn btn-secondary" (click)="cancelShowEnrolledUsers()">Annuler</button>
   </div>
 </div>
+
+<!-- Composant Assignements affiché conditionnellement -->
+<app-assignements *ngIf="selectedCourseIdForAssignments" [courseId]="selectedCourseIdForAssignments"></app-assignements>

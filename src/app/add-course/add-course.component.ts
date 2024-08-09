@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CourseService } from '../course.service'; // Assurez-vous que le chemin est correct
-import { Course } from '../course.model'; // Assurez-vous que le modèle Course est bien importé
+import { CourseService } from '../services/course.service'; // Assurez-vous que le chemin est correct
+import { Course } from '../Models/courseModel'; // Assurez-vous que le modèle Course est bien importé
 
 @Component({
   selector: 'app-add-course',
