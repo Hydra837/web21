@@ -2,8 +2,10 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { catchError, of } from 'rxjs';
-import { AssignementsService } from '../assignements.service'; // Assurez-vous que le chemin est correct
-import { AssignementsDTO } from '../Models/assignementsModel'; // Assurez-vous que le chemin est correct
+import { AssignementsService } from '../assignements.service';
+import { AssignementsDTO } from '../Models/assignementsModel';
+import { GradeService } from '../grade.service'; // Assurez-vous que le chemin est correct
+import { Grade } from '../Models/GradeModel'; // Assurez-vous que le chemin est correct
 
 @Component({
   selector: 'app-assignements',
@@ -11,12 +13,14 @@ import { AssignementsDTO } from '../Models/assignementsModel'; // Assurez-vous q
   styleUrls: ['./assignements.component.css']
 })
 export class AssignementsComponent implements OnInit {
-  @Input() courseId: number | null = null; // Utilisez @Input pour recevoir courseId
+  @Input() courseId: number | null = null;
 
   assignments: AssignementsDTO[] = [];
   selectedAssignment: AssignementsDTO | null = null;
+  selectedAssignmentId: number | null = null; // Ajouté pour gérer l'ID de l'assignement sélectionné
   showAddAssignmentForm = false;
   showEditAssignmentForm = false;
+  showGradesForAssignment = false; // Ajouté pour afficher les grades
   addAssignmentForm: FormGroup;
   editAssignmentForm: FormGroup;
   errorMessage = '';
@@ -24,17 +28,18 @@ export class AssignementsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private fb: FormBuilder,
-    private assignementsService: AssignementsService
+    private assignementsService: AssignementsService,
+    private gradeService: GradeService // Injection du service Grade
   ) {
     this.addAssignmentForm = this.fb.group({
       description: ['', Validators.required],
-      isAvailable: [false]
+      isAvailable: [true]
     });
 
     this.editAssignmentForm = this.fb.group({
       id: [''],
       description: ['', Validators.required],
-      isAvailable: [false]
+      isAvailable: [true]
     });
   }
 
@@ -72,33 +77,24 @@ export class AssignementsComponent implements OnInit {
   }
 
   submitNewAssignment(): void {
-    // Vérifiez que le formulaire est valide et que courseId est bien défini
     if (this.addAssignmentForm.valid && this.courseId) {
-      
-      // Créer un nouvel objet d'assignement en incluant courseId
       const newAssignment: AssignementsDTO = {
-        id: 0, // Id initial pour une nouvelle entrée
-        courseId: this.courseId, // Assurez-vous que courseId est bien passé ici
-        ...this.addAssignmentForm.value // Inclure les autres valeurs du formulaire
+        id: 0,
+        courseId: this.courseId,
+        ...this.addAssignmentForm.value
       };
-  
-      // Appeler le service pour créer un nouvel assignement
+
       this.assignementsService.create(newAssignment).pipe(
-        catchError(this.handleError('ajout de l\'assignement')) // Gérer les erreurs
+        catchError(this.handleError('ajout de l\'assignement'))
       ).subscribe(() => {
-        // Recharger les assignements après la création
-        this.loadAssignments(this.courseId!); // Utiliser this.courseId car vous avez déjà vérifié sa présence
-  
-        // Réinitialiser le formulaire et masquer le formulaire d'ajout
+        this.loadAssignments(this.courseId!);
         this.addAssignmentForm.reset();
         this.showAddAssignmentForm = false;
       });
     } else {
-      // Afficher un message d'erreur si le formulaire contient des erreurs
       this.errorMessage = 'Le formulaire contient des erreurs.';
     }
   }
-  
 
   cancelAdd(): void {
     this.showAddAssignmentForm = false;
@@ -108,7 +104,7 @@ export class AssignementsComponent implements OnInit {
   editAssignment(assignment: AssignementsDTO): void {
     this.selectedAssignment = assignment;
     this.editAssignmentForm.setValue({
-      id: assignment.id, 
+      id: assignment.id,
       description: assignment.description,
       isAvailable: assignment.isAvailable ?? false
     });
@@ -119,7 +115,7 @@ export class AssignementsComponent implements OnInit {
     if (this.editAssignmentForm.valid) {
       const updatedAssignment: AssignementsDTO = {
         ...this.editAssignmentForm.value,
-        courseId: this.selectedAssignment?.coursId || 0 // Assurez-vous que courseId est défini
+        courseId: this.selectedAssignment?.coursId || 0
       };
 
       this.assignementsService.update(updatedAssignment.id, updatedAssignment).pipe(
@@ -155,5 +151,19 @@ export class AssignementsComponent implements OnInit {
         this.loadAssignments(this.courseId!);
       });
     }
+  }
+
+  showGrades(assignmentId: number): void {
+    this.selectedAssignmentId = assignmentId;
+    this.showGradesForAssignment = true;
+    this.loadGradesForAssignment(assignmentId); // Charger les grades pour l'assignement sélectionné
+  }
+
+  private loadGradesForAssignment(assignmentId: number): void {
+    this.gradeService.getGradesByAssignment(assignmentId).pipe(
+      catchError(this.handleError('chargement des grades'))
+    ).subscribe(data => {
+      // Mettez à jour les grades et les utilisateurs inscrits si nécessaire
+    });
   }
 }

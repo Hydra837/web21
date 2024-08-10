@@ -1,0 +1,12 @@
+<div *ngIf="enrolledUsers.length > 0">
+    <h3>Utilisateurs inscrits au cours</h3>
+    <ul>
+      <li *ngFor="let user of enrolledUsers">
+        {{ user.nom }} {{user.prenom}} ({{ user.id }})
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="errorMessage">
+    <p class="text-danger">{{ errorMessage }}</p>
+  </div>
+  

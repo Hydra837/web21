@@ -3,6 +3,7 @@ import { User } from "../Models/User";
 import { Course } from "../Models/courseModel";
 //import { Grade } from "../models/grade.model";
 import { Grade } from "../Models/GradeModel";
+import { IterableDiffers } from "@angular/core";
 
 // Map API data to GetAllCoursForEachUsers
 export function mapToUserCourseDetailsData(data: any): GetAllCoursForEachUsers {
@@ -47,10 +48,10 @@ export function mapUser(data: any): User {
 // Map API data to Grade model
 export function mapToGradeModel(item: any): Grade {
     return {
-        id: item.id,
-        studentId: item.studentId,
-        courseId: item.courseId,
-        gradeValue: item.gradeValue,
+        id: item.i ,
+        grade: item.grade,
+        assignementsId: item.assignementsId,
+        userId: item.userId
       //  dateRecorded: new Date(item.dateRecorded)
     };
 }
@@ -59,9 +60,10 @@ export function mapToGradeModel(item: any): Grade {
 export function mapToGradeDTO(grade: Grade): Grade {
     return {
         id: grade.id,
-        studentId: grade.studentId,
-        courseId: grade.courseId,
-        gradeValue: grade.gradeValue,
+        //studentId: grade.studentId,
+        userId: grade.userId,
+        grade: grade.grade,
+        assignementsId: grade.assignementsId
        // dateRecorded: grade.dateRecorded.toISOString() // Convert Date to string
     };
 }

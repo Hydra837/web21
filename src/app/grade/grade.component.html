@@ -1,1 +1,77 @@
-<p>grade works!</p>
+<!-- Liste des notes -->
+<div class="card grades-list shadow">
+    <div class="card-header bg-success text-white">
+      <h2>Notes pour l'Assignement {{ assignementsId }}</h2>
+      <button class="btn btn-primary" (click)="showAddForm()">Ajouter une Note</button>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>ID</th>
+            <th>Note</th>
+            <th>Utilisateur</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let grade of grades">
+            <td>{{ grade.id }}</td>
+            <td>{{ grade.grade }}</td>
+            <td>{{ getUserName(grade.userId) }}</td>
+            <td>
+              <button class="btn btn-warning btn-sm me-1" (click)="editGrade(grade)">Modifier</button>
+              <button class="btn btn-danger btn-sm" (click)="deleteGrade(grade.id)">Supprimer</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Formulaire pour ajouter une nouvelle note -->
+  <div *ngIf="showAddGradeForm" class="card mb-4 add-grade-form shadow">
+    <div class="card-header bg-primary text-white">
+      <h2>Ajouter une Note</h2>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="addGradeForm" (ngSubmit)="submitNewGrade()">
+        <div class="mb-3">
+          <label for="grade" class="form-label">Note:</label>
+          <input id="grade" type="number" class="form-control" formControlName="grade" required />
+        </div>
+        <div class="mb-3">
+          <label for="userId" class="form-label">Utilisateur:</label>
+          <select id="userId" class="form-control" formControlName="userId" required>
+            <option *ngFor="let user of enrolledUsers" [value]="user.id">{{ user.nom }}</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+        <button type="button" class="btn btn-secondary ms-2" (click)="cancelAdd()">Annuler</button>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Formulaire pour modifier une note -->
+  <div *ngIf="showEditGradeForm && selectedGrade" class="card mb-4 edit-grade-form shadow">
+    <div class="card-header bg-warning text-white">
+      <h2>Modifier la Note</h2>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="editGradeForm" (ngSubmit)="saveUpdatedGrade()">
+        <div class="mb-3">
+          <label for="editGrade" class="form-label">Note:</label>
+          <input id="editGrade" type="number" class="form-control" formControlName="grade" required />
+        </div>
+        <div class="mb-3">
+          <label for="editUserId" class="form-label">Utilisateur:</label>
+          <select id="editUserId" class="form-control" formControlName="userId" required>
+            <option *ngFor="let user of enrolledUsers" [value]="user.id">{{ user.nom }}</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-warning">Mettre à jour</button>
+        <button type="button" class="btn btn-secondary ms-2" (click)="cancelEdit()">Annuler</button>
+      </form>
+    </div>
+  </div>
+  
