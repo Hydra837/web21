@@ -11,8 +11,9 @@ import { Course } from '../Models/courseModel';
 })
 export class CourseCatalogComponent implements OnInit {
   courses: Course[] = [];
+  unenrolledCourses: Course[] = []; // Pour stocker les cours non inscrits
   errorMessage: string = '';
-  userId: number = 1; // This should be dynamically obtained in a real scenario
+  userId: number = 1; // ID de l'utilisateur
 
   constructor(
     private courseService: CourseService,
@@ -21,7 +22,8 @@ export class CourseCatalogComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadCourses();
+   // this.loadCourses();
+    this.loadUnenrolledCourses(); // Charger les cours non inscrits
   }
 
   loadCourses(): void {
@@ -39,11 +41,27 @@ export class CourseCatalogComponent implements OnInit {
     });
   }
 
+  loadUnenrolledCourses(): void {
+    this.courseService.getUnenrolledCourses(this.userId).subscribe({
+      next: (data) => {
+        this.unenrolledCourses = data;
+      },
+      error: (error) => {
+        this.errorMessage = 'Erreur lors du chargement des cours non inscrits.';
+        console.error('Erreur lors du chargement des cours non inscrits:', error);
+      },
+      complete: () => {
+        console.log('Chargement des cours non inscrits terminé');
+      }
+    });
+  }
+
   enroll(courseId: number | undefined): void {
     if (courseId !== undefined) {
       this.enrollmentService.enrollStudentCourse(courseId, this.userId).subscribe({
         next: () => {
           alert('Inscription réussie !');
+          this.loadUnenrolledCourses(); // Recharger les cours non inscrits après inscription
         },
         error: (error) => {
           this.errorMessage = 'Erreur lors de l\'inscription au cours.';

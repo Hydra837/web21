@@ -11,16 +11,18 @@ import { mapUser } from './Outils/mapper'; // Assurez-vous que le chemin est cor
 export class UserService {
   private apiUrl = 'https://localhost:7233/api/Users'; // Base URL pour l'API des utilisateurs
   private usersUrl = 'https://localhost:7233/api/Users/GetAll';
+  private getRoleUrl = 'https://localhost:7233/api/Users/GetUserRole'; // URL pour obtenir le rôle d'un utilisateur
 
   constructor(private http: HttpClient) { }
 
   // Récupérer tous les utilisateurs
   getUsers(): Observable<User[]> {
     return this.http.get<any[]>(this.usersUrl).pipe(
-      map(data => data.map(user => mapUser(user))), // Use the mapper here
+      map(data => data.map(user => mapUser(user))), // Utiliser le mapper ici
       catchError(this.handleError<User[]>('getUsers', []))
     );
   }
+
   // Récupérer un utilisateur par ID
   getUserById(id: number): Observable<User> {
     return this.http.get<any>(`${this.apiUrl}/GetById/${id}`).pipe(
@@ -58,16 +60,26 @@ export class UserService {
     );
   }
 
+  // Récupérer le rôle d'un utilisateur spécifique
+  getUserRole(userId: number): Observable<string> {
+    return this.http.get<string>(`${this.getRoleUrl}/${userId}`).pipe(
+      catchError(this.handleError<string>('getUserRole', 'Unknown'))
+    );
+  }
+
+  // Récupérer les utilisateurs par rôle
+  getUsersByRole(role: string): Observable<User[]> {
+    return this.getUsers().pipe(
+      map(users => users.filter(user => user.role === role)),
+      catchError(this.handleError<User[]>('getUsersByRole', []))
+    );
+  }
+
   // Gestion des erreurs
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(`${operation} failed: ${error.message}`);
       return of(result as T);
     };
-  }
-  getUsersByRole(role: string): Observable<User[]> {
-    return this.getUsers().pipe(
-      map(users => users.filter(user => user.role === role))
-    );
   }
 }

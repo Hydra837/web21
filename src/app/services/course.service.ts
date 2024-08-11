@@ -15,7 +15,8 @@ export class CourseService {
   private createCourseUrl = `${this.apiUrl}/Cours`;
   private availableCoursesUrl = `${this.apiUrl}/available`;
   private enrollCourseUrl = 'https://localhost:7233/api/StudentEnrollment/Insert?studentId=1&courseId={{{id}}}';
-  private apiUpdate = 'https://localhost:7233/api/Cours/update'
+  private apiUpdate = 'https://localhost:7233/api/Cours/update';
+  private getUnenrolledCoursesUrl = 'https://localhost:7233/api/Cours/UnenrolledCourses'; // Nouvelle URL
 
   constructor(private http: HttpClient) {}
 
@@ -61,6 +62,13 @@ export class CourseService {
   getAllCoursesForEachUsers(): Observable<GetAllCoursForEachUsers[]> {
     return this.http.get<GetAllCoursForEachUsers[]>(this.apiCoursesForUsers).pipe(
       map(response => response.map(data => this.mapToGetAllCoursForEachUsers(data))),
+      catchError(this.handleError)
+    );
+  }
+
+  getUnenrolledCourses(studentId: number): Observable<Course[]> {
+    return this.http.get<Course[]>(`${this.getUnenrolledCoursesUrl}?studentId=${studentId}`).pipe(
+      map(data => data.map(item => this.mapToCourseModel(item))),
       catchError(this.handleError)
     );
   }

@@ -39,6 +39,8 @@ import { AssignementsComponent } from './assignements/assignements.component';  
 import { AssignementsService } from './assignements.service';
 import { GradeService } from './grade.service';
 import { EnrolledUsersComponent } from './enrolled-users/enrolled-users.component';
+import { EnrolledcourseComponent } from './enrolledcourse/enrolledcourse.component';
+import { EnrollStudentComponent } from './enroll-student/enroll-student.component';
 //import { AuthInterceptor } from './auth.interceptor';  // Importez votre intercepteur d'authentification
 //import { authentication } from './authentication.service';
 export function tokenGetter() {
@@ -71,7 +73,9 @@ export function tokenGetter() {
     CourseListComponent,
     AddCourseComponent,
     AssignementsComponent,
-    EnrolledUsersComponent
+    EnrolledUsersComponent,
+    EnrolledcourseComponent,
+    EnrollStudentComponent
   ],
   imports: [
     BrowserModule,
@@ -99,6 +103,7 @@ export function tokenGetter() {
     GradeService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+ // entryComponents: [EnrollStudentComponent]
 })
 export class AppModule { }

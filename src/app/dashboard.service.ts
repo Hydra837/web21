@@ -34,5 +34,8 @@ export class DashboardService {
   }
   getCoursesByTeacher(teacherId: number): Observable<any> {
     return this.http.get(`${this.getallcourset}/${teacherId}`);
+    
   }
+
+  
 }

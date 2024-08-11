@@ -6,6 +6,7 @@ import { UserFORM } from '../Models/User';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { StudentManagementService } from '../student-management.service'; // Import du service
 import { UserSelectionDialogComponent } from '../user-selection-dialog/user-selection-dialog.component'; // Import du dialogue
+import { EnrollStudentComponent } from '../enroll-student/enroll-student.component'; // Import du composant EnrollStudent
 
 @Component({
   selector: 'app-student-management',
@@ -75,7 +76,7 @@ export class StudentManagementComponent implements OnInit {
       mail: '',
       pseudo: ''
     };
-    this.selectedUser = null; // Réinitialiser l'utilisateur sélectionné
+    this.selectedUser = null; 
   }
 
   saveNewUser(): void {
@@ -83,7 +84,7 @@ export class StudentManagementComponent implements OnInit {
       this.userService.addUser(this.userForm).subscribe({
         next: () => {
           this.loadUsers();
-          this.userForm = null; // Réinitialiser le formulaire après l'ajout
+          this.userForm = null; 
         },
         error: (err: any) => this.errorMessage = 'Erreur lors de la création de l’utilisateur.'
       });
@@ -123,6 +124,20 @@ export class StudentManagementComponent implements OnInit {
         console.log(`Utilisateur ${userId} ajouté au cours ${courseId} avec succès.`);
       },
       error: (err: any) => this.errorMessage = `Erreur lors de l'ajout de l'utilisateur au cours: ${err.message}`
+    });
+  }
+
+  // Ouvrir le composant EnrollStudentComponent
+  openEnrollStudentDialog(): void {
+    const dialogRef = this.dialog.open(EnrollStudentComponent, {
+      width: '600px' // Vous pouvez ajuster la largeur du dialogue selon vos besoins
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Gérer les résultats du dialogue si nécessaire
+        console.log('Inscription réussie:', result);
+      }
     });
   }
 }

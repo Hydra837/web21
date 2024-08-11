@@ -1,0 +1,84 @@
+/* Styles pour les cartes */
+.card {
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+/* Styles pour les boutons */
+.btn {
+    border-radius: 0.25rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+/* Styles pour les tableaux */
+.table {
+    margin-bottom: 0;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f2f2f2;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+/* Formulaires */
+.form-label {
+    font-weight: bold;
+}
+
+.form-control, .form-select {
+    border-radius: 0.25rem;
+}
+
+.form-check-input {
+    border-radius: 0.25rem;
+}
+
+/* Espacement */
+.ms-2 {
+    margin-left: 0.5rem;
+}
+
+.me-1 {
+    margin-right: 0.25rem;
+}
+
+/* Affichage conditionnel */
+.card-header h2 {
+    margin-bottom: 0;
+}

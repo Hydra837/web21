@@ -16,7 +16,14 @@
     <h3 class="mb-3 text-primary">Your Enrolled Courses</h3>
     <ul class="list-group">
       <li *ngFor="let course of courses" class="list-group-item list-group-item-info">
-        {{ course.Nom }}
+        {{ course.Nom }} {{ course.description }}
+      </li>
+    </ul>
+
+    <h3 class="mb-3 text-primary mt-4">Courses You Can Enroll In</h3>
+    <ul class="list-group">
+      <li *ngFor="let course of unenrolledCourses" class="list-group-item list-group-item-warning">
+        {{ course.Nom }} {{ course.description }}
       </li>
     </ul>
   </div>

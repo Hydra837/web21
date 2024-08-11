@@ -1,0 +1,34 @@
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Inscrire un Étudiant</h2>
+  
+    <div class="card mb-4">
+      <div class="card-body">
+        <h3 class="card-title text-primary">Sélectionner un Cours et un Étudiant</h3>
+  
+        <div class="form-group">
+          <label for="courseSelect">Sélectionner un Cours</label>
+          <select id="courseSelect" class="form-control" [(ngModel)]="selectedCourseId">
+            <option *ngFor="let course of courses" [value]="course.id">
+              {{ course.Nom }}
+            </option>
+          </select>
+        </div>
+  
+        <div class="form-group mt-3">
+          <label for="studentSelect">Sélectionner un Étudiant</label>
+          <select id="studentSelect" class="form-control" [(ngModel)]="selectedStudentId">
+            <option *ngFor="let student of students" [value]="student.id">
+             {{student.prenom}}  {{ student.nom }} ({{ student.mail }}) {{student.role}}
+            </option>
+          </select>
+        </div>
+  
+        <button class="btn btn-primary mt-3" (click)="enrollUser()">Inscrire</button>
+  
+        <div *ngIf="message" class="mt-3 alert" [ngClass]="{'alert-success': message.includes('réussie'), 'alert-danger': message.includes('Erreur')}">
+          {{ message }}
+        </div>
+      </div>
+    </div>
+  </div>
+  

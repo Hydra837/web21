@@ -40,4 +40,7 @@ export class GradeService {
   getGradesByCourse(courseId: number): Observable<GradeDTO[]> {
     return this.http.get<GradeDTO[]>(`${this.apiUrl}/courses/${courseId}`);
   }
+  getGradesByUserAndCourse(userId: number, courseId: number): Observable<GradeDTO[]> {
+    return this.http.get<GradeDTO[]>(`${this.apiUrl}/user/${userId}/course/${courseId}`);
+  }
 }
