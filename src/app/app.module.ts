@@ -41,6 +41,7 @@ import { GradeService } from './grade.service';
 import { EnrolledUsersComponent } from './enrolled-users/enrolled-users.component';
 import { EnrolledcourseComponent } from './enrolledcourse/enrolledcourse.component';
 import { EnrollStudentComponent } from './enroll-student/enroll-student.component';
+import { AssignementStudentComponent } from './assignement-student/assignement-student.component';
 //import { AuthInterceptor } from './auth.interceptor';  // Importez votre intercepteur d'authentification
 //import { authentication } from './authentication.service';
 export function tokenGetter() {
@@ -75,7 +76,8 @@ export function tokenGetter() {
     AssignementsComponent,
     EnrolledUsersComponent,
     EnrolledcourseComponent,
-    EnrollStudentComponent
+    EnrollStudentComponent,
+    AssignementStudentComponent
   ],
   imports: [
     BrowserModule,

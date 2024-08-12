@@ -11,6 +11,7 @@ import { GetAllCoursForEachUsers } from '../Models/GetAllCoursForEachUsers';
 export class CourseService {
 
   private apiUrl = 'https://localhost:7233/api/Cours'; 
+  private getCoursesByTeacherUrl = `${this.apiUrl}/Cours/cours/professeur`;
   private apiCoursesForUsers = 'https://localhost:7233/api/UsersContoller/GetAllCourseEachCourse';
   private createCourseUrl = `${this.apiUrl}/Cours`;
   private availableCoursesUrl = `${this.apiUrl}/available`;
@@ -67,7 +68,7 @@ export class CourseService {
   }
 
   getUnenrolledCourses(studentId: number): Observable<Course[]> {
-    return this.http.get<Course[]>(`${this.getUnenrolledCoursesUrl}?studentId=${studentId}`).pipe(
+    return this.http.get<Course[]>(`${this.getUnenrolledCoursesUrl}/${studentId}`).pipe(
       map(data => data.map(item => this.mapToCourseModel(item))),
       catchError(this.handleError)
     );
@@ -104,9 +105,18 @@ export class CourseService {
       })
     );
   }
+  getCoursesByTeacher(teacherId: number): Observable<Course[]> {
+    return this.http.get<Course[]>(`${this.getCoursesByTeacherUrl}/${teacherId}`).pipe(
+      catchError(error => {
+        console.error('Erreur lors de la récupération des cours par professeur', error);
+        return throwError(error);
+      })
+    );
+  }
 
   private handleError(error: any): Observable<never> {
     console.error('An error occurred:', error);
     return throwError('Something went wrong; please try again later.');
   }
+
 }

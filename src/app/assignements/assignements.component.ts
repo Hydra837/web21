@@ -1,35 +1,35 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { catchError, of } from 'rxjs';
+import { catchError, of, Subscription } from 'rxjs';
 import { AssignementsService } from '../assignements.service';
-import { AssignementsDTO } from '../Models/assignementsModel';
-import { GradeService } from '../grade.service'; // Assurez-vous que le chemin est correct
-import { Grade } from '../Models/GradeModel'; // Assurez-vous que le chemin est correct
+import { AssignementsDTO, AssignementsFORM } from '../Models/assignementsModel';
+import { GradeService } from '../grade.service';
 
 @Component({
   selector: 'app-assignements',
   templateUrl: './assignements.component.html',
   styleUrls: ['./assignements.component.css']
 })
-export class AssignementsComponent implements OnInit {
+export class AssignementsComponent implements OnInit, OnDestroy {
   @Input() courseId: number | null = null;
 
   assignments: AssignementsDTO[] = [];
   selectedAssignment: AssignementsDTO | null = null;
-  selectedAssignmentId: number | null = null; // Ajouté pour gérer l'ID de l'assignement sélectionné
+  selectedAssignmentId: number | null = null;
   showAddAssignmentForm = false;
   showEditAssignmentForm = false;
-  showGradesForAssignment = false; // Ajouté pour afficher les grades
+  showGradesForAssignment = false;
   addAssignmentForm: FormGroup;
   editAssignmentForm: FormGroup;
   errorMessage = '';
+  private routeSub: Subscription | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private assignementsService: AssignementsService,
-    private gradeService: GradeService // Injection du service Grade
+    private gradeService: GradeService
   ) {
     this.addAssignmentForm = this.fb.group({
       description: ['', Validators.required],
@@ -44,15 +44,22 @@ export class AssignementsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.courseId) {
+    this.routeSub = this.route.paramMap.subscribe(params => {
+      this.courseId = +params.get('courseId')!;
+      if (this.courseId) {
+        this.loadAssignments(this.courseId);
+      }
+    });
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['courseId'] && this.courseId) {
+      this.resetComponent();
       this.loadAssignments(this.courseId);
-    } else {
-      this.route.paramMap.subscribe(params => {
-        this.courseId = +params.get('courseId')!;
-        if (this.courseId) {
-          this.loadAssignments(this.courseId);
-        }
-      });
+    }
+  }
+  ngOnDestroy(): void {
+    if (this.routeSub) {
+      this.routeSub.unsubscribe();
     }
   }
 
@@ -64,7 +71,7 @@ export class AssignementsComponent implements OnInit {
     };
   }
 
-  loadAssignments(courseId: number): void {
+  private loadAssignments(courseId: number): void {
     this.assignementsService.getByCourse(courseId).pipe(
       catchError(this.handleError('chargement des assignements'))
     ).subscribe(data => {
@@ -72,17 +79,19 @@ export class AssignementsComponent implements OnInit {
     });
   }
 
+
   showAddForm(): void {
     this.showAddAssignmentForm = true;
   }
 
   submitNewAssignment(): void {
     if (this.addAssignmentForm.valid && this.courseId) {
-      const newAssignment: AssignementsDTO = {
-        id: 0,
-        courseId: this.courseId,
-        ...this.addAssignmentForm.value
+      const newAssignment: AssignementsFORM = {
+        ...this.addAssignmentForm.value,
+        courseId: this.courseId
       };
+
+      console.log('New assignment data:', newAssignment);
 
       this.assignementsService.create(newAssignment).pipe(
         catchError(this.handleError('ajout de l\'assignement'))
@@ -156,7 +165,7 @@ export class AssignementsComponent implements OnInit {
   showGrades(assignmentId: number): void {
     this.selectedAssignmentId = assignmentId;
     this.showGradesForAssignment = true;
-    this.loadGradesForAssignment(assignmentId); // Charger les grades pour l'assignement sélectionné
+    this.loadGradesForAssignment(assignmentId);
   }
 
   private loadGradesForAssignment(assignmentId: number): void {
@@ -166,4 +175,26 @@ export class AssignementsComponent implements OnInit {
       // Mettez à jour les grades et les utilisateurs inscrits si nécessaire
     });
   }
+
+  // Méthode appelée pour afficher les assignements lors du clic sur un nouveau cours
+  showAssignments(courseId: number): void {
+    this.courseId = courseId;
+    this.resetComponent();
+  }
+
+  // Méthode pour réinitialiser le composant
+  resetComponent(): void {
+    this.assignments = [];
+    this.selectedAssignment = null;
+    this.addAssignmentForm.reset();
+    this.editAssignmentForm.reset();
+    this.showAddAssignmentForm = false;
+    this.showEditAssignmentForm = false;
+    this.showGradesForAssignment = false;
+
+    if (this.courseId) {
+        this.loadAssignments(this.courseId);
+    }
+}
+
 }

@@ -4,6 +4,8 @@ import { Course } from "../Models/courseModel";
 //import { Grade } from "../models/grade.model";
 import { Grade } from "../Models/GradeModel";
 import { IterableDiffers } from "@angular/core";
+import { AssignementsDTO, AssignementsFORM } from "../Models/assignementsModel";
+import { data } from "jquery";
 
 // Map API data to GetAllCoursForEachUsers
 export function mapToUserCourseDetailsData(data: any): GetAllCoursForEachUsers {
@@ -67,3 +69,28 @@ export function mapToGradeDTO(grade: Grade): Grade {
        // dateRecorded: grade.dateRecorded.toISOString() // Convert Date to string
     };
 }
+export function mapToAssignement(data: AssignementsDTO): AssignementsDTO {
+    return {
+        id : data.id,
+      description: data.description,  // Mappe la description
+      coursId: data.coursId,          // Mappe l'identifiant du cours
+      isAvailable: data.isAvailable   // Mappe la disponibilité (optionnel)
+    };
+  }
+  export function mapToAssignementFORM(data: AssignementsFORM): AssignementsFORM {
+    return {
+      
+      description: data.description,  // Mappe la description
+      coursId: data.coursId,          // Mappe l'identifiant du cours
+      isAvailable: data.isAvailable   // Mappe la disponibilité (optionnel)
+    };
+  }
+  export function mapToGrade(data: Grade): Grade {
+    return {
+        id: data.id,
+      userId: data.userId,              // Mappe l'identifiant de l'utilisateur
+      assignementsId: data.assignementsId, // Mappe l'identifiant de l'assignement
+      grade: data.grade,                // Mappe la note
+      // dateRecorded: new Date(data.dateRecorded) // Convertir la chaîne en Date (si applicable)
+    };
+  }

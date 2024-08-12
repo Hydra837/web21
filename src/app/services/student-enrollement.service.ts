@@ -49,6 +49,8 @@ export class StudentEnrollmentService {
     return this.http.get(url);
   }
 
+
+
   // Méthode pour mettre à jour la note d'un étudiant
   // updateGrade(userId: number, courseId: number, grade: number): Observable<any> {
   //   const url = `${this.updateGradeUrl}?userId=${userId}&courseId=${courseId}&grade=${grade}`;

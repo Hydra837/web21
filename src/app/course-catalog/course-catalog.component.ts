@@ -22,7 +22,7 @@ export class CourseCatalogComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-   // this.loadCourses();
+  // this.loadCourses();
     this.loadUnenrolledCourses(); // Charger les cours non inscrits
   }
 
@@ -42,7 +42,7 @@ export class CourseCatalogComponent implements OnInit {
   }
 
   loadUnenrolledCourses(): void {
-    this.courseService.getUnenrolledCourses(this.userId).subscribe({
+    this.courseService.getUnenrolledCourses(1).subscribe({
       next: (data) => {
         this.unenrolledCourses = data;
       },

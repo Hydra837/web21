@@ -10,15 +10,19 @@ export class AuthService {
   constructor() {
     // Simuler un utilisateur avec ID = 1 et rôle 'Étudiant'
     this.setUser({
-      id: 1,
+      id: 2,
       Nom:'Max',
-      role: 'Étudiant',
+      role: 'Admin',
       token: 'fake-jwt-token' // Simuler un token JWT si nécessaire
     });
   }
 
   getUser() {
     return this.user;
+  }
+  getUserId()
+  {
+    return this.user.id 
   }
 
   isAuthenticated(): boolean {

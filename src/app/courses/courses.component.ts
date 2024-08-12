@@ -7,6 +7,8 @@ import { Course } from '../Models/courseModel';
 import { User } from '../Models/User';
 import { CourseManagementService } from '../course-management.service';
 import { StudentEnrollmentService } from '../services/student-enrollement.service';
+import { DashboardService } from '../dashboard.service';
+import { AuthService } from '../auth.service';  // Assurez-vous d'avoir un service d'authentification pour obtenir les infos de l'utilisateur connecté
 
 @Component({
   selector: 'app-courses',
@@ -27,13 +29,17 @@ export class CoursesComponent implements OnInit {
   showAddCourseFormFlag: boolean = false;
   showProfessorForm: boolean = false;
   errorMessage: string = '';
+  userRole: string | null = '';  // Variable pour stocker le rôle de l'utilisateur
+  userId: number | null = null;  // Variable pour stocker l'ID de l'utilisateur
 
   constructor(
     private courseService: CourseService,
     private userService: UserService,
     private courseManagementService: CourseManagementService,
     private studentEnrollmentService: StudentEnrollmentService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private authService: AuthService, 
+    
   ) {
     this.addProfessorForm = this.fb.group({
       selectedProfessorId: ['', Validators.required],
@@ -59,7 +65,14 @@ export class CoursesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadCourses();
+    this.userRole = this.authService.getUserRole(); // Récupérer le rôle de l'utilisateur connecté
+    this.userId = this.authService.getUserId(); // Récupérer l'ID de l'utilisateur connecté
+
+    if (this.userRole === 'Professeur' && this.userId) {
+      this.EnrollTeacherCourse(this.userId);  // Charger les cours du professeur
+    } else {
+      this.loadCourses();  // Charger tous les cours
+    }
     this.loadUsers();
   }
 
@@ -74,6 +87,16 @@ export class CoursesComponent implements OnInit {
   loadCourses(): void {
     this.courseService.getCourses().pipe(
       catchError(this.handleError('chargement des cours'))
+    ).subscribe(data => {
+      if (data) {
+        this.courses = data;
+      }
+    });
+  }
+
+  EnrollTeacherCourse(userId: number): void {
+    this.courseService.getCoursesByTeacher(userId).pipe(
+      catchError(this.handleError('chargement des cours du professeur'))
     ).subscribe(data => {
       if (data) {
         this.courses = data;

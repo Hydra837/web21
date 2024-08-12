@@ -1,22 +1,100 @@
-/* styles.css ou un fichier CSS personnalisé de votre choix */
-
+/* Container for the entire course management section */
 .courses-container {
-    background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 10px;
-  }
-  
-  .card-header {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  
-  .table th, .table td {
-    vertical-align: middle;
-  }
-  
-  .error-message {
-    color: red;
-    font-weight: bold;
-  }
-  
+  background-color: #ffffff; /* Background color for a clean look */
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+/* Header of each card (like course name) */
+.card-header {
+  font-size: 1.75rem;
+  font-weight: bold;
+  background-color: #007bff; /* Bootstrap primary color */
+  color: #ffffff; /* White text for contrast */
+  padding: 15px;
+  border-radius: 10px 10px 0 0; /* Rounded corners on top */
+}
+
+/* General table styling for better readability */
+.table {
+  background-color: #ffffff; /* Ensure a clean white background */
+  margin-bottom: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Header cells */
+.table th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  padding: 12px;
+}
+
+/* Data cells */
+.table td {
+  vertical-align: middle;
+  padding: 15px;
+  font-size: 1rem;
+}
+
+/* Improved buttons with Bootstrap classes */
+.table .btn {
+  padding: 5px 15px;
+  font-size: 0.875rem;
+  border-radius: 5px;
+}
+
+/* Error message styling */
+.error-message {
+  color: #dc3545; /* Bootstrap danger color */
+  font-weight: bold;
+  padding: 10px;
+  border: 1px solid #dc3545;
+  border-radius: 5px;
+  background-color: #f8d7da; /* Light red background */
+  margin-top: 15px;
+}
+
+/* Add course form styling */
+.add-course-form {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+}
+
+/* Inputs and select fields */
+.add-course-form .form-control {
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  padding: 10px;
+}
+
+/* Buttons styling */
+.add-course-form .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+/* Cancel button */
+.add-course-form .btn-secondary {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  margin-left: 10px;
+}
+
+/* Enhanced table row hover effect */
+.table tbody tr:hover {
+  background-color: #f1f9ff;
+}

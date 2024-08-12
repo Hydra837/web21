@@ -12,6 +12,6 @@ export class NavbarComponent implements OnInit {
   constructor(private authService: AuthenticationService) { }
 
   ngOnInit(): void {
-    this.userRole = this.authService.getUserRole(); // Assurez-vous que cette méthode renvoie le rôle de l'utilisateur
+    //this.userRole = this.authService.getUserRole(); // Assurez-vous que cette méthode renvoie le rôle de l'utilisateur
   }
 }
