@@ -43,6 +43,7 @@ import { EnrolledcourseComponent } from './enrolledcourse/enrolledcourse.compone
 import { EnrollStudentComponent } from './enroll-student/enroll-student.component';
 import { AssignementStudentComponent } from './assignement-student/assignement-student.component';
 import { EnrolledCourseTeacherComponent } from './enrolled-course-teacher/enrolled-course-teacher.component';
+import { ManageEnrollementComponent } from './manage-enrollement/manage-enrollement.component';
 //import { AuthInterceptor } from './auth.interceptor';  // Importez votre intercepteur d'authentification
 //import { authentication } from './authentication.service';
 export function tokenGetter() {
@@ -79,7 +80,8 @@ export function tokenGetter() {
     EnrolledcourseComponent,
     EnrollStudentComponent,
     AssignementStudentComponent,
-    EnrolledCourseTeacherComponent
+    EnrolledCourseTeacherComponent,
+    ManageEnrollementComponent
   ],
   imports: [
     BrowserModule,

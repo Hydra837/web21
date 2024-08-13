@@ -8,6 +8,7 @@ import { StudentManagementService } from '../student-management.service'; // Imp
 import { UserSelectionDialogComponent } from '../user-selection-dialog/user-selection-dialog.component'; // Import du dialogue
 import { EnrollStudentComponent } from '../enroll-student/enroll-student.component'; // Import du composant EnrollStudent
 import { EnrolledcourseComponent } from '../enrolledcourse/enrolledcourse.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-student-management',
@@ -26,7 +27,8 @@ export class StudentManagementComponent implements OnInit {
   constructor(
     private userService: UserService,
     private dialog: MatDialog,
-    private studentManagementService: StudentManagementService // Injection du service
+    private studentManagementService: StudentManagementService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -155,5 +157,8 @@ export class StudentManagementComponent implements OnInit {
       width: '600px',
       data: { userId }
     });
+  }
+  viewEnrolledCourses(userId: number): void {
+    this.router.navigate(['/enrolled-courses', userId]);
   }
 }

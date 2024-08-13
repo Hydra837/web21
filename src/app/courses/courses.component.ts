@@ -23,7 +23,7 @@ export class CoursesComponent implements OnInit {
   selectedCourse: Course | null = null;
   selectedCourseWithUsers: Course | null = null;
   selectedCourseIdForAssignments: number | null = null;
-  selectedUser: User | null = null; 
+  
   addProfessorForm: FormGroup;
   addCourseForm: FormGroup;
   updateCourseForm: FormGroup;
@@ -39,7 +39,8 @@ export class CoursesComponent implements OnInit {
     private courseManagementService: CourseManagementService,
     private studentEnrollmentService: StudentEnrollmentService,
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService, 
+    
   ) {
     this.addProfessorForm = this.fb.group({
       selectedProfessorId: ['', Validators.required],
@@ -277,14 +278,5 @@ export class CoursesComponent implements OnInit {
   showAssignments(courseId: number): void {
     this.selectedCourseIdForAssignments = courseId;
   }
-
-  showCoursesForProfessor(professorId: number): void {
-    this.courseService.getCoursesByTeacher(professorId).pipe(
-      catchError(this.handleError('chargement des cours du professeur'))
-    ).subscribe(data => {
-      if (data) {
-        this.courses = data;
-      }
-    });
-  }
+  
 }
