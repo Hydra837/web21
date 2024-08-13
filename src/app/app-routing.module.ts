@@ -12,6 +12,9 @@ import { EnrollStudentComponent } from './enroll-student/enroll-student.componen
 import { RoleGuard } from './shared/roleguard'; // Assurez-vous du chemin correct
 import { authGuard } from './shared/auth.guard'; // Assurez-vous du chemin correct
 import { AssignementStudentComponent } from './assignement-student/assignement-student.component';
+import { EnrollteacherComponent } from './enrollteacher/enrollteacher.component';
+import { EnrolledCourseTeacherComponent } from './enrolled-course-teacher/enrolled-course-teacher.component';
+import { EnrolledcourseComponent } from './enrolledcourse/enrolledcourse.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent }, // canActivate: [authGuard] }, // Protégé par authGuard
@@ -23,7 +26,10 @@ const routes: Routes = [
   { path: 'user-search', component: UserSearchComponent }, //, canActivate: [RoleGuard], data: { role: 'Admin' } }, // Protégé par RoleGuard
   { path: 'course-search', component: CourseSearchComponent },
   { path: 'assignments/:courseId', component: AssignementsComponent },//, canActivate: [RoleGuard], data: { role: 'Professeur' } }, // Protégé par RoleGuard
-  { path: 'enroll-student', component: EnrollStudentComponent },//, canActivate: [RoleGuard], data: { role: 'Admin' } }, // Protégé par RoleGuard
+  { path: 'enroll-student', component: EnrollStudentComponent },
+  { path: 'enrollteacher', component: EnrollteacherComponent },//, canActivate: [RoleGuard], data: { role: 'Admin' } }, // Protégé par RoleGuard
+  { path: 'courses-teacher', component: EnrolledCourseTeacherComponent },
+  { path: 'enrolled-courses', component: EnrolledcourseComponent },
   { path: '', redirectTo: '/course-catalog', pathMatch: 'full' },
   { path: '**', redirectTo: '/course-catalog' } // Route de redirection pour les URL non reconnues
 ];

@@ -7,6 +7,7 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 import { StudentManagementService } from '../student-management.service'; // Import du service
 import { UserSelectionDialogComponent } from '../user-selection-dialog/user-selection-dialog.component'; // Import du dialogue
 import { EnrollStudentComponent } from '../enroll-student/enroll-student.component'; // Import du composant EnrollStudent
+import { EnrolledcourseComponent } from '../enrolledcourse/enrolledcourse.component';
 
 @Component({
   selector: 'app-student-management',
@@ -138,6 +139,21 @@ export class StudentManagementComponent implements OnInit {
         // Gérer les résultats du dialogue si nécessaire
         console.log('Inscription réussie:', result);
       }
+    });
+  }
+
+  // Ouvrir le composant EnrolledcourseComponent pour voir les cours d'un professeur
+  showCoursesForProfessor(userId: number): void {
+    this.dialog.open(EnrolledcourseComponent, {
+      width: '600px',
+      data: { userId } // Passer l'ID de l'utilisateur au composant
+    });
+  }
+
+  showEnrolledCourses(userId: number): void {
+    this.dialog.open(EnrolledcourseComponent, {
+      width: '600px',
+      data: { userId }
     });
   }
 }
