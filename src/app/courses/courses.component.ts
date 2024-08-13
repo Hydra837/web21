@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';  // Import MatDialog for dialog operations
 import { catchError, of } from 'rxjs';
 import { CourseService } from '../services/course.service';
 import { UserService } from '../user.service';
@@ -8,7 +9,8 @@ import { User } from '../Models/User';
 import { CourseManagementService } from '../course-management.service';
 import { StudentEnrollmentService } from '../services/student-enrollement.service';
 import { DashboardService } from '../dashboard.service';
-import { AuthService } from '../auth.service';  // Assurez-vous d'avoir un service d'authentification pour obtenir les infos de l'utilisateur connecté
+import { AuthService } from '../auth.service';  
+import { EnrollStudentComponent } from '../enroll-student/enroll-student.component'; // Import the dialog component
 
 @Component({
   selector: 'app-courses',
@@ -30,8 +32,8 @@ export class CoursesComponent implements OnInit {
   showAddCourseFormFlag: boolean = false;
   showProfessorForm: boolean = false;
   errorMessage: string = '';
-  userRole: string | null = '';  // Variable pour stocker le rôle de l'utilisateur
-  userId: number | null = null;  // Variable pour stocker l'ID de l'utilisateur
+  userRole: string | null = '';  
+  userId: number | null = null;  
 
   constructor(
     private courseService: CourseService,
@@ -39,8 +41,8 @@ export class CoursesComponent implements OnInit {
     private courseManagementService: CourseManagementService,
     private studentEnrollmentService: StudentEnrollmentService,
     private fb: FormBuilder,
-    private authService: AuthService, 
-    
+    private authService: AuthService,
+    private dialog: MatDialog  // Inject MatDialog into the component
   ) {
     this.addProfessorForm = this.fb.group({
       selectedProfessorId: ['', Validators.required],
@@ -66,13 +68,13 @@ export class CoursesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userRole = this.authService.getUserRole(); // Récupérer le rôle de l'utilisateur connecté
-    this.userId = this.authService.getUserId(); // Récupérer l'ID de l'utilisateur connecté
+    this.userRole = this.authService.getUserRole(); 
+    this.userId = this.authService.getUserId(); 
 
     if (this.userRole === 'Professeur' && this.userId) {
-      this.EnrollTeacherCourse(this.userId);  // Charger les cours du professeur
+      this.EnrollTeacherCourse(this.userId); 
     } else {
-      this.loadCourses();  // Charger tous les cours
+      this.loadCourses();  
     }
     this.loadUsers();
   }
@@ -235,7 +237,7 @@ export class CoursesComponent implements OnInit {
   showEnrolledUsers(courseId: number): void {
     this.selectedCourseWithUsers = this.courses.find(c => c.id === courseId) || null;
     if (this.selectedCourseWithUsers) {
-      this.studentEnrollmentService.getAllUserByCourse(courseId).pipe(
+      this.studentEnrollmentService.getAllUsersByCourse(courseId).pipe(
         catchError(this.handleError('chargement des utilisateurs inscrits'))
       ).subscribe(data => {
         if (data) {
@@ -278,5 +280,19 @@ export class CoursesComponent implements OnInit {
   showAssignments(courseId: number): void {
     this.selectedCourseIdForAssignments = courseId;
   }
-  
+
+  // Corrected and integrated openEnrollStudentDialog method
+  openEnrollStudentDialog(): void {
+    const dialogRef = this.dialog.open(EnrollStudentComponent, {
+      width: '600px' // Adjust the dialog width as needed
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Handle the result of the dialog if necessary
+        console.log('Inscription réussie:', result);
+        this.loadCourses(); // Reload courses to reflect new enrollment
+      }
+    });
+  }
 }

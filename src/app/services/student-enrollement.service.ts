@@ -1,65 +1,52 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
+import { Course } from '../Models/courseModel'; // Assurez-vous que le modèle Course est importé
+import { mapToCourseModel } from '../Outils/mapper'; // Importez les fonctions de mappage
 
 @Injectable({
   providedIn: 'root'
 })
 export class StudentEnrollmentService {
-  private baseUrl = 'https://localhost:7233/api/StudentEnrollment/Insert';
-  private getUserUrl = 'https://localhost:7233/api/StudentEnrollment/GetalluserCourse';
-  private getbyUser = 'https://localhost:7233/api/StudentEnrollment/course'; // À compléter avec un ID dynamique
-  private enrolledStudent = 'https://localhost:7233/api/StudentEnrollment/EnrolledStudent'; // À compléter avec un ID dynamique
-  private deleteUrl = 'https://localhost:7233/api/StudentEnrollment'; // À compléter avec un ID dynamique
-  private GetAllUserFor1course = 'https://localhost:7233/api/StudentEnrollment/GetalluserCourse';
-  private updateGradeUrl = 'https://localhost:7233/api/StudentEnrollment/UpdateGrade';
-  private updateGradesUrl = 'https://localhost:7233/api/StudentEnrollment/UpdateGrades';
-
+  private baseUrl = 'https://localhost:7233/api/StudentEnrollment';
+  
   constructor(private http: HttpClient) { }
 
-  // Méthode pour inscrire un étudiant à un cours
-  enrollStudentCourse(idcourse: number, iduser: number): Observable<any> {
-    const url = `${this.baseUrl}?studentId=${iduser}&courseId=${idcourse}`;
+  // Inscrire un étudiant à un cours
+  enrollStudentCourse(courseId: number, studentId: number): Observable<any> {
+    const url = `${this.baseUrl}/Insert?studentId=${studentId}&courseId=${courseId}`;
     return this.http.post(url, {});
   }
 
-  // Méthode pour obtenir tous les utilisateurs inscrits à un cours spécifique
-  getAllUserByCourse(id: number): Observable<any> {
-    const url = `${this.getUserUrl}/${id}`;
+  // Obtenir tous les utilisateurs inscrits à un cours spécifique
+  getAllUsersByCourse(courseId: number): Observable<any> {
+    const url = `${this.baseUrl}/GetAllUsersForCourse/${courseId}`;
     return this.http.get(url);
   }
 
-  getCoursesByStudentId(studentId: number): Observable<any> {
-    const url = `${this.getbyUser}/${studentId}`;
-    return this.http.get(url);
+  // Obtenir les cours d'un étudiant
+  getCoursesByStudentId(studentId: number): Observable<Course[]> {
+    const url = `${this.baseUrl}/GetAllCoursesForStudent/${studentId}`;
+    return this.http.get<any[]>(url).pipe(
+      map(data => data.map(item => mapToCourseModel(item)))
+    );
   }
 
+  // Obtenir les étudiants inscrits à un cours spécifique
   getEnrolledStudents(courseId: number): Observable<any> {
-    const url = `${this.enrolledStudent}/${courseId}`;
+    const url = `${this.baseUrl}/EnrolledStudent/${courseId}`;
     return this.http.get(url);
   }
 
-  deleteEnrollment(id: number): Observable<any> {
-    const url = `${this.deleteUrl}/${id}`;
+  // Supprimer une inscription
+  deleteEnrollment(enrollmentId: number): Observable<any> {
+    const url = `${this.baseUrl}/${enrollmentId}`;
     return this.http.delete(url);
   }
 
-  getAllUsersForCourse(courseId: number): Observable<any> {
-    const url = `${this.GetAllUserFor1course}/${courseId}`;
-    return this.http.get(url);
-  }
-
-
-
-  // Méthode pour mettre à jour la note d'un étudiant
-  // updateGrade(userId: number, courseId: number, grade: number): Observable<any> {
-  //   const url = `${this.updateGradeUrl}?userId=${userId}&courseId=${courseId}&grade=${grade}`;
-  //   return this.http.put(url, {});
-  // }
-
-  // Méthode pour mettre à jour les notes des étudiants
-  updateGrades(idUsers: number, idCours: number, grade: number): Observable<any> {
-    const url = `${this.updateGradesUrl}?idUsers=${idUsers}&idCours=${idCours}&grade=${grade}`;
+  // Mettre à jour les notes des étudiants
+  updateGrades(userId: number, courseId: number, grade: number): Observable<any> {
+    const url = `${this.baseUrl}/UpdateGrades?idUsers=${userId}&idCours=${courseId}&grade=${grade}`;
     return this.http.put(url, {});
   }
 }

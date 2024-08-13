@@ -71,7 +71,7 @@ export class GradeComponent implements OnChanges {
 
   loadEnrolledUsers(): void {
     if (this.courseId !== null) {
-      this.studentEnrollmentService.getAllUserByCourse(this.courseId).pipe(
+      this.studentEnrollmentService.getAllUsersByCourse(this.courseId).pipe(
         catchError(this.handleError('chargement des utilisateurs inscrits'))
       ).subscribe(data => {
         this.enrolledUsers = data;

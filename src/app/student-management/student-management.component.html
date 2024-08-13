@@ -47,12 +47,10 @@
             <button class="btn btn-danger btn-sm me-2" (click)="deleteUser(user.id)">
               <i class="fas fa-trash me-1"></i>Delete
             </button>
-            <!-- Bouton pour voir les cours des professeurs -->
-            <button *ngIf="user.role === 'Professeur'" class="btn btn-info btn-sm me-2" (click)="showCoursesForProfessor(user.id)">
+            <button class="btn btn-info btn-sm me-2" (click)="viewCoursesForUser(user.id)">
               <i class="fas fa-eye me-1"></i>View Courses
             </button>
-            <!-- Bouton pour voir les cours inscrits des étudiants -->
-            <button *ngIf="user.role === 'Etudiant'" class="btn btn-info btn-sm" (click)="viewEnrolledCourses(user.id)">
+            <button class="btn btn-info btn-sm" (click)="viewCoursesForUser(user.id)">
               <i class="fas fa-eye me-1"></i>View Enrolled Courses
             </button>
           </td>
@@ -61,15 +59,15 @@
     </table>
   </div>
 
-  <!-- Bouton pour ajouter un utilisateur -->
-  <button class="btn btn-primary mb-4" (click)="addUser()">
-    <i class="fas fa-user-plus me-2"></i>Add User
-  </button>
-
-  <!-- Bouton pour afficher le component EnrollStudent -->
-  <button class="btn btn-secondary mb-4" [routerLink]="['/enroll-student']">
-    <i class="fas fa-chalkboard-teacher me-2"></i>Enroll Student
-  </button>
+  <!-- Boutons pour ajouter et inscrire des étudiants -->
+  <div class="mb-4">
+    <button class="btn btn-primary me-2" (click)="addUser()">
+      <i class="fas fa-user-plus me-2"></i>Add User
+    </button>
+    <button class="btn btn-secondary" [routerLink]="['/enroll-student']">
+      <i class="fas fa-chalkboard-teacher me-2"></i>Enroll Student
+    </button>
+  </div>
 
   <!-- Formulaire de modification d'utilisateur existant -->
   <div *ngIf="selectedUser" class="card p-4 mb-4 shadow-sm">
@@ -146,4 +144,74 @@
       </button>
     </form>
   </div>
+
+  <!-- Tableau des cours pour un utilisateur -->
+  <div *ngIf="courses && courses.length > 0" class="mt-5">
+    <h2 class="mb-4 text-primary">Courses for User</h2>
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead class="table-primary">
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Date Début</th>
+            <th>Date Fin</th>
+            <th>Disponible</th>
+            <th>Professeur ID</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let course of courses">
+            <td>{{ course.id }}</td>
+            <td>{{ course.Nom }}</td>
+            <td>{{ course.description || 'Pas de description' }}</td>
+            <td>{{ course.dateDebut | date }}</td>
+            <td>{{ course.dateFin | date }}</td>
+            <td>{{ course.available ? 'Oui' : 'Non' }}</td>
+            <td>{{ course.professeurId || 'N/A' }}</td>
+            <td>
+              <button class="btn btn-info btn-sm me-1" (click)="showEnrolledUsers(course.id!)">Voir Utilisateurs</button>
+              <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id!)">Voir Assignements</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div *ngIf="selectedCourseWithUsers" class="card mb-4 enrolled-users-form shadow">
+    <div class="card-header bg-info text-white">
+      <h2>Utilisateurs inscrits pour le cours {{ selectedCourseWithUsers.Nom }}</h2>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Note</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of enrolledUsers">
+            <td>{{ user.nom }} {{ user.prenom }}</td>
+            <td>
+              <input [(ngModel)]="user.grade" type="number" min="0" max="20" class="form-control" style="width: 80px;" />
+            </td>
+            <td>
+              <!-- <button class="btn btn-danger btn-sm me-1" (click)="deleteEnrollment(user.id)">Supprimer Inscription</button>
+              <button class="btn btn-success btn-sm" (click)="updateGrade(user.id, selectedCourseWithUsers?.id || 0, user.grade)">Mettre à jour la Note</button> -->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- <app-assignments *ngIf="selectedCourseIdForAssignments" [courseId]="selectedCourseIdForAssignments"></app-assignments> -->
+  <!-- Bouton pour inscrire un étudiant -->
+  <button class="btn btn-secondary mb-4" (click)="openEnrollStudentDialog()">
+    <i class="fas fa-chalkboard-teacher me-2"></i> Inscrire un Étudiant
+  </button>
 </div>

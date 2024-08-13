@@ -49,7 +49,7 @@ export class CourseDetailComponent implements OnInit {
   }
 
   getAllUsersByCourse(id: number): void {
-    this.studentEnrollmentService.getAllUserByCourse(id).subscribe({
+    this.studentEnrollmentService.getAllUsersByCourse(id).subscribe({
       next: (users: User[]) => {
         console.log(users); // Vérifiez les données reçues
         this.enrolledUsers = users;

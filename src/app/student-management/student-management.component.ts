@@ -4,11 +4,13 @@ import { UserService } from '../user.service';
 import { User } from '../Models/User';
 import { UserFORM } from '../Models/User';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-import { StudentManagementService } from '../student-management.service'; // Import du service
-import { UserSelectionDialogComponent } from '../user-selection-dialog/user-selection-dialog.component'; // Import du dialogue
-import { EnrollStudentComponent } from '../enroll-student/enroll-student.component'; // Import du composant EnrollStudent
-import { EnrolledcourseComponent } from '../enrolledcourse/enrolledcourse.component';
+import { StudentManagementService } from '../student-management.service';
+import { EnrollStudentComponent } from '../enroll-student/enroll-student.component';
 import { Router } from '@angular/router';
+import { CourseService } from '../services/course.service'; 
+import { Course } from '../Models/courseModel';
+import { StudentEnrollmentService } from '../services/student-enrollement.service';
+import { mapToCourseModel } from '../Outils/mapper';
 
 @Component({
   selector: 'app-student-management',
@@ -17,18 +19,23 @@ import { Router } from '@angular/router';
 })
 export class StudentManagementComponent implements OnInit {
   users: User[] = [];
-  filteredUsers: User[] = []; // Utilisé pour les utilisateurs filtrés
-  selectedUser: User | null = null; // Utilisé pour les utilisateurs existants
-  userForm: UserFORM | null = null; // Utilisé pour les nouveaux utilisateurs
+  filteredUsers: User[] = [];
+  enrolledUsers: any[] = [];
+  selectedUser: User | null = null;
+  userForm: UserFORM | null = null;
   errorMessage: string | null = null;
-  selectedRole: string = ''; // Valeur pour filtrer par rôle
-  selectedCourseId: number | null = null; // ID du cours pour ajouter des utilisateurs
+  selectedCourseWithUsers: Course | null = null;
+  selectedCourseIdForAssignments: number | null = null;
+  selectedRole: string = '';
+  courses: Course[] = []; // Liste des cours pour l'utilisateur sélectionné
 
   constructor(
     private userService: UserService,
     private dialog: MatDialog,
     private studentManagementService: StudentManagementService,
-    private router: Router
+    private router: Router,
+    private enr: StudentEnrollmentService,
+    private courseService: CourseService // Injection du service pour les cours
   ) { }
 
   ngOnInit(): void {
@@ -49,13 +56,13 @@ export class StudentManagementComponent implements OnInit {
     if (this.selectedRole) {
       this.filteredUsers = this.users.filter(user => user.role === this.selectedRole);
     } else {
-      this.filteredUsers = this.users; // Afficher tous les utilisateurs si aucun filtre
+      this.filteredUsers = this.users;
     }
   }
 
   selectUser(user: User): void {
-    this.selectedUser = { ...user }; // Copier les données de l'utilisateur existant
-    this.userForm = null; // Réinitialiser le formulaire pour un nouvel utilisateur
+    this.selectedUser = { ...user };
+    this.userForm = null;
   }
 
   saveUser(): void {
@@ -63,7 +70,7 @@ export class StudentManagementComponent implements OnInit {
       this.userService.updateUser(this.selectedUser.id, this.selectedUser).subscribe({
         next: () => {
           this.loadUsers();
-          this.selectedUser = null; // Réinitialiser l'utilisateur sélectionné
+          this.selectedUser = null;
         },
         error: (err: any) => this.errorMessage = 'Erreur lors de la sauvegarde de l’utilisateur.'
       });
@@ -79,7 +86,7 @@ export class StudentManagementComponent implements OnInit {
       mail: '',
       pseudo: ''
     };
-    this.selectedUser = null; 
+    this.selectedUser = null;
   }
 
   saveNewUser(): void {
@@ -87,7 +94,7 @@ export class StudentManagementComponent implements OnInit {
       this.userService.addUser(this.userForm).subscribe({
         next: () => {
           this.loadUsers();
-          this.userForm = null; 
+          this.userForm = null;
         },
         error: (err: any) => this.errorMessage = 'Erreur lors de la création de l’utilisateur.'
       });
@@ -107,58 +114,56 @@ export class StudentManagementComponent implements OnInit {
     });
   }
 
-  // Ouvrir le dialogue pour sélectionner un professeur
-  openUserSelectionDialog(courseId: number): void {
-    const dialogRef = this.dialog.open(UserSelectionDialogComponent, {
-      data: { users: this.filteredUsers, courseId: courseId }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        // Assurez-vous que `result` contient l'ID de l'utilisateur sélectionné et l'ID du cours
-        this.addUserToCourse(result.userId, result.courseId);
-      }
-    });
-  }
-
-  addUserToCourse(userId: number, courseId: number): void {
-    this.studentManagementService.addUserToCourse(userId, courseId).subscribe({
-      next: () => {
-        console.log(`Utilisateur ${userId} ajouté au cours ${courseId} avec succès.`);
-      },
-      error: (err: any) => this.errorMessage = `Erreur lors de l'ajout de l'utilisateur au cours: ${err.message}`
-    });
-  }
-
-  // Ouvrir le composant EnrollStudentComponent
   openEnrollStudentDialog(): void {
     const dialogRef = this.dialog.open(EnrollStudentComponent, {
-      width: '600px' // Vous pouvez ajuster la largeur du dialogue selon vos besoins
+      width: '600px'
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Gérer les résultats du dialogue si nécessaire
         console.log('Inscription réussie:', result);
       }
     });
   }
+  showEnrolledUsers(courseId: number): void {
+    this.selectedCourseWithUsers = this.courses.find(c => c.id === courseId) || null;
+    if (this.selectedCourseWithUsers) {
+      this.enr.getAllUsersByCourse(courseId).pipe(
 
-  // Ouvrir le composant EnrolledcourseComponent pour voir les cours d'un professeur
-  showCoursesForProfessor(userId: number): void {
-    this.dialog.open(EnrolledcourseComponent, {
-      width: '600px',
-      data: { userId } // Passer l'ID de l'utilisateur au composant
+      ).subscribe(data => {
+        if (data) {
+          this.enrolledUsers = data;
+        }
+      });
+    }
+  }
+  showAssignments(courseId: number): void {
+    this.selectedCourseIdForAssignments = courseId;
+  }
+
+  viewCoursesForUser(userId: number): void {
+    this.enr.getCoursesByStudentId(userId).subscribe({
+      next: (data: Course[]) => {
+        this.courses = data; // Pas de transformation des données avec le mapper
+        console.log('Courses for user:', this.courses); // Ligne de débogage pour vérifier les cours récupérés
+        // Gérer l'affichage des cours ou ouvrir un dialogue pour les montrer
+        this.openCoursesDialog(this.courses);
+      },
+      error: (err: any) => {
+        this.errorMessage = 'Erreur lors de la récupération des cours.';
+        console.error(err);
+      }
     });
   }
 
-  showEnrolledCourses(userId: number): void {
-    this.dialog.open(EnrolledcourseComponent, {
+  openCoursesDialog(courses: Course[]): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '600px',
-      data: { userId }
+      data: { courses } // Pass the courses to the dialog
     });
-  }
-  viewEnrolledCourses(userId: number): void {
-    this.router.navigate(['/enrolled-courses', userId]);
+
+    dialogRef.afterClosed().subscribe(result => {
+      // Handle result if necessary
+    });
   }
 }

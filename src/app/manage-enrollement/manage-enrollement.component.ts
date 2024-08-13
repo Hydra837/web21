@@ -28,10 +28,10 @@ export class ManageEnrollementComponent implements OnInit {
       this.courseId = +params.get('courseId')!;
       this.userId = +params.get('userId')!;
 
-      if (!this.courseId || !this.userId) {
-        this.errorMessage = 'ID de cours ou d\'utilisateur non fourni.';
-        return;
-      }
+      // if (!this.courseId || !this.userId) {
+      //   this.errorMessage = 'ID de cours ou d\'utilisateur non fourni.';
+      //   return;
+      // }
 
       this.checkUserRole();
     });

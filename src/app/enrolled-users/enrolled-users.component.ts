@@ -31,11 +31,11 @@ export class EnrolledUsersComponent implements OnChanges {
 
   loadEnrolledUsers(): void {
     if (this.courseId !== null) {
-      this.studentEnrollmentService.getAllUserByCourse(this.courseId).pipe(
+      this.studentEnrollmentService.getCoursesByStudentId(this.courseId).pipe(
         catchError(this.handleError('chargement des utilisateurs inscrits'))
       ).subscribe(data => {
         if (data) {
-          this.enrolledUsers = data;
+         // this.enrolledUsers = data;
         }
       });
     }

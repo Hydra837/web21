@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CourseService } from '../services/course.service';
 import { DashboardService } from '../dashboard.service';
@@ -17,7 +17,7 @@ export class EnrolledcourseComponent implements OnInit {
   @Input() userId: number | undefined;
   courses: Course[] = [];
   errorMessage: string = '';
-  isTeacher: boolean = false; // Indique si l'utilisateur est un enseignant
+  isTeacher: boolean = false; // Indicates if the user is a teacher
 
   constructor(
     private dashboardService: DashboardService,
@@ -28,51 +28,46 @@ export class EnrolledcourseComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('userId') || params.get('teacherId');
-      if (id) {
-        this.userId = +id; // Convertir l'ID en nombre
-        this.checkUserRole(this.userId);
-      } else {
-        this.errorMessage = 'Aucun ID utilisateur fourni.';
-      }
-    });
+ 
+    
   }
 
-  checkUserRole(userId: number): void {
-    this.userService.getUserById(userId).pipe(
-      catchError(error => {
-        this.errorMessage = 'Erreur lors de la récupération des informations de l\'utilisateur.';
-        console.error(error);
-        return of({ role: '' } as User); // Retourne un utilisateur par défaut avec un rôle vide
-      })
-    ).subscribe(user => {
-      this.isTeacher = user.role === 'Professeur'; 
-      this.getCourses();
-    });
-  }
+  // checkUserRole(userId: number): void {
+  //   this.userService.getUserById(userId).pipe(
+  //     catchError(error => {
+  //       this.errorMessage = 'Erreur lors de la récupération des informations de l\'utilisateur.';
+  //       console.error(error);
+  //       return of({ role: '' } as User); // Return a default user with an empty role
+  //     })
+  //   ).subscribe(user => {
+  //     this.isTeacher = user.role === 'Professeur'; 
+  //     this.getCourses();
+  //   });
+  // }
 
   getCourses(): void {
-    if (this.isTeacher && this.userId !== undefined) {
-      this.courseService.getCoursesByTeacher(this.userId).pipe(
-        catchError(error => {
-          this.errorMessage = 'Erreur lors de la récupération des cours du professeur.';
-          console.error(error);
-          return of([]);
-        })
-      ).subscribe(data => {
-        this.courses = data;
-      });
-    } else if (this.userId !== undefined) {
-      this.dashboardService.getEnrolledCourses(this.userId).pipe(
-        catchError(error => {
-          this.errorMessage = 'Erreur lors de la récupération des cours inscrits.';
-          console.error(error);
-          return of([]);
-        })
-      ).subscribe(data => {
-        this.courses = data;
-      });
+    if (this.userId !== undefined) {
+      if (this.isTeacher) {
+        this.courseService.getCoursesByTeacher(this.userId).pipe(
+          catchError(error => {
+            this.errorMessage = 'Erreur lors de la récupération des cours du professeur.';
+            console.error(error);
+            return of([]); // Return an empty array on error
+          })
+        ).subscribe(data => {
+          this.courses = data;
+        });
+      } else {
+        this.dashboardService.getEnrolledCourses(this.userId).pipe(
+          catchError(error => {
+            this.errorMessage = 'Erreur lors de la récupération des cours inscrits.';
+            console.error(error);
+            return of([]); // Return an empty array on error
+          })
+        ).subscribe(data => {
+          this.courses = data;
+        });
+      }
     }
   }
 

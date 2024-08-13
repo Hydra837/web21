@@ -23,7 +23,7 @@ export function mapToUserCourseDetailsData(data: any): GetAllCoursForEachUsers {
 export function mapToCourseModel(item: any): Course {
     return {
         id: item.id,
-        Nom: item.nom,
+        Nom: item.Nom,
         description: item.description,
         dateDebut: new Date(item.dateDebut),
         dateFin: new Date(item.dateFin),
