@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { AssignementsService } from '../assignements.service';
 import { GradeService } from '../grade.service';
 import { CourseService } from '../services/course.service';
-import { Observable, forkJoin } from 'rxjs';
 import { AssignementsDTO } from '../Models/assignementsModel';
 import { GradeDTO } from '../Models/GradeModel';
 import { Course } from '../Models/courseModel';
@@ -29,10 +28,10 @@ export class AssignementStudentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-   // this.userId = +this.route.snapshot.paramMap.get('userId')!;
     this.courseId = +this.route.snapshot.paramMap.get('courseId')!;
     if (this.userId && this.courseId) {
       this.loadAssignments();
+      this.loadCourses();
     } else {
       this.errorMessage = 'ID utilisateur ou cours manquant.';
     }
@@ -58,10 +57,17 @@ export class AssignementStudentComponent implements OnInit {
       });
     }
   }
+
+  loadCourses(): void {
+    this.courseService.getCourses().subscribe(courses => {
+      this.courses = courses;
+    }, error => {
+      this.errorMessage = 'Erreur lors de la récupération des cours.';
+    });
+  
+  }
   getCourseName(courseId: number): string {
     const course = this.courses.find(c => c.id === courseId);
-    return course ? course.Nom : 'Unknown Course';
+    return course ? course.Nom : 'Course Unknown';
   }
 }
-
-

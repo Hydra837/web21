@@ -44,6 +44,7 @@ import { EnrollStudentComponent } from './enroll-student/enroll-student.componen
 import { AssignementStudentComponent } from './assignement-student/assignement-student.component';
 import { EnrolledCourseTeacherComponent } from './enrolled-course-teacher/enrolled-course-teacher.component';
 import { ManageEnrollementComponent } from './manage-enrollement/manage-enrollement.component';
+import { GradeStudentComponent } from './grade-student/grade-student.component';
 //import { AuthInterceptor } from './auth.interceptor';  // Importez votre intercepteur d'authentification
 //import { authentication } from './authentication.service';
 export function tokenGetter() {
@@ -81,7 +82,8 @@ export function tokenGetter() {
     EnrollStudentComponent,
     AssignementStudentComponent,
     EnrolledCourseTeacherComponent,
-    ManageEnrollementComponent
+    ManageEnrollementComponent,
+    GradeStudentComponent
   ],
   imports: [
     BrowserModule,

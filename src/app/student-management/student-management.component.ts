@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
 import { CourseService } from '../services/course.service'; 
 import { Course } from '../Models/courseModel';
 import { StudentEnrollmentService } from '../services/student-enrollement.service';
-import { mapToCourseModel } from '../Outils/mapper';
 
 @Component({
   selector: 'app-student-management',
@@ -125,20 +124,22 @@ export class StudentManagementComponent implements OnInit {
       }
     });
   }
+
   showEnrolledUsers(courseId: number): void {
     this.selectedCourseWithUsers = this.courses.find(c => c.id === courseId) || null;
     if (this.selectedCourseWithUsers) {
-      this.enr.getAllUsersByCourse(courseId).pipe(
-
-      ).subscribe(data => {
-        if (data) {
+      this.enr.getAllUsersByCourse(courseId).subscribe({
+        next: (data) => {
           this.enrolledUsers = data;
-        }
+        },
+        error: (err: any) => this.errorMessage = 'Erreur lors de la récupération des utilisateurs inscrits.'
       });
     }
   }
+
   showAssignments(courseId: number): void {
     this.selectedCourseIdForAssignments = courseId;
+    this.router.navigate(['/assignments', courseId]);
   }
 
   viewCoursesForUser(userId: number): void {

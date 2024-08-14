@@ -1,0 +1,18 @@
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Assignment Grade</h2>
+  
+    <div *ngIf="assignment">
+      <h3>{{ assignment?.description }}</h3>
+     <!-- // <p><strong>Course:</strong> {{ getCourseName(assignment.coursId) }}</p> -->
+    </div>
+  
+    <div *ngIf="grade">
+      <h4>Grade Information</h4>
+      <p><strong>Grade:</strong> {{ grade?.grade }}</p>
+    </div>
+  
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+  </div>
+  
