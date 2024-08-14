@@ -156,7 +156,17 @@ export class StudentManagementComponent implements OnInit {
       }
     });
   }
+  // openCreateUserDialog(): void {
+  //   const dialogRef = this.dialog.open(CreateUserDialogComponent, {
+  //     width: '600px'
+  //   });
 
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     if (result) {
+  //       this.loadUsers(); // Recharger les utilisateurs après l'ajout
+  //     }
+  //   });
+  // }
   openCoursesDialog(courses: Course[]): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '600px',

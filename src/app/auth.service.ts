@@ -1,28 +1,32 @@
-// auth.service.ts
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { mapToLogin } from './Outils/mapper';
+import { Login } from './Models/Login';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly loginUrl = 'https://localhost:7233/api/Authentication/Login';
+  private readonly registerUrl = 'https://localhost:7233/api/Authentication/Register';
+
   private user: any = null;
 
-  constructor() {
-    // Simuler un utilisateur avec ID = 1 et rôle 'Étudiant'
-    this.setUser({
-      id: 2,
-      Nom:'Max',
-      role: 'Admin',
-      token: 'fake-jwt-token' // Simuler un token JWT si nécessaire
-    });
+  constructor(private http: HttpClient) {
+    // Initialisation de l'utilisateur à partir de sessionStorage s'il existe
+    const storedUser = sessionStorage.getItem('user');
+    if (storedUser) {
+      this.user = JSON.parse(storedUser);
+    }
   }
 
   getUser() {
     return this.user;
   }
-  getUserId()
-  {
-    return this.user.id 
+
+  getUserId(): number | null {
+    return this.user?.id || null;
   }
 
   isAuthenticated(): boolean {
@@ -33,13 +37,27 @@ export class AuthService {
     return this.user?.role || null;
   }
 
+  getToken(): string | null {
+    return this.user?.token || null;
+  }
+
   setUser(user: any) {
     this.user = user;
-    localStorage.setItem('user', JSON.stringify(user));
+    sessionStorage.setItem('user', JSON.stringify(user));
   }
 
   clearUser() {
     this.user = null;
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
+  }
+
+  login(credentials: any): Observable<any> {
+    // Utilisation du mapper ici
+    const loginData: Login = mapToLogin(credentials);
+    return this.http.post<any>(this.loginUrl, loginData);
+  }
+
+  register(userData: any): Observable<any> {
+    return this.http.post<any>(this.registerUrl, userData);
   }
 }

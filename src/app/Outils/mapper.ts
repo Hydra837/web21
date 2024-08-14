@@ -6,8 +6,9 @@ import { Grade } from "../Models/GradeModel";
 import { IterableDiffers } from "@angular/core";
 import { AssignementsDTO, AssignementsFORM } from "../Models/assignementsModel";
 import { data } from "jquery";
+import { Login } from "../Models/Login";
 
-// Map API data to GetAllCoursForEachUsers
+
 export function mapToUserCourseDetailsData(data: any): GetAllCoursForEachUsers {
     return {
         userNom: data.userNom,
@@ -19,7 +20,7 @@ export function mapToUserCourseDetailsData(data: any): GetAllCoursForEachUsers {
     };
 }
 
-// Map API data to Course model
+
 export function mapToCourseModel(item: any): Course {
     return {
         id: item.id,
@@ -32,22 +33,21 @@ export function mapToCourseModel(item: any): Course {
     };
 }
 
-// Map API data to User model
+
 export function mapUser(data: any): User {
     return {
-        id: data.id ?? -1, // Default value if not defined
+        id: data.id ?? -1, 
         prenom: data.prenom,
-        nom: data.nom ?? 'Unknown', // Default value if not defined
+        nom: data.nom ?? 'Unknown', 
         // email: data.email ?? 'unknown@example.com', // Default value if not defined
-        password: data.password ?? '', // Default value if not defined
-        role: data.role ?? 'user', // Default value if not defined, 
+        password: data.password ?? '', 
+        role: data.role ?? 'user',  
         mail: data.mail ?? 'inconuu',
         pseudo: data.user ?? 'userInconnu'
        //salt: data.salt
     };
 }
 
-// Map API data to Grade model
 export function mapToGradeModel(item: any): Grade {
     return {
         id: item.i ,
@@ -58,7 +58,7 @@ export function mapToGradeModel(item: any): Grade {
     };
 }
 
-// Map Grade model to GradeDTO
+
 export function mapToGradeDTO(grade: Grade): Grade {
     return {
         id: grade.id,
@@ -72,25 +72,31 @@ export function mapToGradeDTO(grade: Grade): Grade {
 export function mapToAssignement(data: AssignementsDTO): AssignementsDTO {
     return {
         id : data.id,
-      description: data.description,  // Mappe la description
-      coursId: data.coursId,          // Mappe l'identifiant du cours
-      isAvailable: data.isAvailable   // Mappe la disponibilité (optionnel)
+      description: data.description, 
+      coursId: data.coursId,     
+      isAvailable: data.isAvailable 
     };
   }
   export function mapToAssignementFORM(data: AssignementsFORM): AssignementsFORM {
     return {
       
-      description: data.description,  // Mappe la description
-      coursId: data.coursId,          // Mappe l'identifiant du cours
-      isAvailable: data.isAvailable   // Mappe la disponibilité (optionnel)
+      description: data.description, 
+      coursId: data.coursId, 
+      isAvailable: data.isAvailable  
     };
   }
   export function mapToGrade(data: Grade): Grade {
     return {
         id: data.id,
-      userId: data.userId,              // Mappe l'identifiant de l'utilisateur
-      assignementsId: data.assignementsId, // Mappe l'identifiant de l'assignement
-      grade: data.grade,                // Mappe la note
-      // dateRecorded: new Date(data.dateRecorded) // Convertir la chaîne en Date (si applicable)
+      userId: data.userId,
+      assignementsId: data.assignementsId,
+      grade: data.grade,  
+     
     };
   }
+  export function mapToLogin(data: any): Login {
+    return {
+        Pseudo: data.Pseudo || '',
+        password: data.password || ''
+    };
+}
