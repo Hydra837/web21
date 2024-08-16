@@ -1,19 +1,31 @@
 nav {
   margin-bottom: 20px;
+  background-color: #f8f9fa; /* Fond léger pour toute la navigation */
+  padding: 10px 15px;
+  border-radius: 8px; /* Coins arrondis pour l'ensemble de la navigation */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre douce pour un effet de profondeur */
 }
 
 nav a {
   margin-right: 15px;
   text-decoration: none;
-  padding: 10px;
-  color: #000;
-  border: 1px solid #ccc;
+  padding: 10px 15px;
+  color: #343a40; /* Couleur de texte gris foncé pour un look sobre */
+  border: 1px solid transparent; /* Bordure transparente par défaut */
   border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Transition douce pour les interactions */
+}
+
+nav a:hover {
+  background-color: #e9ecef; /* Fond gris clair au survol */
+  color: #007bff; /* Texte bleu au survol */
+  border-color: #007bff; /* Bordure bleue au survol */
 }
 
 nav a.active {
   font-weight: bold;
-  color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
+  color: #fff; /* Texte blanc pour un contraste élégant */
+  background-color: #6c757d; /* Fond gris élégant pour les liens actifs */
+  border-color: #6c757d; /* Bordure grise pour les liens actifs */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Légère ombre pour les liens actifs */
 }

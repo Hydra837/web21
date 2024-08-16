@@ -1,0 +1,75 @@
+/* Styles personnalisés pour le tableau de bord */
+.container {
+    background-color: #f8f9fa; /* Couleur de fond légère pour le conteneur */
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .card {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .btn-warning {
+    font-size: 0.875rem;
+    border-radius: 5px;
+  }
+  
+  .btn-primary {
+    font-size: 0.875rem;
+    border-radius: 5px;
+  }
+  
+  .list-group-item {
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .list-group-item-warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+  }
+  
+  .list-group-item-success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+  }
+  
+  .list-group-item-danger {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+  }
+  
+  .d-flex {
+    display: flex;
+  }
+  
+  .justify-content-between {
+    justify-content: space-between;
+  }
+  
+  .align-items-center {
+    align-items: center;
+  }
+  
+  .text-primary {
+    color: #007bff;
+  }
+  
+  .text-success {
+    color: #28a745;
+  }
+  
+  .text-danger {
+    color: #dc3545;
+  }
+  
+  .mt-4 {
+    margin-top: 1.5rem;
+  }
+  

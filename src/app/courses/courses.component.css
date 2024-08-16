@@ -1,100 +1,97 @@
-/* Container for the entire course management section */
 .courses-container {
-  background-color: #ffffff; /* Background color for a clean look */
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  background-color: #f7f7f7; /* Fond gris clair pour un aspect épuré */
+  padding: 20px;
+  border-radius: 10px; /* Coins arrondis */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère */
 }
 
-/* Header of each card (like course name) */
+/* En-tête de chaque carte (nom du cours) */
 .card-header {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: bold;
-  background-color: #007bff; /* Bootstrap primary color */
-  color: #ffffff; /* White text for contrast */
-  padding: 15px;
-  border-radius: 10px 10px 0 0; /* Rounded corners on top */
+  background-color: #343a40; /* Gris foncé pour un contraste élégant */
+  color: #ffffff; /* Texte blanc pour le contraste */
+  padding: 10px;
+  border-radius: 8px 8px 0 0; /* Coins arrondis en haut */
 }
 
-/* General table styling for better readability */
+/* Style général des tableaux */
 .table {
-  background-color: #ffffff; /* Ensure a clean white background */
+  background-color: #ffffff; /* Fond blanc pour une bonne lisibilité */
   margin-bottom: 0;
-  border-radius: 10px;
+  border-radius: 8px; /* Coins arrondis */
   overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Ombre légère */
 }
 
-/* Header cells */
+/* En-têtes des cellules */
 .table th {
-  background-color: #f1f1f1;
+  background-color: #e9ecef; /* Gris clair pour les en-têtes */
   font-weight: bold;
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  padding: 12px;
+  font-size: 0.875rem;
+  padding: 10px;
 }
 
-/* Data cells */
+/* Cellules de données */
 .table td {
   vertical-align: middle;
-  padding: 15px;
-  font-size: 1rem;
-}
-
-/* Improved buttons with Bootstrap classes */
-.table .btn {
-  padding: 5px 15px;
+  padding: 12px;
   font-size: 0.875rem;
-  border-radius: 5px;
 }
 
-/* Error message styling */
+/* Boutons dans les tableaux */
+.table .btn {
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+}
+
+/* Style des messages d'erreur */
 .error-message {
-  color: #dc3545; /* Bootstrap danger color */
+  color: #dc3545; /* Couleur d'erreur Bootstrap */
   font-weight: bold;
-  padding: 10px;
+  padding: 8px;
   border: 1px solid #dc3545;
-  border-radius: 5px;
-  background-color: #f8d7da; /* Light red background */
-  margin-top: 15px;
+  border-radius: 4px;
+  background-color: #f8d7da; /* Fond rouge clair */
+  margin-top: 10px;
 }
 
-/* Add course form styling */
+/* Style du formulaire d'ajout de cours */
 .add-course-form {
-  margin-top: 20px;
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #f7f7f7;
+  margin-top: 15px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #f7f7f7; /* Fond gris clair pour uniformité */
   border: 1px solid #ddd;
 }
 
-/* Inputs and select fields */
+/* Champs de formulaire */
 .add-course-form .form-control {
-  border-radius: 5px;
-  margin-bottom: 15px;
-  font-size: 1rem;
-  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-size: 0.875rem;
+  padding: 8px;
 }
 
-/* Buttons styling */
+/* Boutons du formulaire */
 .add-course-form .btn-primary {
   background-color: #007bff;
   border-color: #007bff;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 1rem;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.875rem;
 }
 
-/* Cancel button */
+/* Bouton Annuler */
 .add-course-form .btn-secondary {
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 1rem;
-  margin-left: 10px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  margin-left: 8px;
 }
 
-/* Enhanced table row hover effect */
+/* Effet au survol des lignes de tableau */
 .table tbody tr:hover {
-  background-color: #f1f9ff;
+  background-color: #f1f5f9; /* Fond légèrement bleuté */
 }

@@ -1,23 +1,22 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { User, UserFORM } from './Models/User';
 import { mapUser } from './Outils/mapper'; // Assurez-vous que le chemin est correct
+import { AuthenticationService } from './authentication.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private apiUrl = 'https://localhost:7233/api/Users'; // Base URL pour l'API des utilisateurs
-  private usersUrl = 'https://localhost:7233/api/Users/GetAll';
-  private getRoleUrl = 'https://localhost:7233/api/Users/GetUserRole'; // URL pour obtenir le rôle d'un utilisateur
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,  private authService: AuthenticationService) { }
 
   // Récupérer tous les utilisateurs
   getUsers(): Observable<User[]> {
-    return this.http.get<any[]>(this.usersUrl).pipe(
+    return this.http.get<any[]>(`${this.apiUrl}/GetAll`).pipe(
       map(data => data.map(user => mapUser(user))), // Utiliser le mapper ici
       catchError(this.handleError<User[]>('getUsers', []))
     );
@@ -40,7 +39,7 @@ export class UserService {
 
   // Mettre à jour un utilisateur
   updateUser(id: number, user: UserFORM): Observable<User> { 
-    return this.http.put<User>(`${this.apiUrl}/Update/${id}`, user).pipe(
+    return this.http.put<User>(`${this.apiUrl}/${id}`, user).pipe(
       catchError(this.handleError<User>('updateUser'))
     );
   }
@@ -62,7 +61,7 @@ export class UserService {
 
   // Récupérer le rôle d'un utilisateur spécifique
   getUserRole(userId: number): Observable<string> {
-    return this.http.get<string>(`${this.getRoleUrl}/${userId}`).pipe(
+    return this.http.get<string>(`${this.apiUrl}/GetUserRole/${userId}`).pipe(
       catchError(this.handleError<string>('getUserRole', 'Unknown'))
     );
   }
@@ -74,7 +73,19 @@ export class UserService {
       catchError(this.handleError<User[]>('getUsersByRole', []))
     );
   }
+  getCurrentUser(): Observable<any> {
+    const token = this.authService.getToken();
+    if (!token) {
+      return of(null); // Retourner null si le token n'est pas disponible
+    }
 
+    
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<User>(`${this.apiUrl}/GetCurrentUser`, { headers }).pipe(
+      map(user => mapUser(user)),
+      catchError(this.handleError<User>('getCurrentUser'))
+    );
+  }
   // Gestion des erreurs
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {

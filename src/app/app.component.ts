@@ -1,25 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { pokelist } from './pokelist';
-import { Pokemonss } from './pokemon';
-import { Film } from './Film';
-import { HttpClient } from '@angular/common/http';
+import { UserService } from './user.service';
+import { User } from './Models/User';
 
 @Component({
   selector: 'app-root',
-  template: '<h1>Liste de Pokémon</h1>',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'ClientApp';
-  pokemonList: Pokemonss[] = pokelist;
-  selectedPokemon: Pokemonss | undefined;
-  filmList: Film[] = [];
+  user: User | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private userService: UserService) {}
 
   ngOnInit(): void {
-    // console.table(this.pokemonList)
-    //this.GetProducts();
+    this.userService.getCurrentUser().subscribe(
+      (user) => {
+        this.user = user;
+        console.log('Utilisateur actuel:', this.user);
+      },
+      (error) => {
+        console.error('Erreur:', error);
+      }
+    );
   }
 }

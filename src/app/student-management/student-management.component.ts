@@ -145,10 +145,9 @@ export class StudentManagementComponent implements OnInit {
   viewCoursesForUser(userId: number): void {
     this.enr.getCoursesByStudentId(userId).subscribe({
       next: (data: Course[]) => {
-        this.courses = data; // Pas de transformation des données avec le mapper
-        console.log('Courses for user:', this.courses); // Ligne de débogage pour vérifier les cours récupérés
-        // Gérer l'affichage des cours ou ouvrir un dialogue pour les montrer
-        this.openCoursesDialog(this.courses);
+        this.courses = data;
+        console.log('Courses for user:', this.courses);
+        this.openCoursesDialog (this.courses);
       },
       error: (err: any) => {
         this.errorMessage = 'Erreur lors de la récupération des cours.';
@@ -156,25 +155,20 @@ export class StudentManagementComponent implements OnInit {
       }
     });
   }
-  // openCreateUserDialog(): void {
-  //   const dialogRef = this.dialog.open(CreateUserDialogComponent, {
-  //     width: '600px'
-  //   });
 
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     if (result) {
-  //       this.loadUsers(); // Recharger les utilisateurs après l'ajout
-  //     }
-  //   });
-  // }
   openCoursesDialog(courses: Course[]): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '600px',
-      data: { courses } // Pass the courses to the dialog
+      data: { courses }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       // Handle result if necessary
     });
   }
+  deleteEnrollment(userId: number, courseId: number): void {
+ 
+    this.router.navigate(['/del-enrollement'], { queryParams: { userId, courseId } });
+  }
 }
+

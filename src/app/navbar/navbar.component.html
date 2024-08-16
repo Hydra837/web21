@@ -2,28 +2,26 @@
   <a class="navbar-brand" routerLink="/dashboard">Dashboard</a>
   <div class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
-      <!-- Visible à tous les utilisateurs -->
       <li class="nav-item">
         <a class="nav-link" routerLink="/course-catalog" routerLinkActive="active">Course Catalog</a>
       </li>
-
-      <!-- Visible uniquement aux étudiants -->
-      <li class="nav-item" *ngIf="userRole === 'Student'">
+      <!-- <li class="nav-item" *ngIf="userRole === 'Student'"> -->
         <a class="nav-link" routerLink="/course-detail" routerLinkActive="active">Course Detail</a>
-      </li>
-
-      <!-- Visible uniquement aux admins -->
-      <!-- <li class="nav-item" *ngIf="userRole === 'Admin'"> -->
-        <a class="nav-link" routerLink="courses" routerLinkActive="active">Course Management</a>
-        <a class="nav-link" routerLink="student-management" routerLinkActive="active">Student Management</a>
-      <!--  -->
-
-      <!-- Visible uniquement aux professeurs -->
-      <li class="nav-item" *ngIf="userRole === 'Teacher'">
+      <!-- </li>
+      <li class="nav-item" *ngIf="userRole === 'Admin'"> -->
+        <a class="nav-link" routerLink="/courses" routerLinkActive="active">Course Management</a>
+        <a class="nav-link" routerLink="/student-management" routerLinkActive="active">Student Management</a>
+      <!-- </li>
+      <li class="nav-item" *ngIf="userRole === 'Teacher'"> -->
         <a class="nav-link" routerLink="/courses" routerLinkActive="active">Course Management</a>
         <a class="nav-link" routerLink="/search" routerLinkActive="active">Search</a>
         <a class="nav-link" routerLink="/user-search" routerLinkActive="active">Rechercher Quelqu'un</a>
         <a class="nav-link" routerLink="/course-search" routerLinkActive="active">Rechercher un cours</a>
+      <!-- </li> -->
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <button class="btn btn-outline-light" (click)="logout()">Logout</button>
       </li>
     </ul>
   </div>

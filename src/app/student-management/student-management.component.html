@@ -173,6 +173,7 @@
             <td>
               <button class="btn btn-info btn-sm me-1" (click)="showEnrolledUsers(course.id!)">Voir Utilisateurs</button>
               <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id!)">Voir Assignements</button>
+            
             </td>
           </tr>
         </tbody>
@@ -180,7 +181,7 @@
     </div>
   </div>
 
-  <!-- Liste des utilisateurs inscrits à un cours -->
+  <!-- Utilisateurs inscrits pour un cours -->
   <div *ngIf="selectedCourseWithUsers" class="card mb-4 enrolled-users-form shadow">
     <div class="card-header bg-info text-white">
       <h2>Utilisateurs inscrits pour le cours {{ selectedCourseWithUsers.Nom }}</h2>
@@ -201,20 +202,23 @@
               <input [(ngModel)]="user.grade" type="number" min="0" max="20" class="form-control" style="width: 80px;" />
             </td>
             <td>
-              <!-- <button class="btn btn-success btn-sm" (click)="updateGrade(user.id, selectedCourseWithUsers.id, user.grade)">Mettre à jour la Note</button>
-              <button class="btn btn-danger btn-sm me-1" (click)="deleteEnrollment(user.id)">Supprimer Inscription</button> -->
+              <!-- <button class="btn btn-success btn-sm me-1" (click)="updateGrade(user.id, selectedCourseWithUsers.id, user.grade)">
+                Mettre à jour la Note
+              </button> -->
+              <button class="btn btn-danger btn-sm me-1" (click)="deleteEnrollment(user.id, selectedCourseWithUsers.id!)">
+                Supprimer Inscription
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
-    </div>
-  </div>
-
-  <!-- Composant pour afficher les assignments -->
-  <app-assignements *ngIf="selectedCourseIdForAssignments" [courseId]="selectedCourseIdForAssignments"></app-assignements>
+      <app-assignements *ngIf="selectedCourseIdForAssignments" [courseId]="selectedCourseIdForAssignments"></app-assignements>
 
   <!-- Bouton pour inscrire un étudiant -->
+
+    </div>
+  </div>
+</div>
   <button class="btn btn-secondary mb-4" (click)="openEnrollStudentDialog()">
     <i class="fas fa-chalkboard-teacher me-2"></i> Inscrire un Étudiant
   </button>
-</div>

@@ -19,6 +19,7 @@ export class DashboardService {
 
   constructor(private http: HttpClient) {}
 
+  // Récupérer les cours inscrits pour un utilisateur
   getEnrolledCourses(userId: number): Observable<Course[]> {
     return this.http.get<any[]>(`${this.getEnrolledCoursesUrl}/${userId}`).pipe(
       map(data => data.map(item => mapToCourseModel(item))),
@@ -29,46 +30,51 @@ export class DashboardService {
     );
   }
 
+  // Récupérer les cours enseignés par le professeur (URL mise à jour)
   getTeachingCourses(): Observable<Course[]> {
-    return this.http.get<Course[]>(`${this.apiUrl}/professor/courses`).pipe(
+    return this.http.get<Course[]>(`${this.apiUrl}/Cours/GetTeachingCourses`).pipe(
       catchError(error => {
-        console.error('Erreur lors de la récupération des cours enseignés', error);
+        console.error('Erreur lors de la récupération des cours enseignés.', error);
         return throwError(error);
       })
     );
   }
 
+  // Récupérer tous les cours
   getAllCourses(): Observable<Course[]> {
     return this.http.get<Course[]>(this.getAllCoursesUrl).pipe(
       catchError(error => {
-        console.error('Erreur lors de la récupération de tous les cours', error);
+        console.error('Erreur lors de la récupération de tous les cours.', error);
         return throwError(error);
       })
     );
   }
 
+  // Mettre à jour un utilisateur
   updateUser(userId: number, userData: User): Observable<User> {
     return this.http.put<User>(`${this.updateUserUrl}/${userId}`, userData).pipe(
       catchError(error => {
-        console.error('Erreur lors de la mise à jour de l\'utilisateur', error);
+        console.error('Erreur lors de la mise à jour de l\'utilisateur.', error);
         return throwError(error);
       })
     );
   }
 
+  // Récupérer l'utilisateur actuel
   getCurrentUser(userId: number): Observable<User> {
     return this.http.get<User>(`${this.getCurrentUserUrl}/${userId}`).pipe(
       catchError(error => {
-        console.error('Erreur lors de la récupération de l\'utilisateur actuel', error);
+        console.error('Erreur lors de la récupération de l\'utilisateur actuel.', error);
         return throwError(error);
       })
     );
   }
 
+  // Récupérer les cours par professeur
   getCoursesByTeacher(teacherId: number): Observable<Course[]> {
     return this.http.get<Course[]>(`${this.getCoursesByTeacherUrl}/${teacherId}`).pipe(
       catchError(error => {
-        console.error('Erreur lors de la récupération des cours par professeur', error);
+        console.error('Erreur lors de la récupération des cours par professeur.', error);
         return throwError(error);
       })
     );

@@ -12,10 +12,10 @@
   </div>
 
   <!-- Section pour les étudiants -->
-  <!-- <div *ngIf="userRole === 'Etudiant'" class="mb-4"> -->
+  <div *ngIf="userRole === 'Etudiant'" class="mb-4">
     <h3 class="mb-3 text-primary">Tes cours :</h3>
-    <!-- Intégration du composant Enrolledcourse -->
-    <!-- <app-enrolledcourse [userId]="1"></app-enrolledcourse> -->
+    <!-- Intégration du composant EnrolledCourse (si nécessaire) -->
+    <!-- <app-enrolledcourse [userId]="userId"></app-enrolledcourse> -->
 
     <h3 class="mb-3 text-primary mt-4">Cours dans lesquels tu peux t'inscrire</h3>
     <ul class="list-group">
@@ -26,31 +26,31 @@
         </div>
       </li>
     </ul>
-  <!-- </div> -->
+  </div>
 
   <!-- Section pour les professeurs -->
-  <!-- <div *ngIf="userRole === 'Professeur'" class="mb-4"> -->
+  <div *ngIf="userRole === 'Professeur'" class="mb-4">
     <h3 class="mb-3 text-success">Vos Cours</h3>
     <ul class="list-group">
       <li *ngFor="let course of courses" class="list-group-item list-group-item-success">
         <div class="d-flex justify-content-between align-items-center">
-          <span>{{ course.Nom }}</span>
-          <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id!)">Voir les Assignements</button>
-        </div>
-      </li>
-    </ul>
-  <!-- </div> -->
-
-  <!-- Section pour les administrateurs -->
-  <!-- <div *ngIf="userRole === 'Admin'" class="mb-4"> -->
-    <h3 class="mb-3 text-danger">All Courses</h3>
-    <ul class="list-group">
-      <li *ngFor="let course of allCoursesWithEnrollments" class="list-group-item list-group-item-danger">
-        <div class="d-flex justify-content-between align-items-center">
-          <span>{{ course.Nom }}</span>
+          <span>{{ course.Nom }} {{course.description}}  {{course.Nom}}</span>
           <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id!)">Voir les Assignements</button>
         </div>
       </li>
     </ul>
   </div>
-<!-- </div> -->
+
+  <!-- Section pour les administrateurs -->
+  <div *ngIf="userRole === 'Admin'" class="mb-4">
+    <h3 class="mb-3 text-danger">All Courses</h3>
+    <ul class="list-group">
+      <li *ngFor="let course of allCoursesWithEnrollments" class="list-group-item list-group-item-danger">
+        <div class="d-flex justify-content-between align-items-center">
+          <span>{{ course.nom }}</span>
+          <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id)">Voir les Assignements</button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

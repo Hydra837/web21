@@ -97,6 +97,6 @@ export function mapToAssignement(data: AssignementsDTO): AssignementsDTO {
   export function mapToLogin(data: any): Login {
     return {
         Pseudo: data.Pseudo || '',
-        password: data.password || ''
+        Password: data.Password || ''
     };
 }

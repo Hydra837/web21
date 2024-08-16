@@ -20,7 +20,7 @@ export class StudentEnrollmentService {
 
   // Obtenir tous les utilisateurs inscrits à un cours spécifique
   getAllUsersByCourse(courseId: number): Observable<any> {
-    const url = `${this.baseUrl}/GetAllUsersForCourse/${courseId}`;
+    const url = `${this.baseUrl}/GetalluserCourse/${courseId}`;
     return this.http.get(url);
   }
 

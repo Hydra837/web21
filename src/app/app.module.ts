@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';  // Import HttpClientModule
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PokemonsComponent } from './pokemons/pokemons.component';
+
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { CourseCatalogComponent } from './course-catalog/course-catalog.component';
 import { CourseService } from './services/course.service';
@@ -32,10 +32,10 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
 import { UserSelectionDialogComponent } from './user-selection-dialog/user-selection-dialog.component';
 import { EnrollteacherComponent } from './enrollteacher/enrollteacher.component';
 import { LoginComponent } from './login/login.component';
-import { JwtInterceptor, JwtModule } from '@auth0/angular-jwt';
+import { JwtModule } from '@auth0/angular-jwt';
 import { CourseListComponent } from './course-list/course-list.component';
 import { AddCourseComponent } from './add-course/add-course.component';
-import { AssignementsComponent } from './assignements/assignements.component';  // Importez JwtModule
+import { AssignementsComponent } from './assignements/assignements.component';
 import { AssignementsService } from './assignements.service';
 import { GradeService } from './grade.service';
 import { EnrolledUsersComponent } from './enrolled-users/enrolled-users.component';
@@ -44,33 +44,35 @@ import { EnrollStudentComponent } from './enroll-student/enroll-student.componen
 import { AssignementStudentComponent } from './assignement-student/assignement-student.component';
 import { EnrolledCourseTeacherComponent } from './enrolled-course-teacher/enrolled-course-teacher.component';
 import { ManageEnrollementComponent } from './manage-enrollement/manage-enrollement.component';
-import { GradeStudentComponent } from './grade-student/grade-student.component';
-//import { AuthInterceptor } from './auth.interceptor';  // Importez votre intercepteur d'authentification
-//import { authentication } from './authentication.service';
+import { AuthInterceptor } from './interceptors/auth.interceptor'; // Importez votre AuthInterceptor
+import { UserInfoComponent } from './user-info/user-info.component';
+import { DelEnrollementComponent } from './del-enrollement/del-enrollement.component';
+
+// Fonction pour obtenir le token
 export function tokenGetter() {
   return sessionStorage.getItem('jwt');
 }
+
 @NgModule({
   declarations: [
     AppComponent,
-    PokemonsComponent,
     DashboardComponent,
-    CourseCatalogComponent, 
+    CourseCatalogComponent,
     CourseDetailComponent,
-    StudentManagementComponent, 
-    CoursesComponent, 
-    DashboardAdminComponent, 
-    NavbarStudentComponent, 
-    NavbarAdminComponent, 
-    NavbarProfesseurComponent, 
-    NavbarComponent, 
-    GradeComponent, 
-    SearchComponent, 
-    CourseSearchComponent, 
-    StudentSearchComponent, 
-    ProfesseurSearchComponent, 
-    UserSearchComponent, 
-    ConfirmDialogComponent, 
+    StudentManagementComponent,
+    CoursesComponent,
+    DashboardAdminComponent,
+    NavbarStudentComponent,
+    NavbarAdminComponent,
+    NavbarProfesseurComponent,
+    NavbarComponent,
+    GradeComponent,
+    SearchComponent,
+    CourseSearchComponent,
+    StudentSearchComponent,
+    ProfesseurSearchComponent,
+    UserSearchComponent,
+    ConfirmDialogComponent,
     UserSelectionDialogComponent,
     EnrollteacherComponent,
     LoginComponent,
@@ -83,35 +85,35 @@ export function tokenGetter() {
     AssignementStudentComponent,
     EnrolledCourseTeacherComponent,
     ManageEnrollementComponent,
-    GradeStudentComponent
+    UserInfoComponent,
+    DelEnrollementComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule,  // Add HttpClientModule to imports
+    HttpClientModule,  // Ajoutez HttpClientModule
     MatListModule,
     MatDialogModule,
     MatButtonModule,
-    MatIconModule, 
+    MatIconModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        allowedDomains: ['localhost:3000'],  // Remplacez par les domaines autorisés pour les requêtes avec JWT
-        disallowedRoutes: ['http://localhost:3000/api/auth/login'],  // Routes pour lesquelles le token ne doit pas être envoyé
+        allowedDomains: ['localhost:4200'],  // Remplacez par les domaines autorisés pour les requêtes avec JWT
+        disallowedRoutes: ['http://localhost:7233/api/auth/login', 'https://localhost:7233/api/Authentication/login'],  // Routes pour lesquelles le token ne doit pas être envoyé
       },
     }),
   ],
   providers: [
     CourseService,
     UserService,
-    DashboardService, 
+    DashboardService,
     AssignementsService,
     GradeService,
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }, // Votre AuthInterceptor personnalisé
   ],
   bootstrap: [AppComponent],
- // entryComponents: [EnrollStudentComponent]
 })
 export class AppModule { }

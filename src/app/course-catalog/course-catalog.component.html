@@ -7,7 +7,11 @@
       <!-- Ajoutez ici d'autres champs selon votre modèle Course -->
 
       <div class="d-flex justify-content-between mt-3">
-        <button class="btn btn-primary" (click)="enroll(course.id)">
+        <!-- Disable the button if the user is not a student -->
+        <button class="btn btn-primary" 
+                (click)="enroll(course.id)" 
+                [disabled]="!isStudent" 
+                [attr.title]="!isStudent ? 'Seuls les étudiants peuvent s\'inscrire à ce cours.' : null">
           <i class="fas fa-user-plus me-2"></i>S'inscrire
         </button>
         <button class="btn btn-secondary" (click)="viewCourseDetail(course.id)">

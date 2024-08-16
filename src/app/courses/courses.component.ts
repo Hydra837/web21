@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';  // Import MatDialog for dialog operations
+import { MatDialog } from '@angular/material/dialog';
 import { catchError, of } from 'rxjs';
 import { CourseService } from '../services/course.service';
 import { UserService } from '../user.service';
@@ -8,9 +8,8 @@ import { Course } from '../Models/courseModel';
 import { User } from '../Models/User';
 import { CourseManagementService } from '../course-management.service';
 import { StudentEnrollmentService } from '../services/student-enrollement.service';
-import { DashboardService } from '../dashboard.service';
-import { AuthService } from '../auth.service';  
-import { EnrollStudentComponent } from '../enroll-student/enroll-student.component'; // Import the dialog component
+import { AuthenticationService } from '../authentication.service';
+import { EnrollStudentComponent } from '../enroll-student/enroll-student.component';
 
 @Component({
   selector: 'app-courses',
@@ -25,6 +24,8 @@ export class CoursesComponent implements OnInit {
   selectedCourse: Course | null = null;
   selectedCourseWithUsers: Course | null = null;
   selectedCourseIdForAssignments: number | null = null;
+  isProfessor: boolean = false; 
+  selectedprof: number | undefined;
   
   addProfessorForm: FormGroup;
   addCourseForm: FormGroup;
@@ -32,7 +33,7 @@ export class CoursesComponent implements OnInit {
   showAddCourseFormFlag: boolean = false;
   showProfessorForm: boolean = false;
   errorMessage: string = '';
-  userRole: string | null = '';  
+  userRole: string | null = null;  
   userId: number | null = null;  
 
   constructor(
@@ -41,8 +42,8 @@ export class CoursesComponent implements OnInit {
     private courseManagementService: CourseManagementService,
     private studentEnrollmentService: StudentEnrollmentService,
     private fb: FormBuilder,
-    private authService: AuthService,
-    private dialog: MatDialog  // Inject MatDialog into the component
+    private authService: AuthenticationService,
+    private dialog: MatDialog
   ) {
     this.addProfessorForm = this.fb.group({
       selectedProfessorId: ['', Validators.required],
@@ -68,13 +69,15 @@ export class CoursesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userRole = this.authService.getUserRole(); 
-    this.userId = this.authService.getUserId(); 
+    this.userRole = this.authService.getUserRole();
+    this.userId = this.authService.getUserId();
+     this.isProfessor = this.userRole === 'Professeur';
 
     if (this.userRole === 'Professeur' && this.userId) {
-      this.EnrollTeacherCourse(this.userId); 
+      this.loadCoursesForProfessor(this.userId);
+      this.selectedprof = this.userId;
     } else {
-      this.loadCourses();  
+      this.loadCourses();
     }
     this.loadUsers();
   }
@@ -97,8 +100,8 @@ export class CoursesComponent implements OnInit {
     });
   }
 
-  EnrollTeacherCourse(userId: number): void {
-    this.courseService.getCoursesByTeacher(userId).pipe(
+  loadCoursesForProfessor(professorId: number): void {
+    this.courseService.getCoursesByTeacher(professorId).pipe(
       catchError(this.handleError('chargement des cours du professeur'))
     ).subscribe(data => {
       if (data) {
@@ -124,6 +127,9 @@ export class CoursesComponent implements OnInit {
 
   showAddCourseForm(): void {
     this.showAddCourseFormFlag = true;
+  }
+  isProfesseur(): boolean {
+    return this.userRole === 'Professeur';
   }
 
   submitNewCourse(): void {
@@ -247,10 +253,10 @@ export class CoursesComponent implements OnInit {
     }
   }
 
-  deleteEnrollment(userId: number): void {
+  deleteEnrollment(userId: number, courseId: number): void {
     const confirmed = window.confirm('Êtes-vous sûr de vouloir supprimer cette inscription ?');
     if (confirmed) {
-      this.studentEnrollmentService.deleteEnrollment(userId).pipe(
+      this.courseManagementService.deleteEnrollment(userId, courseId).pipe(
         catchError(this.handleError('suppression de l\'inscription'))
       ).subscribe(() => {
         this.loadCourses();
@@ -281,7 +287,6 @@ export class CoursesComponent implements OnInit {
     this.selectedCourseIdForAssignments = courseId;
   }
 
-  // Corrected and integrated openEnrollStudentDialog method
   openEnrollStudentDialog(): void {
     const dialogRef = this.dialog.open(EnrollStudentComponent, {
       width: '600px' // Adjust the dialog width as needed
@@ -289,9 +294,8 @@ export class CoursesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Handle the result of the dialog if necessary
         console.log('Inscription réussie:', result);
-        this.loadCourses(); // Reload courses to reflect new enrollment
+        this.loadCourses();
       }
     });
   }
