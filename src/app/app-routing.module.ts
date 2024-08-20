@@ -17,27 +17,38 @@ import { EnrolledCourseTeacherComponent } from './enrolled-course-teacher/enroll
 import { EnrolledcourseComponent } from './enrolledcourse/enrolledcourse.component';
 import { LoginComponent } from './login/login.component';
 import { DelEnrollementComponent } from './del-enrollement/del-enrollement.component';
+import { UserInfoComponent } from './user-info/user-info.component';
+import { RegisterComponent } from './register/register.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { UpdateUserComponent } from './update-user/update-user.component';
+import { AccessDeniedComponent } from './access-denied/access-denied.component';
 
-const routes: Routes = [
-  { path: 'dashboard', component: DashboardComponent }, //, canActivate: [authGuard] },
+export const routes: Routes = [
+  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'course-catalog', component: CourseCatalogComponent },
-  { path: 'assignement-student', component: AssignementStudentComponent }, //, canActivate: [authGuard] },
+  { path: 'assignement-student', component: AssignementStudentComponent, canActivate: [authGuard] },
   { path: 'course-detail/:id', component: CourseDetailComponent },
-  { path: 'del-enrollement', component: DelEnrollementComponent }, //, canActivate: [authGuard] },
-  { path: 'courses', component: CoursesComponent }, //, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
-  { path: 'student-management', component: StudentManagementComponent }, //, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
-  { path: 'user-search', component: UserSearchComponent }, //, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
-  { path: 'course-search', component: CourseSearchComponent }, //, canActivate: [authGuard] },
-  { path: 'assignments/:courseId', component: AssignementsComponent },//, canActivate: [RoleGuard], data: { roles: ['Professeur', 'Admin'] } },
-  { path: 'enroll-student', component: EnrollStudentComponent }, //, canActivate: [authGuard] },
-  { path: 'enrollteacher', component: EnrollteacherComponent }, //, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
-  { path: 'courses-teacher', component: EnrolledCourseTeacherComponent },// canActivate: [authGuard] },
-  { path: 'enrolled-courses', component: EnrolledcourseComponent } ,// canActivate: [authGuard] },
+  { path: 'del-enrollement', component: DelEnrollementComponent, canActivate: [authGuard] },
+  { path: 'courses', component: CoursesComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Professeur'] } },
+  { path: 'student-management', component: StudentManagementComponent, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
+  { path: 'user-search', component: UserSearchComponent, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
+  { path: 'course-search', component: CourseSearchComponent, canActivate: [authGuard] },
+  { path: 'assignments/:courseId', component: AssignementsComponent, canActivate: [RoleGuard], data: { roles: ['Professeur', 'Admin'] } },
+  { path: 'enroll-student', component: EnrollStudentComponent, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
+  { path: 'enrollteacher', component: EnrollteacherComponent, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
+  { path: 'courses-teacher', component: EnrolledCourseTeacherComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Professeur'] } },
+  { path: 'enrolled-courses', component: EnrolledcourseComponent, canActivate: [RoleGuard], data: { roles: ['Etudiant', 'Admin', 'Professeur'] } },
   { path: 'login', component: LoginComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'user-info/:id', component: UserInfoComponent, canActivate: [RoleGuard], data: { roles: ['Etudiant', 'Admin', 'Professeur'] } },
+  { path: 'enrolled-courses/:userId', component: EnrolledcourseComponent, canActivate: [RoleGuard], data: { roles: ['Etudiant', 'Admin', 'Professeur'] } },
+  { path: 'courses-teacher/:teacherId', component: EnrolledCourseTeacherComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Professeur'] } },
+  { path: 'register', component: RegisterComponent },
+  { path: 'update-user/:id', component: UpdateUserComponent, canActivate: [RoleGuard], data: { roles: ['Etudiant', 'Admin', 'Professeur'] } },
   { path: '', redirectTo: '/course-catalog', pathMatch: 'full' },
-  { path: '**', redirectTo: '/course-catalog' }
+  { path: 'access-denied', component: AccessDeniedComponent },
+  { path: '**', redirectTo: '/course-catalog' },
 ];
-
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]

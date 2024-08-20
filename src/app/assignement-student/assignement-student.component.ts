@@ -15,7 +15,7 @@ import { Course } from '../Models/courseModel';
 export class AssignementStudentComponent implements OnInit {
   assignments: AssignementsDTO[] = [];
   courses: Course[] = [];
-  grades: { [key: number]: GradeDTO[] } = {}; // Dictionary to hold grades by course ID
+  grades: { [key: number]: GradeDTO[] } = {}; 
   userId: number | undefined = 1;
   courseId: number | undefined;
   errorMessage: string = '';

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { GradeDTO, Grade } from './Models/GradeModel';
@@ -72,8 +72,21 @@ export class GradeService {
 
   // Gestion des erreurs
   private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      console.error(`${operation} failed: ${error.message}`);
+    return (error: HttpErrorResponse): Observable<T> => {
+      let errorMessage = 'Une erreur est survenue.';
+
+      // Gestion des erreurs spécifiques
+      if (error.status === 400) {
+        errorMessage = 'Requête invalide. Vérifiez les données envoyées.';
+      } else if (error.status === 404) {
+        errorMessage = 'Aucun grade à afficher.';
+      } else if (error.status === 409) {
+        errorMessage = 'L etudiant possède déjà une note.';
+      } else if (error.status === 500) {
+        errorMessage = `Erreur serveur: ${error.error?.Message || error.message}`;
+      }
+
+      console.error(`${operation} échoué: ${errorMessage}`);
       return of(result as T);
     };
   }

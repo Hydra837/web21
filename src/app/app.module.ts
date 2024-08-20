@@ -47,6 +47,11 @@ import { ManageEnrollementComponent } from './manage-enrollement/manage-enrollem
 import { AuthInterceptor } from './interceptors/auth.interceptor'; // Importez votre AuthInterceptor
 import { UserInfoComponent } from './user-info/user-info.component';
 import { DelEnrollementComponent } from './del-enrollement/del-enrollement.component';
+import { RegisterComponent } from './register/register.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { UpdateUserComponent } from './update-user/update-user.component';
+import { AccessDeniedComponent } from './access-denied/access-denied.component';
+import { access } from 'fs';
 
 // Fonction pour obtenir le token
 export function tokenGetter() {
@@ -87,6 +92,10 @@ export function tokenGetter() {
     ManageEnrollementComponent,
     UserInfoComponent,
     DelEnrollementComponent,
+    RegisterComponent,
+    ForgotPasswordComponent,
+    UpdateUserComponent,
+    AccessDeniedComponent,
   ],
   imports: [
     BrowserModule,

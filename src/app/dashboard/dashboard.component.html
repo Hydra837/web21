@@ -14,15 +14,21 @@
   <!-- Section pour les étudiants -->
   <div *ngIf="userRole === 'Etudiant'" class="mb-4">
     <h3 class="mb-3 text-primary">Tes cours :</h3>
-    <!-- Intégration du composant EnrolledCourse (si nécessaire) -->
-    <!-- <app-enrolledcourse [userId]="userId"></app-enrolledcourse> -->
+    <ul class="list-group">
+      <li *ngFor="let course of courses" class="list-group-item list-group-item-info">
+        <div class="d-flex justify-content-between align-items-center">
+          <span>{{ course.Nom }} - {{ course.description }}</span>
+          <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id!, userId!)">Voir les Assignements</button>
+        </div>
+      </li>
+    </ul>
 
     <h3 class="mb-3 text-primary mt-4">Cours dans lesquels tu peux t'inscrire</h3>
     <ul class="list-group">
       <li *ngFor="let course of unenrolledCourses" class="list-group-item list-group-item-warning">
         <div class="d-flex justify-content-between align-items-center">
           <span>{{ course.Nom }} - {{ course.description }}</span>
-          <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id!)">Voir les Assignements</button>
+        
         </div>
       </li>
     </ul>
@@ -34,23 +40,37 @@
     <ul class="list-group">
       <li *ngFor="let course of courses" class="list-group-item list-group-item-success">
         <div class="d-flex justify-content-between align-items-center">
-          <span>{{ course.Nom }} {{course.description}}  {{course.Nom}}</span>
-          <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id!)">Voir les Assignements</button>
+          <span>{{ course.Nom }} - {{ course.description }}</span>
+         <!-- // <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id!)">Voir les Assignements</button> -->
         </div>
       </li>
     </ul>
   </div>
 
-  <!-- Section pour les administrateurs -->
+
   <div *ngIf="userRole === 'Admin'" class="mb-4">
-    <h3 class="mb-3 text-danger">All Courses</h3>
+    <h3 class="mb-3 text-danger">Tous les Utilisateurs et leurs Cours</h3>
     <ul class="list-group">
-      <li *ngFor="let course of allCoursesWithEnrollments" class="list-group-item list-group-item-danger">
-        <div class="d-flex justify-content-between align-items-center">
-          <span>{{ course.nom }}</span>
-          <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id)">Voir les Assignements</button>
+      <li *ngFor="let user of usersWithCourses" class="list-group-item list-group-item-danger">
+        <h5>{{ user.nom }} {{ user.prenom }} ({{ user.role }})</h5>
+        <div *ngIf="user.cours && user.cours.length > 0">
+          <h6>Cours :</h6>
+          <ul class="list-group">
+            <li *ngFor="let course of user.cours" class="list-group-item d-flex justify-content-between align-items-center">
+              {{ course.Nom }} - {{ course.description }}
+              <button class="btn btn-info btn-sm" (click)="showAssignments(course.id!, user.id!)">Voir Assignements</button>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="!user.cours || user.cours.length === 0">
+          <p>Aucun cours inscrit.</p>
         </div>
       </li>
     </ul>
   </div>
+
+  <!-- Template pour aucun utilisateur -->
+  <ng-template #noData>
+    <p>Aucun utilisateur trouvé.</p>
+  </ng-template>
 </div>

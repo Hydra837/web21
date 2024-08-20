@@ -103,6 +103,9 @@
     </form>
   </div>
 
+  <button class="btn btn-primary me-2" (click)="addUser()">
+    <i class="fas fa-user-plus me-2"></i>Add User
+  </button>
   <!-- Formulaire d'ajout de nouvel utilisateur -->
   <div *ngIf="userForm" class="card p-4 mb-4 shadow-sm">
     <h2 class="card-title mb-4">Add User</h2>
@@ -164,7 +167,7 @@
         <tbody>
           <tr *ngFor="let course of courses">
             <td>{{ course.id }}</td>
-            <td>{{ course.Nom }}</td>
+            <td>{{ course.Nom}}</td>
             <td>{{ course.description || 'Pas de description' }}</td>
             <td>{{ course.dateDebut | date }}</td>
             <td>{{ course.dateFin | date }}</td>

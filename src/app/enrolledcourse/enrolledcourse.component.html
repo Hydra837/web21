@@ -1,17 +1,18 @@
 <div class="container mt-3">
-  <h3 class="mb-3 text-primary">{{ isTeacher ? 'Cours du Professeur' : 'Cours Inscrits' }}</h3>
   <div *ngIf="errorMessage" class="alert alert-danger">
     {{ errorMessage }}
   </div>
+  
   <ul class="list-group" *ngIf="courses.length > 0">
     <li *ngFor="let course of courses" class="list-group-item list-group-item-info">
       <div class="d-flex justify-content-between align-items-center">
         <span>{{ course.Nom }} - {{ course.description }}</span>
-        <button *ngIf="!isTeacher" class="btn btn-primary btn-sm" (click)="goToAssignments(course.id!)">
+        <button class="btn btn-primary btn-sm" (click)="goToAssignments(course.id!)">
           Voir les Assignements
         </button>
       </div>
     </li>
   </ul>
+  
   <p *ngIf="courses.length === 0 && !errorMessage" class="text-muted">Aucun cours trouvé.</p>
 </div>

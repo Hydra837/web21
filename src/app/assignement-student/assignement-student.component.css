@@ -1,0 +1,35 @@
+.access-denied {
+    text-align: center;
+    margin: 100px auto;
+    padding: 20px;
+    max-width: 600px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+  }
+  
+  .access-denied h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .access-denied p {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .access-denied .btn {
+    font-size: 1rem;
+    padding: 10px 20px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+  }
+  
+  .access-denied .btn:hover {
+    background-color: #0056b3;
+  }
+  

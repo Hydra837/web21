@@ -16,11 +16,11 @@ export class DelEnrollementComponent {
     if (this.idUser && this.idCours) {
       this.studentManagementService.deleteEnrollment(this.idUser, this.idCours)
         .subscribe({
-          next: () => console.log('Enrollment deleted successfully'),
-          error: err => console.error('Error deleting enrollment:', err)
+          next: () => console.log('Vous avez bien supprimé l enrollement'),
+          error: err => console.error('erreur lors de la suppression:', err)
         });
     } else {
-      console.error('User ID and Course ID must be provided.');
+      console.error('les ids doivent  être partagé');
     }
   }
 }

@@ -1,12 +1,21 @@
+<!-- course-search.component.html -->
 <div class="container mt-5">
   <h2>Search Courses</h2>
+
+  <!-- Formulaire de recherche -->
   <form class="form-inline mb-4" (ngSubmit)="searchCourses()">
     <div class="form-group mx-sm-3 mb-2">
       <input type="text" class="form-control" [(ngModel)]="searchTerm" name="searchTerm" placeholder="Search by course name or description" />
     </div>
-    <button type="submit" class="btn btn-primary mb-2">Search</button>
+    <button type="submit" class="btn btn-primary mb-2" [disabled]="isLoading">Search</button>
   </form>
 
+  <!-- Indicateur de chargement -->
+  <div *ngIf="isLoading" class="spinner-border text-primary" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+
+  <!-- Résultats de la recherche -->
   <div *ngIf="courses.length">
     <h3>Search Results:</h3>
     <div *ngFor="let course of courses" class="card mb-3">
@@ -18,7 +27,8 @@
     </div>
   </div>
 
-  <div *ngIf="!courses.length && searchTerm">
-    <p>No results found for "{{ searchTerm }}"</p>
+  <!-- Message lorsque aucun cours n'est trouvé -->
+  <div *ngIf="!courses.length && !isLoading && searchTerm">
+    <p class="alert alert-info">No results found for "{{ searchTerm }}"</p>
   </div>
 </div>

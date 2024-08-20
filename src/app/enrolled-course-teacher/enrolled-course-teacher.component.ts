@@ -24,13 +24,17 @@ export class EnrolledCourseTeacherComponent implements OnInit {
       const id = params.get('teacherId');
       if (id) {
         this.teacherId = +id; // Convertir l'ID en nombre
-        this.courses$ = this.courseService.getCoursesByTeacher(this.teacherId).pipe(
-          catchError(error => {
-            console.error('Erreur lors de la récupération des cours', error);
-            return of([]); // Retourner une liste vide en cas d'erreur
-          })
-        );
+        this.getCourses(this.teacherId);
       }
     });
+  }
+
+  getCourses(teacherId: number): void {
+    this.courses$ = this.courseService.getCoursesByTeacher(teacherId).pipe(
+      catchError(error => {
+        console.error('Erreur lors de la récupération des cours', error);
+        return of([]); // Retourner une liste vide en cas d'erreur
+      })
+    );
   }
 }

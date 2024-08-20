@@ -1,10 +1,15 @@
+<!-- Indicateur de chargement global -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <p>Chargement en cours...</p>
+</div>
+
 <!-- Section pour afficher la liste des cours -->
-<div class="card courses-list shadow">
+<div class="card courses-list shadow" [class.disabled]="isLoading">
   <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
     <h2>Liste des Cours</h2>
     <div>
-      <button class="btn btn-primary" (click)="showAddCourseForm()">Ajouter un Cours</button>
-      <button class="btn btn-primary ms-2" (click)="showAddProfessorForm()">Ajouter un Professeur à un Cours</button>
+      <button class="btn btn-primary" (click)="showAddCourseForm()" [disabled]="isLoading">Ajouter un Cours</button>
+      <button class="btn btn-primary ms-2" (click)="showAddProfessorForm()" [disabled]="isLoading">Ajouter un Professeur à un Cours</button>
     </div>
   </div>
   <div class="card-body">
@@ -30,21 +35,21 @@
           <td>{{ course.dateFin | date: 'shortDate' }}</td>
           <td>{{ course.available ? 'Oui' : 'Non' }}</td>
           <td>{{ course.professeurId ? 'Assigné' : 'Non assigné' }}</td>
-   <!-- Column for actions -->
-<td>
-  <button class="btn btn-warning btn-sm me-1" (click)="updateCourse(course.id!)">Modifier</button>
-  <button class="btn btn-danger btn-sm me-1" [disabled]="isProfessor" (click)="deleteCourse(course.id!)">Supprimer</button>
-  <button class="btn btn-info btn-sm me-1" (click)="showEnrolledUsers(course.id!)">Voir Utilisateurs</button>
-  <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id!)">Voir Assignements</button>
-</td>
-
+          <td>
+            <button class="btn btn-warning btn-sm me-1" (click)="updateCourse(course.id!)" [disabled]="isLoading">Modifier</button>
+            <button class="btn btn-danger btn-sm me-1" (click)="deleteCourse(course.id!)" [disabled]="isProfessor || isLoading">Supprimer</button>
+            <button class="btn btn-info btn-sm me-1" (click)="showEnrolledUsers(course.id!)" [disabled]="isLoading">Voir Utilisateurs</button>
+            <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id!)" [disabled]="isLoading">Voir Assignements</button>
+            <button class="btn btn-info btn-sm me-1" (click)="GetTeacherName(course.professeurId)" [disabled]="isLoading">Voir Professeur</button>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<div *ngIf="showAddCourseFormFlag" class="card mb-4 add-course-form shadow">
+<!-- Formulaire pour ajouter un cours -->
+<div *ngIf="showAddCourseFormFlag" class="card mb-4 add-course-form shadow" [class.disabled]="isLoading">
   <div class="card-header bg-primary text-white">
     <h2>Ajouter un Cours</h2>
   </div>
@@ -77,14 +82,14 @@
           <option *ngFor="let user of filteredUsers" [value]="user.id">{{ user.nom }}</option>
         </select>
       </div>
-      <button type="submit" class="btn btn-primary">Ajouter</button>
-      <button type="button" class="btn btn-secondary ms-2" (click)="cancelAddCourse()">Annuler</button>
+      <button type="submit" class="btn btn-primary" [disabled]="isLoading">Ajouter</button>
+      <button type="button" class="btn btn-secondary ms-2" (click)="cancelAddCourse()" [disabled]="isLoading">Annuler</button>
     </form>
   </div>
 </div>
 
 <!-- Formulaire pour ajouter un professeur à un cours -->
-<div *ngIf="showProfessorForm" class="card mb-4 shadow">
+<div *ngIf="showProfessorForm" class="card mb-4 shadow" [class.disabled]="isLoading">
   <div class="card-header bg-primary text-white">
     <h2>Ajouter un Professeur au Cours</h2>
   </div>
@@ -92,7 +97,7 @@
     <form [formGroup]="addProfessorForm" (ngSubmit)="confirmAddProfessor()">
       <div class="mb-3">
         <label for="professorSelect" class="form-label">Sélectionnez un Professeur :</label>
-        <select id="professorSelect" formControlName="selectedProfessorId" class="form-select" required>
+        <select id="professorSelect" formControlName="selectedProfessorId" class="form-select" [attr.disabled]="isProfessor ? true : null" required>
           <option *ngFor="let user of filteredUsers" [value]="user.id">{{ user.nom }}</option>
         </select>
       </div>
@@ -102,14 +107,14 @@
           <option *ngFor="let course of courses" [value]="course.id">{{ course.Nom }}</option>
         </select>
       </div>
-      <button type="submit" class="btn btn-primary">Ajouter</button>
-      <button type="button" class="btn btn-secondary ms-2" (click)="cancelAddProfessor()">Annuler</button>
+      <button type="submit" class="btn btn-primary" [disabled]="isLoading">Ajouter</button>
+      <button type="button" class="btn btn-secondary ms-2" (click)="cancelAddProfessor()" [disabled]="isLoading">Annuler</button>
     </form>
   </div>
 </div>
 
 <!-- Formulaire pour mettre à jour un cours -->
-<div *ngIf="selectedCourse" class="card mb-4 update-course-form shadow">
+<div *ngIf="selectedCourse" class="card mb-4 update-course-form shadow" [class.disabled]="isLoading">
   <div class="card-header bg-warning text-white">
     <h2>Modifier le Cours</h2>
   </div>
@@ -135,21 +140,21 @@
         <input type="checkbox" id="updateCourseAvailable" class="form-check-input" formControlName="available">
         <label for="updateCourseAvailable" class="form-check-label">Disponible</label>
       </div>
-      <button type="submit" class="btn btn-warning">Mettre à jour</button>
-      <button type="button" class="btn btn-secondary ms-2" (click)="cancelUpdate()">Annuler</button>
+      <button type="submit" class="btn btn-warning" [disabled]="isLoading">Mettre à jour</button>
+      <button type="button" class="btn btn-secondary ms-2" (click)="cancelUpdate()" [disabled]="isLoading">Annuler</button>
     </form>
   </div>
 </div>
 
 <!-- Bouton pour afficher le component EnrollStudent -->
 <button class="btn btn-secondary mb-4" 
-        [disabled]="isProfesseur()" 
+        [disabled]="isProfesseur() || isLoading" 
         (click)="openEnrollStudentDialog()">
   <i class="fas fa-chalkboard-teacher me-2"></i> Inscrire un Étudiant
 </button>
 
 <!-- Formulaire pour afficher les utilisateurs inscrits et leurs notes -->
-<div *ngIf="selectedCourseWithUsers" class="card mb-4 enrolled-users-form shadow">
+<div *ngIf="selectedCourseWithUsers" class="card mb-4 enrolled-users-form shadow" [class.disabled]="isLoading">
   <div class="card-header bg-info text-white">
     <h2>Utilisateurs inscrits pour le cours {{ selectedCourseWithUsers.Nom }}</h2>
   </div>
@@ -169,15 +174,15 @@
             <input [(ngModel)]="user.grade" type="number" min="0" max="20" class="form-control" style="width: 80px;" />
           </td>
           <td>
-            <button class="btn btn-danger btn-sm me-1" (click)="deleteEnrollment(user.id, selectedCourseWithUsers.id!)">Supprimer Inscription</button>
-            <button class="btn btn-success btn-sm" (click)="updateGrade(user.id, selectedCourseWithUsers?.id || 0, user.grade)">Mettre à jour la Note</button>
+            <button class="btn btn-danger btn-sm me-1" (click)="deleteEnrollment(user.id, selectedCourseWithUsers.id!)" [disabled]="isLoading">Supprimer Inscription</button>
+            <button class="btn btn-success btn-sm" (click)="updateGrade(user.id, selectedCourseWithUsers.id || 0, user.grade)" [disabled]="isLoading">Mettre à jour la Note</button>
           </td>
         </tr>
       </tbody>
     </table>
-    <button class="btn btn-secondary" (click)="cancelShowEnrolledUsers()">Annuler</button>
+    <button class="btn btn-secondary" (click)="cancelShowEnrolledUsers()" [disabled]="isLoading">Annuler</button>
   </div>
 </div>
 
 <!-- Composant Assignements affiché conditionnellement -->
-<app-assignements *ngIf="selectedCourseIdForAssignments" [courseId]="selectedCourseIdForAssignments"></app-assignements>
+<app-assignements *ngIf="selectedCourseIdForAssignments" [courseId]="selectedCourseIdForAssignments" [class.disabled]="isLoading"></app-assignements>

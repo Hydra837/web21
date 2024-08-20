@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { CourseService } from '../services/course.service'; 
 import { Course } from '../Models/courseModel';
 import { StudentEnrollmentService } from '../services/student-enrollement.service';
+import { CourseManagementService } from '../course-management.service';
 
 @Component({
   selector: 'app-student-management',
@@ -26,7 +27,7 @@ export class StudentManagementComponent implements OnInit {
   selectedCourseWithUsers: Course | null = null;
   selectedCourseIdForAssignments: number | null = null;
   selectedRole: string = '';
-  courses: Course[] = []; // Liste des cours pour l'utilisateur sélectionné
+  courses: Course[] = []; 
 
   constructor(
     private userService: UserService,
@@ -34,7 +35,8 @@ export class StudentManagementComponent implements OnInit {
     private studentManagementService: StudentManagementService,
     private router: Router,
     private enr: StudentEnrollmentService,
-    private courseService: CourseService // Injection du service pour les cours
+    private courseService: CourseService,
+    private coursemanagement: CourseManagementService
   ) { }
 
   ngOnInit(): void {
@@ -124,6 +126,7 @@ export class StudentManagementComponent implements OnInit {
       }
     });
   }
+  
 
   showEnrolledUsers(courseId: number): void {
     this.selectedCourseWithUsers = this.courses.find(c => c.id === courseId) || null;
@@ -147,7 +150,7 @@ export class StudentManagementComponent implements OnInit {
       next: (data: Course[]) => {
         this.courses = data;
         console.log('Courses for user:', this.courses);
-        this.openCoursesDialog (this.courses);
+      //  this.openCoursesDialog (this.courses);
       },
       error: (err: any) => {
         this.errorMessage = 'Erreur lors de la récupération des cours.';
@@ -167,8 +170,20 @@ export class StudentManagementComponent implements OnInit {
     });
   }
   deleteEnrollment(userId: number, courseId: number): void {
+    this.coursemanagement.deleteEnrollment(userId, courseId).subscribe({
+      next: () => {
+        alert('Inscription supprimée avec succès.');
+      },
+      error: (err) => {
  
-    this.router.navigate(['/del-enrollement'], { queryParams: { userId, courseId } });
+        console.error('Erreur lors de la suppression de l\'inscription:', err);
+   
+        alert('Une erreur est survenue lors de la suppression de l\'inscription.');
+      }
+    });
   }
 }
+  
+
+
 

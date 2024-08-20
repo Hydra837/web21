@@ -1,14 +1,12 @@
-// dashboard.component.ts
-
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router'; 
+import { Router } from '@angular/router';
 import { DashboardService } from '../dashboard.service';
-import { Course } from '../Models/courseModel';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
 import { CourseService } from '../services/course.service';
-import { UserService } from '../user.service'; // Importation du service utilisateur
+import { UserService } from '../user.service';
 import { AuthenticationService } from '../authentication.service';
+import { Course } from '../Models/courseModel';
+import { User, UserCours } from '../Models/User';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,7 +21,8 @@ export class DashboardComponent implements OnInit {
   errorMessage: string = '';
   allCoursesWithEnrollments: any[] = []; 
   selectedCourseIdForAssignments: number | null = null;
-  userId: number | null = null; // Modifié de 0 à null pour correspondre à l'initialisation
+  userId: number | null = null;
+  usersWithCourses: UserCours[] = []; // Ajout de la propriété
 
   constructor(
     private router: Router, 
@@ -34,13 +33,21 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Récupérer les informations de l'utilisateur connecté
     this.userService.getCurrentUser().subscribe({
-      next: (user) => {
-        this.userId = user.id; // Récupérer l'ID de l'utilisateur
-        this.userRole = user.role; // Récupérer le rôle de l'utilisateur
-        this.userName = `${user.nom} ${user.prenom}`; // Récupérer le nom complet de l'utilisateur
-        this.loadCourses(); // Charger les cours après avoir récupéré les informations de l'utilisateur
+      next: (user: User | null) => {
+        if (user) {
+          this.userId = user.id; 
+          this.userRole = user.role; 
+          this.userName = `${user.nom} ${user.prenom}`; 
+          this.loadCourses(); 
+
+          if (user.role === 'Admin') {
+            this.getUsersWithCourses();
+          }
+        } else {
+          this.errorMessage = 'Utilisateur non connecté.';
+          console.error('Utilisateur non connecté');
+        }
       },
       error: (error) => {
         this.errorMessage = 'Erreur lors de la récupération des informations de l\'utilisateur.';
@@ -50,15 +57,13 @@ export class DashboardComponent implements OnInit {
   }
 
   loadCourses(): void {
-    if (this.userId) {
+    if (this.userId && this.userRole) {
       if (this.userRole === 'Professeur') {
         this.getTeachingCourses(this.userId);
       } else if (this.userRole === 'Etudiant') {
         this.getUnenrolledCourses(this.userId);
-         this.getEnrolledCourses(this.userId);
+        this.getEnrolledCourses(this.userId);
       }
-     
-      //this.getAllCoursesWithEnrollments();
     }
   }
 
@@ -102,11 +107,26 @@ export class DashboardComponent implements OnInit {
     ).subscribe(data => this.unenrolledCourses = data);
   }
 
-  editUser(): void {
-    console.log('Edit user functionality goes here');
+  getUsersWithCourses(): void {
+    this.dashboardService.getStudents().pipe(
+      catchError(error => {
+        this.errorMessage = 'Erreur lors de la récupération des utilisateurs avec leurs cours.';
+        console.error(error);
+        return of([]);
+      })
+    ).subscribe(data => this.usersWithCourses = data);
   }
 
-  showAssignments(courseId: number): void {
+  editUser(): void {
+    if (this.userId) {
+      // Naviguer vers le composant de mise à jour avec l'ID de l'utilisateur
+      this.router.navigate(['/update-user', this.userId]);
+    } else {
+      console.error('User ID is not available.');
+    }
+  }
+
+  showAssignments(courseId: number, userid:number): void {
     this.router.navigate(['/assignments-student'], { queryParams: { courseId, userId: this.userId } });
   }
 }

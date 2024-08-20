@@ -1,0 +1,43 @@
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Modifier vos informations</h2>
+  
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="nom">Nom</label>
+        <input id="nom" formControlName="nom" class="form-control" placeholder="Enter your last name"/>
+        <div *ngIf="userForm.get('nom')?.invalid && userForm.get('nom')?.touched">
+          <small class="text-danger">Nom est requis.</small>
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="prenom">Prénom</label>
+        <input id="prenom" formControlName="prenom" class="form-control" placeholder="Enter your first name"/>
+        <div *ngIf="userForm.get('prenom')?.invalid && userForm.get('prenom')?.touched">
+          <small class="text-danger">Prénom est requis.</small>
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="pseudo">Pseudo</label>
+        <input id="pseudo" formControlName="pseudo" class="form-control" placeholder="Enter your username"/>
+        <div *ngIf="userForm.get('pseudo')?.invalid && userForm.get('pseudo')?.touched">
+          <small class="text-danger">Pseudo est requis.</small>
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="mail">Email</label>
+        <input id="mail" type="email" formControlName="mail" class="form-control" placeholder="Enter your email"/>
+        <div *ngIf="userForm.get('mail')?.invalid && userForm.get('mail')?.touched">
+          <small class="text-danger">Email valide est requis.</small>
+        </div>
+      </div>
+  
+      <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">Update</button>
+      
+      <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="alert alert-success mt-3">{{ successMessage }}</div>
+    </form>
+  </div>
+  

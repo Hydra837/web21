@@ -1,1 +1,21 @@
-<p>user-info works!</p>
+<div class="container mt-5">
+    <h2>User Information</h2>
+  
+    <!-- Affichage des informations de l'utilisateur -->
+    <div *ngIf="user; else noUser">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">{{ user.nom }} {{ user.prenom }}</h5>
+          <p class="card-text"><strong>Role:</strong> {{ user.role }}</p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Message lorsque l'utilisateur n'est pas connecté -->
+    <ng-template #noUser>
+      <div class="alert alert-info">
+        {{ errorMessage }}
+      </div>
+    </ng-template>
+  </div>
+  

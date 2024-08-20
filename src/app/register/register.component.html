@@ -1,0 +1,53 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="nom">Nom</label>
+      <input id="nom" formControlName="nom" class="form-control" />
+      <div *ngIf="registerForm.get('nom')?.invalid && registerForm.get('nom')?.touched">
+        <small class="text-danger">Nom est requis.</small>
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <label for="prenom">Prénom</label>
+      <input id="prenom" formControlName="prenom" class="form-control" />
+      <div *ngIf="registerForm.get('prenom')?.invalid && registerForm.get('prenom')?.touched">
+        <small class="text-danger">Prénom est requis.</small>
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <label for="mail">Email</label>
+      <input id="mail" formControlName="mail" class="form-control" />
+      <div *ngIf="registerForm.get('mail')?.invalid && registerForm.get('mail')?.touched">
+        <small class="text-danger">Veuillez entrer un email valide.</small>
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <label for="password">Mot de passe</label>
+      <input id="password" type="password" formControlName="password" class="form-control" />
+      <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+        <small class="text-danger">Mot de passe est requis (au moins 6 caractères).</small>
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <label for="pseudo">Pseudo</label>
+      <input id="pseudo" formControlName="pseudo" class="form-control" />
+      <div *ngIf="registerForm.get('pseudo')?.invalid && registerForm.get('pseudo')?.touched">
+        <small class="text-danger">Pseudo est requis.</small>
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <label for="role">Rôle</label>
+      <input id="role" formControlName="role" class="form-control" />
+      <div *ngIf="registerForm.get('role')?.invalid && registerForm.get('role')?.touched">
+        <small class="text-danger">Rôle est requis.</small>
+      </div>
+    </div>
+  
+    <button type="submit" class="btn btn-primary">S'inscrire</button>
+  </form>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  
