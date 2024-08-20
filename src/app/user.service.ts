@@ -100,6 +100,7 @@ export class UserService {
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: HttpErrorResponse): Observable<T> => {
       let errorMessage = 'Une erreur est survenue.';
+      
   
     
       if (error.status === 400) {

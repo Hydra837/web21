@@ -1,33 +1,35 @@
 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-  <div class="form-group">
-    <label for="username">Username</label>
+  <div class="form-group mb-3">
+    <label for="username">Nom d'utilisateur</label>
     <input id="username" formControlName="username" class="form-control" />
     <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
-      <small class="text-danger">Username is required.</small>
+      <small class="text-danger">Le nom d'utilisateur est requis.</small>
     </div>
   </div>
 
-  <div class="form-group">
-    <label for="password">Password</label>
+  <div class="form-group mb-3">
+    <label for="password">Mot de passe</label>
     <input id="password" type="password" formControlName="password" class="form-control" />
     <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-      <small class="text-danger">Password is required.</small>
+      <small class="text-danger">Le mot de passe est requis.</small>
     </div>
   </div>
 
-  <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">Login</button>
+  <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid">Se connecter</button>
 
   <!-- Message d'erreur -->
-  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+    {{ errorMessage }}
+  </div>
 
   <!-- Lien Forgot Password -->
   <div class="mt-3">
-    <a routerLink="/forgot-password" class="btn btn-link">Forgot Password?</a>
+    <a routerLink="/forgot-password" class="btn btn-link">Mot de passe oublié ?</a>
   </div>
 
   <!-- Bouton ou lien pour s'inscrire -->
-  <div class="mt-3">
-    <p>Don't have an account?</p>
-    <a routerLink="/register" class="btn btn-secondary">Register Here</a>
+  <div class="mt-3 text-center">
+    <p>Vous n'avez pas de compte ?</p>
+    <a routerLink="/register" class="btn btn-secondary">S'inscrire ici</a>
   </div>
 </form>

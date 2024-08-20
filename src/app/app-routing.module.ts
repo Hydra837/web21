@@ -22,6 +22,7 @@ import { RegisterComponent } from './register/register.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { UpdateUserComponent } from './update-user/update-user.component';
 import { AccessDeniedComponent } from './access-denied/access-denied.component';
+import { AllGradeStudentComponent } from './all-grade-student/all-grade-student.component'; // Import the component
 
 export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
@@ -45,10 +46,12 @@ export const routes: Routes = [
   { path: 'courses-teacher/:teacherId', component: EnrolledCourseTeacherComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Professeur'] } },
   { path: 'register', component: RegisterComponent },
   { path: 'update-user/:id', component: UpdateUserComponent, canActivate: [RoleGuard], data: { roles: ['Etudiant', 'Admin', 'Professeur'] } },
+  { path: 'all-grade/:userId', component: AllGradeStudentComponent, canActivate: [RoleGuard], data: { roles: ['Etudiant', 'Admin', 'Professeur'] } }, // New route added here
   { path: '', redirectTo: '/course-catalog', pathMatch: 'full' },
   { path: 'access-denied', component: AccessDeniedComponent },
   { path: '**', redirectTo: '/course-catalog' },
 ];
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]

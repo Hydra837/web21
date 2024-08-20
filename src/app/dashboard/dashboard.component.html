@@ -1,53 +1,53 @@
 <div class="container mt-5">
   <h2 class="mb-4 text-center">Dashboard</h2>
 
-  <!-- Section pour afficher les informations de l'utilisateur -->
   <div class="card mb-4">
     <div class="card-body">
       <h3 class="card-title text-primary">User Information</h3>
       <p class="card-text"><strong>Name:</strong> {{ userName }}</p>
       <p class="card-text"><strong>Role:</strong> {{ userRole }}</p>
-      <button class="btn btn-warning" (click)="editUser()">Edit</button>
+      <!-- <button class="btn btn-warning" (click)="editUser()">Edit</button> -->
     </div>
   </div>
 
-  <!-- Section pour les étudiants -->
+  <!-- Section for Students -->
   <div *ngIf="userRole === 'Etudiant'" class="mb-4">
     <h3 class="mb-3 text-primary">Tes cours :</h3>
     <ul class="list-group">
       <li *ngFor="let course of courses" class="list-group-item list-group-item-info">
         <div class="d-flex justify-content-between align-items-center">
           <span>{{ course.Nom }} - {{ course.description }}</span>
-          <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id!, userId!)">Voir les Assignements</button>
+
+          <!-- <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id!, userId!)">Voir les Assignements</button> -->
         </div>
       </li>
     </ul>
 
-    <h3 class="mb-3 text-primary mt-4">Cours dans lesquels tu peux t'inscrire</h3>
+    <h3 class="mb-3 text-primary mt-4">Tes Notes :</h3>
     <ul class="list-group">
-      <li *ngFor="let course of unenrolledCourses" class="list-group-item list-group-item-warning">
+      <li *ngFor="let grade of grades" class="list-group-item list-group-item-success">
         <div class="d-flex justify-content-between align-items-center">
-          <span>{{ course.Nom }} - {{ course.description }}</span>
-        
+          <span>{{ grade.coursName }} <br>  Devoir : {{grade.assignementTitle}}  resultat : {{ grade.grade }} / 100</span>
         </div>
       </li>
     </ul>
   </div>
 
-  <!-- Section pour les professeurs -->
+  <!-- Section for Professors -->
   <div *ngIf="userRole === 'Professeur'" class="mb-4">
     <h3 class="mb-3 text-success">Vos Cours</h3>
     <ul class="list-group">
       <li *ngFor="let course of courses" class="list-group-item list-group-item-success">
         <div class="d-flex justify-content-between align-items-center">
           <span>{{ course.Nom }} - {{ course.description }}</span>
-         <!-- // <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id!)">Voir les Assignements</button> -->
+          <!-- Uncomment to enable Assignments Button -->
+          <!-- <button class="btn btn-primary btn-sm" (click)="showAssignments(course.id!)">Voir les Assignements</button> -->
         </div>
       </li>
     </ul>
   </div>
 
-
+  <!-- Section for Admins -->
   <div *ngIf="userRole === 'Admin'" class="mb-4">
     <h3 class="mb-3 text-danger">Tous les Utilisateurs et leurs Cours</h3>
     <ul class="list-group">
@@ -57,8 +57,9 @@
           <h6>Cours :</h6>
           <ul class="list-group">
             <li *ngFor="let course of user.cours" class="list-group-item d-flex justify-content-between align-items-center">
-              {{ course.Nom }} - {{ course.description }}
-              <button class="btn btn-info btn-sm" (click)="showAssignments(course.id!, user.id!)">Voir Assignements</button>
+              <span>{{ course.Nom }} - {{ course.description }}</span>
+              <!-- Uncomment to enable Assignments Button -->
+              <!-- <button class="btn btn-info btn-sm" (click)="showAssignments(course.id!, user.id!)">Voir Assignements</button> -->
             </li>
           </ul>
         </div>
@@ -69,7 +70,7 @@
     </ul>
   </div>
 
-  <!-- Template pour aucun utilisateur -->
+  <!-- Template for No Data -->
   <ng-template #noData>
     <p>Aucun utilisateur trouvé.</p>
   </ng-template>

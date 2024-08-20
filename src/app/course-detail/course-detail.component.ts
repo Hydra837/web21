@@ -3,9 +3,11 @@ import { ActivatedRoute } from '@angular/router';
 import { CourseService } from '../services/course.service';
 import { StudentEnrollmentService } from '../services/student-enrollement.service';
 import { GradeService } from '../grade.service'; // Service pour obtenir les notes
+import { AssignementsService } from '../assignements.service'; // Service pour obtenir les devoirs
 import { Course } from '../Models/courseModel';
 import { User } from '../Models/User';
 import { Grade } from '../Models/GradeModel'; // Assuming you have a Grade model
+import { AssignementsDTO } from '../Models/assignementsModel'; // Assuming you have an Assignment model
 
 @Component({
   selector: 'app-course-detail',
@@ -16,13 +18,16 @@ export class CourseDetailComponent implements OnInit {
   course: Course | null = null; // Initialement null pour gérer l'état de chargement
   enrolledUsers: User[] = []; // Pour stocker la liste des utilisateurs inscrits
   selectedUser: User | null = null; // Utilisateur sélectionné pour afficher les détails
-  selectedUserGrades: Grade[] | null = null; // Pour stocker les notes de l'utilisateur sélectionné
+  selectedUserGrades: Grade[] | null = null;
+  assignments: AssignementsDTO[] = []; // Liste des devoirs du cours
   errorMessage: string | null = null;
+  isLoading: boolean = true; // Pour gérer l'état de chargement
 
   constructor(
     private courseService: CourseService,
     private studentEnrollmentService: StudentEnrollmentService,
     private gradeService: GradeService, // Injectez le service pour obtenir les notes
+    private assignmentService: AssignementsService, // Injectez le service pour obtenir les devoirs
     private route: ActivatedRoute // Pour obtenir l'ID du cours à partir de l'URL
   ) { }
 
@@ -32,6 +37,7 @@ export class CourseDetailComponent implements OnInit {
       const courseId = +params.get('id')!;
       this.getCourseById(courseId);
       this.getAllUsersByCourse(courseId);
+      this.getAssignmentsByCourse(courseId); // Récupère les devoirs
     });
   }
 
@@ -40,10 +46,12 @@ export class CourseDetailComponent implements OnInit {
       next: (course: Course) => {
         console.log(course); // Vérifiez les données reçues
         this.course = course;
+        this.isLoading = false;
       },
       error: (err: any) => {
         this.errorMessage = 'Error fetching course details.';
         console.error(err);
+        this.isLoading = false;
       }
     });
   }
@@ -61,20 +69,37 @@ export class CourseDetailComponent implements OnInit {
     });
   }
 
+  getAssignmentsByCourse(id: number): void {
+    this.assignmentService.getByCourse(id).subscribe({
+      next: (assignments: AssignementsDTO[]) => {
+        console.log(assignments); // Vérifiez les données reçues
+        this.assignments = assignments;
+      },
+      error: (err: any) => {
+        this.errorMessage = 'Error fetching assignments.';
+        console.error(err);
+      }
+    });
+  }
+
   viewUserDetails(userId: number): void {
     this.selectedUser = this.enrolledUsers.find(user => user.id === userId) || null;
-
+    
     if (this.selectedUser) {
-      this.gradeService.getGradesByUserAndCourse(userId, this.course?.id || 0).subscribe({
+      const courseId = this.course?.id ?? 0;
+      this.gradeService.getGradesByUserAndCourse(userId, courseId).subscribe({
         next: (grades: Grade[]) => {
-          console.log(grades); // Vérifiez les données reçues
+          console.log('Grades received:', grades); // Affiche les données reçues pour débogage
           this.selectedUserGrades = grades;
         },
         error: (err: any) => {
           this.errorMessage = 'Error fetching grades.';
-          console.error(err);
+          console.error('Error details:', err); // Affiche les détails de l'erreur pour débogage
         }
       });
+    } else {
+      // Gérer le cas où l'utilisateur sélectionné n'a pas été trouvé
+      this.errorMessage = 'User not found.';
     }
   }
 }

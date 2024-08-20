@@ -1,5 +1,5 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -28,12 +28,11 @@ export class AuthenticationService {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
-  // Connexion de l'utilisateur
+  
   login(username: string, password: string): Observable<any> {
     return this.http.post<any>(`${this.authUrl}/login`, { username, password })
       .pipe(
         map(response => {
-          // Stocker le token JWT dans sessionStorage si le code s'exécute dans le navigateur
           if (this.isBrowser) {
             sessionStorage.setItem('jwtToken', response.token);
           }
@@ -43,7 +42,7 @@ export class AuthenticationService {
       );
   }
 
-  // Obtenir l'ID de l'utilisateur depuis le token JWT
+
   getUserId(): number | null {
     const token = this.getToken();
     if (token) {
@@ -135,39 +134,48 @@ export class AuthenticationService {
     );
   }
 
-  // Réinitialiser le mot de passe
   forgotPassword(login: Login): Observable<any> {
     return this.http.post<any>(this.forgotPasswordUrl, login).pipe(
       catchError(this.handleError('forgotPassword'))
     );
   }
 
-  // Gestion des erreurs
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
+
+  private handleError<T>(operation: string, result?: T) {
+    return (error: HttpErrorResponse): Observable<T> => {
       let errorMessage = 'Une erreur est survenue.';
-
-      // Gestion des erreurs spécifiques
-      switch (error.status) {
-        case 400:
-          errorMessage = 'Requête invalide. Vérifiez les données envoyées.';
-          break;
-        case 401:
-          errorMessage = 'Non autorisé. Veuillez vérifier vos informations d\'identification.';
-          break;
-        case 404:
-          errorMessage = 'Compte Introuvable.';
-          break;
-        case 500:
-          errorMessage = `Erreur serveur: ${error.error?.Message || error.message}`;
-          break;
-        default:
-          errorMessage = `Erreur inconnue: ${error.message}`;
-          break;
+  
+ 
+      if (operation === 'register' && error.status === 400) {
+        if (error.error?.Message === 'Ce pseudo est déjà pris.') {
+          errorMessage = 'Ce pseudo est déjà pris.';
+        } else {
+          errorMessage = 'Les données envoyées sont invalides. Veuillez vérifier les champs.';
+        }
+      } else {
+        switch (error.status) {
+          case 400:
+            errorMessage = 'Requête invalide. Vérifiez les données envoyées.';
+            break;
+          case 401:
+            errorMessage = 'Non autorisé. Veuillez vérifier vos informations d\'identification.';
+            break;
+          case 404:
+            errorMessage = 'Compte introuvable.';
+            break;
+          case 500:
+            errorMessage = `Erreur serveur: ${error.error?.Message || error.message}`;
+            break;
+          default:
+            errorMessage = `Erreur inconnue: ${error.message}`;
+            break;
+        }
       }
-
+  
       console.error(`${operation} a échoué: ${errorMessage}`);
+      // Ensure the function always returns an Observable<T>
       return throwError(() => new Error(`${operation} a échoué: ${errorMessage}`));
     };
   }
+  
 }

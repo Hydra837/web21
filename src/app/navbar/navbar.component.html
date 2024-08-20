@@ -5,9 +5,9 @@
       <li class="nav-item">
         <a class="nav-link" routerLink="/course-catalog" routerLinkActive="active">Course Catalog</a>
       </li>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link" routerLink="/course-detail" routerLinkActive="active">Course Detail</a>
-      </li>
+      </li> -->
       <li class="nav-item" *ngIf="userRole === 'Professeur' || userRole === 'Admin'">
         <a class="nav-link" routerLink="/courses" routerLinkActive="active">Course Management</a>
       </li>

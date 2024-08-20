@@ -52,7 +52,7 @@ export class GradeStudentComponent implements OnInit {
   }
   getCourseName(courseId: number): string {
     const course = this.courses.find(c => c.id === courseId);
-    return course ? course.Nom : 'Course Unknown';
+    return course ? course.Nom : 'Cours inconnu';
   }
   
   loadAssignment(): void {

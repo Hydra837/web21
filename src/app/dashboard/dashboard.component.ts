@@ -4,9 +4,11 @@ import { DashboardService } from '../dashboard.service';
 import { CourseService } from '../services/course.service';
 import { UserService } from '../user.service';
 import { AuthenticationService } from '../authentication.service';
+import { StudentManagementService } from '../student-management.service';
 import { Course } from '../Models/courseModel';
 import { User, UserCours } from '../Models/User';
 import { catchError, of } from 'rxjs';
+import { UserAssignment } from '../Models/UserAssignement';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,48 +24,48 @@ export class DashboardComponent implements OnInit {
   allCoursesWithEnrollments: any[] = []; 
   selectedCourseIdForAssignments: number | null = null;
   userId: number | null = null;
-  usersWithCourses: UserCours[] = []; // Ajout de la propriété
+  usersWithCourses: UserCours[] = []; 
+  grades: UserAssignment [] = []; // To hold the grades for a student
 
   constructor(
     private router: Router, 
     private dashboardService: DashboardService, 
     private courseService: CourseService,
     private userService: UserService, 
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private studentManagement: StudentManagementService
   ) {}
 
   ngOnInit(): void {
-    this.userService.getCurrentUser().subscribe({
-      next: (user: User | null) => {
-        if (user) {
-          this.userId = user.id; 
-          this.userRole = user.role; 
-          this.userName = `${user.nom} ${user.prenom}`; 
-          this.loadCourses(); 
-
-          if (user.role === 'Admin') {
-            this.getUsersWithCourses();
-          }
-        } else {
-          this.errorMessage = 'Utilisateur non connecté.';
-          console.error('Utilisateur non connecté');
-        }
-      },
-      error: (error) => {
+    this.userService.getCurrentUser().pipe(
+      catchError(error => {
         this.errorMessage = 'Erreur lors de la récupération des informations de l\'utilisateur.';
         console.error(error);
+        return of(null);
+      })
+    ).subscribe(user => {
+      if (user) {
+        this.userId = user.id; 
+        this.userRole = user.role; 
+        this.userName = `${user.nom} ${user.prenom}`; 
+        this.loadUserSpecificData();
+      } else {
+        this.errorMessage = 'Utilisateur non connecté.';
+        console.error('Utilisateur non connecté');
       }
     });
   }
 
-  loadCourses(): void {
-    if (this.userId && this.userRole) {
-      if (this.userRole === 'Professeur') {
-        this.getTeachingCourses(this.userId);
-      } else if (this.userRole === 'Etudiant') {
-        this.getUnenrolledCourses(this.userId);
-        this.getEnrolledCourses(this.userId);
-      }
+  loadUserSpecificData(): void {
+    if (this.userRole === 'Professeur') {
+      this.getTeachingCourses(this.userId!);
+    } else if (this.userRole === 'Etudiant') {
+      this.getUnenrolledCourses(this.userId!);
+      this.getEnrolledCourses(this.userId!);
+      this.getGrades(this.userId!);
+
+    } else if (this.userRole === 'Admin') {
+      this.getUsersWithCourses();
     }
   }
 
@@ -117,16 +119,29 @@ export class DashboardComponent implements OnInit {
     ).subscribe(data => this.usersWithCourses = data);
   }
 
+  getGrades(userId: number): void {
+    this.studentManagement.getUserAssignments(userId).pipe(
+      catchError(error => {
+        this.errorMessage = 'Erreur lors de la récupération des notes.';
+        console.error(error);
+        return of([]);
+      })
+    ).subscribe(data => this.grades = data);
+  }
+
   editUser(): void {
     if (this.userId) {
-      // Naviguer vers le composant de mise à jour avec l'ID de l'utilisateur
       this.router.navigate(['/update-user', this.userId]);
     } else {
-      console.error('User ID is not available.');
+      console.error('Utilisateur introuvable.');
     }
   }
 
-  showAssignments(courseId: number, userid:number): void {
-    this.router.navigate(['/assignments-student'], { queryParams: { courseId, userId: this.userId } });
+  showAssignments(courseId: number, userId: number): void {
+    this.router.navigate(['/assignments-student'], { queryParams: { courseId, userId } });
+  }
+
+  viewAllGrades(userId: number): void {
+    this.router.navigate(['/all-grade', userId]);
   }
 }

@@ -1,0 +1,28 @@
+<div class="container">
+  <h1 class="mb-4 text-primary">Tous les cours et grades :</h1>
+  
+  <!-- Message d'erreur -->
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  
+  <!-- Tableau des assignments -->
+  <table *ngIf="!errorMessage" class="table table-striped table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Cours</th>
+        <th>Assignment Title</th>
+        <th>Grade</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let assignment of userAssignments">
+        <td>{{ assignment.nom }}</td>
+        <td>{{ assignment.prenom }}</td>
+        <td>{{ assignment.coursName }}</td>
+        <td>{{ assignment.assignementTitle || 'N/A' }}</td>
+        <td>{{ assignment.grade !== null ? assignment.grade : 'N/A' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

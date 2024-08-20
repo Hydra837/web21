@@ -127,7 +127,9 @@ export class StudentManagementComponent implements OnInit {
     });
   }
   
-
+  handleUserId(userId: number): void {
+    this.router.navigate(['/all-grade', userId]);
+  }
   showEnrolledUsers(courseId: number): void {
     this.selectedCourseWithUsers = this.courses.find(c => c.id === courseId) || null;
     if (this.selectedCourseWithUsers) {
@@ -166,7 +168,7 @@ export class StudentManagementComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      // Handle result if necessary
+
     });
   }
   deleteEnrollment(userId: number, courseId: number): void {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StudentEnrollmentService } from '../services/student-enrollement.service';
 import { UserService } from '../user.service';
-import { CourseService } from '../services/course.service'; // Assurez-vous que le chemin est correct
+import { CourseService } from '../services/course.service';
 import { Course } from '../Models/courseModel';
 import { User } from '../Models/User';
 
@@ -24,24 +24,23 @@ export class EnrollStudentComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadCourses();
     this.loadStudents();
   }
 
-  // Charger les cours disponibles
   loadCourses(): void {
-    this.courseService.getAvailableCourses().subscribe({
-      next: (data) => {
-        this.courses = data;
-      },
-      error: (error) => {
-        console.error('Erreur lors du chargement des cours:', error);
-        this.message = 'Erreur lors du chargement des cours.';
-      }
-    });
+    if (this.selectedStudentId !== undefined) {
+      this.courseService.getUnenrolledCourses(this.selectedStudentId).subscribe({
+        next: (data) => {
+          this.courses = data;
+        },
+        error: (error) => {
+          console.error('Erreur lors du chargement des cours:', error);
+          this.message = 'Erreur lors du chargement des cours.';
+        }
+      });
+    }
   }
 
-  // Charger les étudiants
   loadStudents(): void {
     this.userService.getUsersByRole('Etudiant').subscribe({
       next: (data) => {
@@ -54,24 +53,22 @@ export class EnrollStudentComponent implements OnInit {
     });
   }
 
-  // Inscrire l'étudiant au cours sélectionné
+  onStudentChange(): void {
+    this.loadCourses();
+  }
+
   enrollUser(): void {
     if (this.selectedStudentId === undefined || this.selectedCourseId === undefined) {
       this.message = 'Veuillez sélectionner un étudiant et un cours.';
       return;
     }
 
-    // Inscrire l'utilisateur au cours
     this.enrollmentService.enrollStudentCourse(this.selectedCourseId, this.selectedStudentId).subscribe({
       next: () => {
         this.message = 'Inscription réussie.';
-        // Réinitialiser les sélections après l'inscription
         this.selectedCourseId = undefined;
         this.selectedStudentId = undefined;
-      },
-      error: (error) => {
-        console.error('Erreur lors de l\'inscription:', error);
-        this.message = 'Erreur lors de l\'inscription.';
+        this.courses = []; 
       }
     });
   }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { catchError, of } from 'rxjs';
+import { catchError, of, throwError } from 'rxjs';
 import { CourseService } from '../services/course.service';
 import { UserService } from '../user.service';
 import { Course } from '../Models/courseModel';
@@ -54,11 +54,11 @@ export class CoursesComponent implements OnInit {
     });
 
     this.addCourseForm = this.fb.group({
-      Nom: ['', Validators.required],
+      Nom : ['', Validators.required],
       description: ['', Validators.required],
       dateDebut: ['', Validators.required],
       dateFin: ['', Validators.required],
-      available: [false]
+      available: [true]
     });
 
     this.updateCourseForm = this.fb.group({
@@ -67,33 +67,47 @@ export class CoursesComponent implements OnInit {
       description: ['', Validators.required],
       dateDebut: ['', Validators.required],
       dateFin: ['', Validators.required],
-      available: [false]
+      available: [true]
     });
   }
 
   ngOnInit(): void {
     this.isLoading = true; // Démarrer le chargement
     this.authService.getCurrentUser().pipe(
-      catchError(this.handleError('chargement des informations de l\'utilisateur'))
+      catchError(error => {
+        this.handleError('Chargement des informations de l\'utilisateur', error);
+        return of(null); // Retourner un observable avec une valeur null en cas d'erreur
+      })
     ).subscribe(user => {
-      this.user = user;
+      this.isLoading = false; 
+  
       if (user) {
+        this.user = user;
         this.userRole = user.role;
         this.userId = user.id;
-        this.isProfessor = this.userRole === 'Professeur';
-
-        if (this.isProfessor && this.userId) {
+  
+      
+        if (this.userRole === 'Professeur') {
+          this.isProfessor = true;
           this.loadCoursesForProfessor(this.userId);
           this.selectedprof = this.userId;
+        } else if (this.userRole === 'Admin') {
+          this.isProfessor = false;
+          this.loadCourses(); 
         } else {
-          this.loadCourses(); // Charger tous les cours si ce n'est pas un professeur
+          this.isProfessor = false;
+          this.courses = []; 
         }
+      } else {
+        this.courses = []; 
       }
-      this.loadUsers();
+  
+      this.loadUsers(); 
     });
   }
+  
 
-  private handleError(operation: string) {
+  private handleError(operation: string, error?: any, any?: any) {
     return (error: any) => {
       this.errorMessage = `Erreur lors de ${operation}.`;
       console.error(`${operation} échoué:`, error);
@@ -167,20 +181,27 @@ export class CoursesComponent implements OnInit {
 
   submitNewCourse(): void {
     if (this.addCourseForm.valid) {
-      const newCourse = this.addCourseForm.value as Course;
-      this.isLoading = true; // Démarrer le chargement
-      this.courseService.createCourse(newCourse).pipe(
-        catchError(this.handleError('ajout du cours'))
-      ).subscribe(() => {
-        this.loadCourses();
-        this.addCourseForm.reset();
-        this.showAddCourseFormFlag = false;
-        this.isLoading = false; // Arrêter le chargement après la fin
-      });
+        const newCourse = this.addCourseForm.value as Course;
+
+        if (this.userRole === 'Professeur' && this.userId) {
+            newCourse.professeurId = this.userId; // Assign current user as the professor if the user is a professor
+        } else {
+            newCourse.professeurId = this.addCourseForm.get('selectedProfessorId')?.value; // Assign selected professor
+        }
+
+        this.isLoading = true; // Start loading
+        this.courseService.createCourse(newCourse).pipe(
+            catchError(this.handleError('ajout du cours'))
+        ).subscribe(() => {
+            this.loadCourses();
+            this.addCourseForm.reset();
+            this.showAddCourseFormFlag = false;
+            this.isLoading = false; // Stop loading
+        });
     } else {
-      this.errorMessage = 'Le formulaire contient des erreurs.';
+        this.errorMessage = 'Le formulaire contient des erreurs.';
     }
-  }
+}
 
   cancelAddCourse(): void {
     this.showAddCourseFormFlag = false;
@@ -225,7 +246,7 @@ export class CoursesComponent implements OnInit {
     const course = this.courses.find(c => c.id === id);
     if (course) {
       this.selectedCourse = course;
-      this.updateCourseForm.setValue({
+      this.updateCourseForm.patchValue({
         id: course.id,
         Nom: course.Nom,
         description: course.description,
@@ -237,19 +258,23 @@ export class CoursesComponent implements OnInit {
       this.errorMessage = 'Cours introuvable.';
     }
   }
-
+  
   saveUpdatedCourse(): void {
     if (this.updateCourseForm.valid) {
       const updatedCourse = this.updateCourseForm.value as Course;
       if (updatedCourse.id) {
-        this.isLoading = true; // Démarrer le chargement
+        this.isLoading = true; 
         this.courseService.updateCourse(updatedCourse.id.toString(), updatedCourse).pipe(
-          catchError(this.handleError('mise à jour du cours'))
+          catchError(error => {
+            this.isLoading = false;
+            this.errorMessage = `Erreur lors de la mise à jour du cours: ${error.message}`;
+            return throwError(error); 
+          })
         ).subscribe(() => {
           this.loadCourses();
-          this.updateCourseForm.reset();
+          this.updateCourseForm.reset(); // Assurez-vous que vous ne réinitialisez pas les champs dont vous avez encore besoin
           this.selectedCourse = null;
-          this.isLoading = false; // Arrêter le chargement après la fin
+          this.isLoading = false; 
         });
       } else {
         this.errorMessage = 'L\'ID du cours est manquant.';
@@ -258,6 +283,8 @@ export class CoursesComponent implements OnInit {
       this.errorMessage = 'Le formulaire de mise à jour contient des erreurs.';
     }
   }
+  
+  
 
   cancelUpdate(): void {
     this.updateCourseForm.reset();
@@ -318,7 +345,7 @@ export class CoursesComponent implements OnInit {
       ).subscribe(() => {
         this.loadCourses();
         this.showEnrolledUsers(this.selectedCourseWithUsers?.id || 0);
-        this.isLoading = false; // Arrêter le chargement après la fin
+       this.isLoading = false; // Arrêter le chargement après la fin
       });
     } else {
       this.errorMessage = 'Veuillez entrer une note valide.';

@@ -19,7 +19,7 @@ export class CourseManagementService {
     );
   }
 
-  // Méthode pour supprimer une inscription d'un utilisateur à un cours
+
   deleteEnrollment(studentId: number, courseId: number): Observable<any> {
     const url = `${this.baseUrl}/DeleteEnrollment?studentId=${studentId}&courseId=${courseId}`;
     return this.http.delete(url).pipe(
@@ -27,7 +27,7 @@ export class CourseManagementService {
     );
   }
 
-  // Méthode pour supprimer un enseignant d'un cours
+
   removeTeacher(teacherId: number, courseId: number): Observable<any> {
     const url = `${this.baseUrl}/Courses/${courseId}/Teachers/${teacherId}`;
     return this.http.delete(url).pipe(
@@ -35,7 +35,7 @@ export class CourseManagementService {
     );
   }
 
-  // Méthode pour mettre à jour les informations d'un enseignant dans un cours
+
   updateTeacher(teacherId: number, courseId: number): Observable<any> {
     const url = `${this.baseUrl}/UpdateTeacher?teacherId=${teacherId}&courseId=${courseId}`;
     return this.http.put(url, {}).pipe(
@@ -43,7 +43,7 @@ export class CourseManagementService {
     );
   }
 
-  // Méthode pour obtenir les informations d'un enseignant
+
   getTeacher(teacherId: number): Observable<any> {
     const url = `${this.baseUrl}/Teachers/${teacherId}`;
     return this.http.get(url).pipe(
@@ -51,7 +51,7 @@ export class CourseManagementService {
     );
   }
 
-  // Gestion des erreurs
+
   private handleError(operation = 'operation') {
     return (error: any): Observable<never> => {
       console.error(`${operation} failed: ${error.message}`);

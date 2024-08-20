@@ -34,7 +34,7 @@ export class LoginComponent {
         next: (response) => {
           console.log('Connexion réussie:', response);
           this.authService.setToken(response.token); // Stockez le token dans le service d'authentification
-          this.router.navigate(['/home']); // Redirection après connexion réussie
+          location.reload(); // Recharger la page
         },
         error: (error) => {
           console.error('Erreur lors de la connexion:', error);
@@ -51,7 +51,7 @@ export class LoginComponent {
     const control = this.loginForm.get(field);
 
     if (!control) {
-      return false; // or true if you want to handle undefined controls as invalid
+      return false; // ou true si vous voulez traiter les contrôles non définis comme invalides
     }
 
     return control.invalid && (control.touched || control.dirty);

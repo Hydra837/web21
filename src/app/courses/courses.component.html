@@ -16,7 +16,6 @@
     <table class="table table-striped table-hover">
       <thead class="thead-dark">
         <tr>
-          <!-- <th>ID</th> -->
           <th>Nom</th>
           <th>Description</th>
           <th>Date de Début</th>
@@ -28,7 +27,6 @@
       </thead>
       <tbody>
         <tr *ngFor="let course of courses">
-          <!-- <td>{{ course.id }}</td> -->
           <td>{{ course.Nom }}</td>
           <td>{{ course.description }}</td>
           <td>{{ course.dateDebut | date: 'shortDate' }}</td>
@@ -75,7 +73,6 @@
         <input type="checkbox" id="courseAvailable" class="form-check-input" formControlName="available">
         <label for="courseAvailable" class="form-check-label">Disponible</label>
       </div>
-      <!-- Ajouter un champ caché ou désactiver le champ de sélection du professeur -->
       <div *ngIf="userRole !== 'Professeur'" class="mb-3">
         <label for="professorSelect" class="form-label">Sélectionnez un Professeur :</label>
         <select id="professorSelect" formControlName="selectedProfessorId" class="form-select">
@@ -88,7 +85,8 @@
   </div>
 </div>
 
-<!-- Formulaire pour ajouter un professeur à un cours -->
+
+<!-- Formulaire pour ajouter un professeur au cours -->
 <div *ngIf="showProfessorForm" class="card mb-4 shadow" [class.disabled]="isLoading">
   <div class="card-header bg-primary text-white">
     <h2>Ajouter un Professeur au Cours</h2>
@@ -113,7 +111,6 @@
   </div>
 </div>
 
-<!-- Formulaire pour mettre à jour un cours -->
 <div *ngIf="selectedCourse" class="card mb-4 update-course-form shadow" [class.disabled]="isLoading">
   <div class="card-header bg-warning text-white">
     <h2>Modifier le Cours</h2>
@@ -145,10 +142,9 @@
     </form>
   </div>
 </div>
-
-<!-- Bouton pour afficher le component EnrollStudent -->
+<!-- Bouton pour afficher le composant EnrollStudent -->
 <button class="btn btn-secondary mb-4" 
-        [disabled]="isProfesseur() || isLoading" 
+        [disabled]="isProfessor || isLoading" 
         (click)="openEnrollStudentDialog()">
   <i class="fas fa-chalkboard-teacher me-2"></i> Inscrire un Étudiant
 </button>
@@ -171,11 +167,11 @@
         <tr *ngFor="let user of enrolledUsers">
           <td>{{ user.nom }} {{ user.prenom }}</td>
           <td>
-            <input [(ngModel)]="user.grade" type="number" min="0" max="20" class="form-control" style="width: 80px;" />
+            <!-- Optionally include a field for grades here -->
           </td>
           <td>
             <button class="btn btn-danger btn-sm me-1" (click)="deleteEnrollment(user.id, selectedCourseWithUsers.id!)" [disabled]="isLoading">Supprimer Inscription</button>
-            <button class="btn btn-success btn-sm" (click)="updateGrade(user.id, selectedCourseWithUsers.id || 0, user.grade)" [disabled]="isLoading">Mettre à jour la Note</button>
+            <!-- Optionally include a button for updating grades here -->
           </td>
         </tr>
       </tbody>

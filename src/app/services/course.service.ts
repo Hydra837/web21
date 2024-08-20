@@ -11,7 +11,7 @@ import { UserService } from '../user.service'; // Assurez-vous d'importer le Use
 })
 export class CourseService {
   private apiUrl = 'https://localhost:7233/api/Cours'; 
-  private getCoursesByTeacherUrl = `${this.apiUrl}/Cours/cours/professeur`;
+  private getCoursesByTeacherUrl = `${this.apiUrl}/Cours/professeur`;
   private apiCoursesForUsers = 'https://localhost:7233/api/UsersContoller/GetAllCourseEachCourse';
   private createCourseUrl = `${this.apiUrl}/Cours`;
   private availableCoursesUrl = `${this.apiUrl}/available`;

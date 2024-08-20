@@ -1,44 +1,54 @@
-<div class="container mt-5">
-  <!-- Détails du cours -->
-  <div *ngIf="course; else loading" class="course-details">
-    <h2 class="mb-4">{{ course.Nom }}</h2>
-    <p class="lead text-muted">{{ course.description }}</p>
-    <p class="lead text-muted"> Date de début : {{ course.dateDebut | date }}</p>
-    <p class="lead text-muted"> Date de fin : {{ course.dateFin | date }}</p>
+<div *ngIf="isLoading" class="loading-overlay">
+  <p>Chargement en cours...</p>
+</div>
 
-    <!-- Section Enrolled Users -->
-    <div class="mt-4">
-      <h3 class="mb-3">Enrolled Users</h3>
-      <ul class="list-group">
-        <li *ngFor="let user of enrolledUsers" class="list-group-item d-flex justify-content-between align-items-center">
-          {{ user.nom }} {{ user.prenom }} ({{ user.mail }})
-          <button class="btn btn-info btn-sm" (click)="viewUserDetails(user.id)">View Details</button>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Section pour afficher les résultats d'un utilisateur -->
-    <div *ngIf="selectedUserGrades" class="mt-4">
-      <h4 class="mb-3">Grades for {{ selectedUser?.nom }} {{ selectedUser?.prenom }}</h4>
-      <ul class="list-group">
-        <li *ngFor="let grade of selectedUserGrades" class="list-group-item">
-          ::> {{ grade.grade }} / 100
-        </li>
-      </ul>
-    </div>
+<div *ngIf="course && !isLoading" class="course-detail">
+  <h2>Détails du Cours</h2>
+  <div class="course-info">
+    <p><strong>Nom :</strong> {{ course.Nom }}</p>
+    <p><strong>Description :</strong> {{ course.description }}</p>
+    <p><strong>Date de Début :</strong> {{ course.dateDebut | date: 'shortDate' }}</p>
+    <p><strong>Date de Fin :</strong> {{ course.dateFin | date: 'shortDate' }}</p>
+    <p><strong>Disponible :</strong> {{ course.available ? 'Oui' : 'Non' }}</p>
   </div>
 
-  <!-- Template de chargement -->
-  <ng-template #loading>
-    <div class="alert alert-info mt-4">
-      <i class="fas fa-spinner fa-spin"></i> Loading...
-    </div>
-  </ng-template>
+  <div class="assignments">
+    <h3>Devoirs</h3>
+    <ul>
+      <li *ngFor="let assignment of assignments">
+        {{ assignment.title }} - {{ assignment.description }}
+      </li>
+    </ul>
+  </div>
 
-  <!-- Message d'erreur -->
-  <div *ngIf="errorMessage" class="mt-4">
-    <div class="alert alert-danger">
-      {{ errorMessage }}
-    </div>
+  <div class="users">
+    <h3>Utilisateurs Inscrits</h3>
+    <ul>
+      <li *ngFor="let user of enrolledUsers" (click)="viewUserDetails(user.id)">
+        {{ user.name }}
+      </li>
+    </ul>
+  </div>
+
+  <div class="grades" *ngIf="selectedUserGrades">
+    <h3>Notes de {{ selectedUser?.name }}</h3>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Devoir</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let grade of selectedUserGrades">
+          <td>{{ grade.assignmentTitle }}</td>
+          <td>{{ grade.value }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    <p>{{ errorMessage }}</p>
   </div>
 </div>

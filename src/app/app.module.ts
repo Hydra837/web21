@@ -52,6 +52,7 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { UpdateUserComponent } from './update-user/update-user.component';
 import { AccessDeniedComponent } from './access-denied/access-denied.component';
 import { access } from 'fs';
+import { AllGradeStudentComponent } from './all-grade-student/all-grade-student.component';
 
 // Fonction pour obtenir le token
 export function tokenGetter() {
@@ -96,6 +97,7 @@ export function tokenGetter() {
     ForgotPasswordComponent,
     UpdateUserComponent,
     AccessDeniedComponent,
+    AllGradeStudentComponent,
   ],
   imports: [
     BrowserModule,
