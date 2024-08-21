@@ -1,54 +1,60 @@
-<div *ngIf="isLoading" class="loading-overlay">
-  <p>Chargement en cours...</p>
-</div>
+<div class="container mt-5">
+  <h1 class="mb-4 text-primary">Course Details: {{ course?.Nom }}</h1>
 
-<div *ngIf="course && !isLoading" class="course-detail">
-  <h2>Détails du Cours</h2>
-  <div class="course-info">
-    <p><strong>Nom :</strong> {{ course.Nom }}</p>
-    <p><strong>Description :</strong> {{ course.description }}</p>
-    <p><strong>Date de Début :</strong> {{ course.dateDebut | date: 'shortDate' }}</p>
-    <p><strong>Date de Fin :</strong> {{ course.dateFin | date: 'shortDate' }}</p>
-    <p><strong>Disponible :</strong> {{ course.available ? 'Oui' : 'Non' }}</p>
+  <!-- Display Course Details -->
+  <div *ngIf="course" class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">{{ course.Nom }}</h5>
+      <p class="card-text">{{ course.description }}</p>
+    </div>
   </div>
 
-  <div class="assignments">
-    <h3>Devoirs</h3>
-    <ul>
-      <li *ngFor="let assignment of assignments">
-        {{ assignment.title }} - {{ assignment.description }}
+  <!-- Display Enrolled Users -->
+  <div *ngIf="enrolledUsers.length > 0">
+    <h3 class="mb-3">Enrolled Users</h3>
+    <ul class="list-group mb-4">
+      <li *ngFor="let user of enrolledUsers" class="list-group-item">
+        {{ user.nom }} {{ user.prenom }} 
+        <button class="btn btn-info btn-sm float-end" (click)="viewUserDetails(user.id)">
+          View Grades
+        </button>
       </li>
     </ul>
   </div>
 
-  <div class="users">
-    <h3>Utilisateurs Inscrits</h3>
-    <ul>
-      <li *ngFor="let user of enrolledUsers" (click)="viewUserDetails(user.id)">
-        {{ user.name }}
+  <!-- Display Selected User Details and Grades -->
+  <div *ngIf="selectedUser" class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">{{ selectedUser.nom }} {{ selectedUser.prenom }}</h5>
+      <p class="card-text">{{ selectedUser.pseudo }}</p>
+      <p class="card-text">{{ selectedUser.mail }}</p>
+  
+      <div *ngIf="selectedUserGrades && selectedUserGrades.length > 0">
+        <h6 class="mb-3">Grades</h6>
+        <ul class="list-group">
+          <li *ngFor="let grade of selectedUserGrades" class="list-group-item">
+            Assignment: {{ getAssignmentName(grade.assignementsId) }} - Grade: {{ grade.grade }}
+          </li>
+        </ul>
+      </div>
+      <div *ngIf="!selectedUserGrades || selectedUserGrades.length === 0">
+        <p>No grades available.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Display Assignments -->
+  <div *ngIf="assignments.length > 0" class="mb-4">
+    <h3>Assignments</h3>
+    <ul class="list-group">
+      <li *ngFor="let assignment of assignments" class="list-group-item">
+        {{ assignment.description }}
       </li>
     </ul>
   </div>
 
-  <div class="grades" *ngIf="selectedUserGrades">
-    <h3>Notes de {{ selectedUser?.name }}</h3>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Devoir</th>
-          <th>Note</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let grade of selectedUserGrades">
-          <td>{{ grade.assignmentTitle }}</td>
-          <td>{{ grade.value }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div *ngIf="errorMessage" class="error-message">
-    <p>{{ errorMessage }}</p>
+  <!-- Display Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
   </div>
 </div>

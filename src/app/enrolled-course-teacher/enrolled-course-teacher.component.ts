@@ -11,8 +11,9 @@ import { Course } from '../Models/courseModel';
   styleUrls: ['./enrolled-course-teacher.component.css']
 })
 export class EnrolledCourseTeacherComponent implements OnInit {
-  courses$: Observable<Course[]> | undefined;
+  courses: Course[] = []; // Utilisation directe de Course[]
   teacherId: number | undefined;
+  cc: string | null= '';
 
   constructor(
     private courseService: CourseService,
@@ -22,19 +23,23 @@ export class EnrolledCourseTeacherComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const id = params.get('teacherId');
+      this.cc = id;
+
       if (id) {
-        this.teacherId = +id; // Convertir l'ID en nombre
+        this.teacherId = +id;
         this.getCourses(this.teacherId);
       }
     });
   }
 
   getCourses(teacherId: number): void {
-    this.courses$ = this.courseService.getCoursesByTeacher(teacherId).pipe(
+    this.courseService.getCoursesByTeacher(teacherId).pipe(
       catchError(error => {
         console.error('Erreur lors de la récupération des cours', error);
-        return of([]); // Retourner une liste vide en cas d'erreur
+        return of([]); 
       })
-    );
+    ).subscribe(courses => {
+      this.courses = courses; // Assignation directe au tableau de cours
+    });
   }
 }

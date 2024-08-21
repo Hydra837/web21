@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CourseService } from '../services/course.service';
 import { StudentEnrollmentService } from '../services/student-enrollement.service';
-import { GradeService } from '../grade.service'; // Service pour obtenir les notes
-import { AssignementsService } from '../assignements.service'; // Service pour obtenir les devoirs
+import { GradeService } from '../grade.service';
+import { AssignementsService } from '../assignements.service';
+import { CourseManagementService } from '../course-management.service'; // Importer le nouveau service
 import { Course } from '../Models/courseModel';
 import { User } from '../Models/User';
-import { Grade } from '../Models/GradeModel'; // Assuming you have a Grade model
-import { AssignementsDTO } from '../Models/assignementsModel'; // Assuming you have an Assignment model
+import { Grade } from '../Models/GradeModel';
+import { AssignementsDTO } from '../Models/assignementsModel';
+import { UserAssignment } from '../Models/UserAssignement'; // Importer le modèle de données
 
 @Component({
   selector: 'app-course-detail',
@@ -15,36 +17,39 @@ import { AssignementsDTO } from '../Models/assignementsModel'; // Assuming you h
   styleUrls: ['./course-detail.component.css']
 })
 export class CourseDetailComponent implements OnInit {
-  course: Course | null = null; // Initialement null pour gérer l'état de chargement
-  enrolledUsers: User[] = []; // Pour stocker la liste des utilisateurs inscrits
-  selectedUser: User | null = null; // Utilisateur sélectionné pour afficher les détails
+  course: Course | null = null;
+  enrolledUsers: User[] = [];
+  selectedUser: User | null = null;
   selectedUserGrades: Grade[] | null = null;
-  assignments: AssignementsDTO[] = []; // Liste des devoirs du cours
+  assignments: AssignementsDTO[] = [];
+  userAssignmentsGrades: UserAssignment[] = []; // Nouveau tableau pour les données
   errorMessage: string | null = null;
-  isLoading: boolean = true; // Pour gérer l'état de chargement
+  isLoading: boolean = true;
+  cc: number = 0;
 
   constructor(
     private courseService: CourseService,
     private studentEnrollmentService: StudentEnrollmentService,
-    private gradeService: GradeService, // Injectez le service pour obtenir les notes
-    private assignmentService: AssignementsService, // Injectez le service pour obtenir les devoirs
-    private route: ActivatedRoute // Pour obtenir l'ID du cours à partir de l'URL
+    private gradeService: GradeService,
+    private assignmentService: AssignementsService,
+    private courseManagementService: CourseManagementService, // Ajouter le service ici
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    // Obtenez l'ID du cours à partir des paramètres de l'URL
     this.route.paramMap.subscribe(params => {
       const courseId = +params.get('id')!;
+      this.cc = courseId;
       this.getCourseById(courseId);
       this.getAllUsersByCourse(courseId);
-      this.getAssignmentsByCourse(courseId); // Récupère les devoirs
+      this.getAssignmentsByCourse(courseId);
+      this.getUsersAssignmentsGradesForCourse(courseId); // Appeler la nouvelle méthode
     });
   }
 
   getCourseById(id: number): void {
     this.courseService.getCourseById(id).subscribe({
       next: (course: Course) => {
-        console.log(course); // Vérifiez les données reçues
         this.course = course;
         this.isLoading = false;
       },
@@ -59,11 +64,10 @@ export class CourseDetailComponent implements OnInit {
   getAllUsersByCourse(id: number): void {
     this.studentEnrollmentService.getAllUsersByCourse(id).subscribe({
       next: (users: User[]) => {
-        console.log(users); // Vérifiez les données reçues
         this.enrolledUsers = users;
       },
       error: (err: any) => {
-        this.errorMessage = 'Error fetching enrolled users.';
+        this.errorMessage = 'Aucun utilisateur trouvé.';
         console.error(err);
       }
     });
@@ -72,11 +76,22 @@ export class CourseDetailComponent implements OnInit {
   getAssignmentsByCourse(id: number): void {
     this.assignmentService.getByCourse(id).subscribe({
       next: (assignments: AssignementsDTO[]) => {
-        console.log(assignments); // Vérifiez les données reçues
         this.assignments = assignments;
       },
       error: (err: any) => {
-        this.errorMessage = 'Error fetching assignments.';
+        this.errorMessage = 'Aucun devoirs trouvé';
+        console.error(err);
+      }
+    });
+  }
+
+  getUsersAssignmentsGradesForCourse(courseId: number): void {
+    this.courseManagementService.getUsersAssignmentsGradesForCourse(courseId).subscribe({
+      next: (data: UserAssignment[]) => {
+        this.userAssignmentsGrades = data;
+      },
+      error: (err: any) => {
+        this.errorMessage = 'Erreur lors de la récupération des utilisateurs, devoirs et notes.';
         console.error(err);
       }
     });
@@ -84,22 +99,37 @@ export class CourseDetailComponent implements OnInit {
 
   viewUserDetails(userId: number): void {
     this.selectedUser = this.enrolledUsers.find(user => user.id === userId) || null;
-    
+
     if (this.selectedUser) {
-      const courseId = this.course?.id ?? 0;
-      this.gradeService.getGradesByUserAndCourse(userId, courseId).subscribe({
-        next: (grades: Grade[]) => {
-          console.log('Grades received:', grades); // Affiche les données reçues pour débogage
-          this.selectedUserGrades = grades;
-        },
-        error: (err: any) => {
-          this.errorMessage = 'Error fetching grades.';
-          console.error('Error details:', err); // Affiche les détails de l'erreur pour débogage
-        }
+      // Charger les notes pour chaque assignement
+      this.loadGradesForUser(userId);
+    } else {
+      this.errorMessage = 'Aucun utilisateur.';
+    }
+  }
+
+  loadGradesForUser(userId: number): void {
+    if (this.assignments.length > 0) {
+      // Charger les notes pour chaque assignement
+      this.selectedUserGrades = [];
+      this.assignments.forEach(assignment => {
+        this.gradeService.getGradeByUserId(userId, assignment.id).subscribe({
+          next: (grade: Grade) => {
+            this.selectedUserGrades?.push(grade);
+          },
+          error: (err: any) => {
+            console.error('Aucune note trouvé:', err);
+            this.errorMessage = 'Aucune note trouvé.';
+          }
+        });
       });
     } else {
-      // Gérer le cas où l'utilisateur sélectionné n'a pas été trouvé
-      this.errorMessage = 'User not found.';
+      this.errorMessage = 'Pas de devoir.';
     }
+  }
+
+  getAssignmentName(assignmentId: number): string {
+    const assignment = this.assignments.find(a => a.id === assignmentId);
+    return assignment ? assignment.description! : 'Devoirs inconnu';
   }
 }

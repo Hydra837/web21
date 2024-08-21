@@ -20,7 +20,7 @@
           <td>{{ assignment.description }}</td>
           <td>{{ assignment.isAvailable ? 'Oui' : 'Non' }}</td>
           <td>
-            <button class="btn btn-warning btn-sm me-1" (click)="editAssignment(assignment)">Modifier</button>
+          <!-- //  <button class="btn btn-warning btn-sm me-1" (click)="editAssignment(assignment)">Modifier</button> -->
             <button class="btn btn-danger btn-sm me-1" (click)="deleteAssignment(assignment.id)">Supprimer</button>
             <button class="btn btn-info btn-sm" (click)="showGrades(assignment.id)">Afficher les Grades</button>
           </td>

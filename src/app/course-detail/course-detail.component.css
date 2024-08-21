@@ -2,10 +2,10 @@
 .course-details {
   max-width: 900px;
   margin: 0 auto;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  padding: 20px;
+  background-color: #f8f9fa; /* Couleur de fond légère pour le conteneur */
+  border: 1px solid #dee2e6; /* Bordure légère pour le conteneur */
+  border-radius: 8px; /* Bords arrondis pour le conteneur */
+  padding: 20px; /* Espacement interne */
 }
 
 .course-details h2 {
@@ -16,7 +16,7 @@
 
 .course-details p.lead {
   font-size: 1.25rem;
-  color: #6c757d; /* Couleur grise pour la date */
+  color: #6c757d; /* Couleur grise pour la description */
 }
 
 .list-group-item {
@@ -24,10 +24,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px;
-  background-color: #fff;
-  border: 1px solid #e9ecef;
-  border-radius: 4px;
-  margin-bottom: 10px;
+  background-color: #fff; /* Couleur de fond blanche pour les éléments de la liste */
+  border: 1px solid #e9ecef; /* Bordure légère pour les éléments de la liste */
+  border-radius: 4px; /* Bords arrondis pour les éléments de la liste */
+  margin-bottom: 10px; /* Marge inférieure pour espacer les éléments */
 }
 
 .list-group-item:hover {
@@ -36,20 +36,20 @@
 
 .list-group-item button {
   margin-left: 10px;
-  background-color: #00ffdd; /* Couleur bleue pour le bouton */
-  border-color: #00eeff;
+  background-color: #00ffdd; /* Couleur du bouton */
+  border-color: #00eeff; /* Couleur de la bordure du bouton */
 }
 
 .list-group-item button:hover {
-  background-color: #00b39e; /* Couleur bleue foncée pour le bouton au survol */
+  background-color: #00b39e; /* Couleur de survol pour le bouton */
 }
 
 .alert-info {
-  background-color: #e3e2e5;
-  color: #0c5460;
+  background-color: #e3f2fd; /* Couleur de fond légère pour les messages d'information */
+  color: #0d47a1; /* Couleur du texte pour les messages d'information */
 }
 
 .alert-danger {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: #f8d7da; /* Couleur de fond légère pour les messages d'erreur */
+  color: #721c24; /* Couleur du texte pour les messages d'erreur */
 }

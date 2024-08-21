@@ -58,6 +58,7 @@ export class CoursesComponent implements OnInit {
       description: ['', Validators.required],
       dateDebut: ['', Validators.required],
       dateFin: ['', Validators.required],
+      ProfesseurId: ['', Validators.required],
       available: [true]
     });
 
@@ -264,7 +265,7 @@ export class CoursesComponent implements OnInit {
       const updatedCourse = this.updateCourseForm.value as Course;
       if (updatedCourse.id) {
         this.isLoading = true; 
-        this.courseService.updateCourse(updatedCourse.id.toString(), updatedCourse).pipe(
+        this.courseService.updateCourse(updatedCourse.id, updatedCourse).pipe(
           catchError(error => {
             this.isLoading = false;
             this.errorMessage = `Erreur lors de la mise à jour du cours: ${error.message}`;
@@ -296,7 +297,7 @@ export class CoursesComponent implements OnInit {
       const confirmed = window.confirm('Êtes-vous sûr de vouloir supprimer ce cours ?');
       if (confirmed) {
         this.isLoading = true; // Démarrer le chargement
-        this.courseService.deleteCourse(id.toString()).pipe(
+        this.courseService.deleteCourse(id).pipe(
           catchError(this.handleError('suppression du cours'))
         ).subscribe(() => {
           this.loadCourses();
@@ -374,19 +375,22 @@ export class CoursesComponent implements OnInit {
     });
   }
 
-  GetTeacherName(userId: number): void {
-    if (userId) {
-      this.userService.getUserById(userId).pipe(
-        catchError(this.handleError('chargement du professeur'))
-      ).subscribe(user => {
-        if (user) {
-          this.teacherName = `${user.prenom} ${user.nom}`;
-        } else {
-          this.teacherName = 'Nom du professeur introuvable';
-        }
-      });
-    } else {
-      this.teacherName = 'ID utilisateur manquant';
-    }
-  }
+  // GetTeacherName(userId: number): void {
+  //   if (userId) {
+  //     this.userService.getUserById(userId).pipe(
+  //       catchError(this.handleError('chargement du professeur'))
+  //     ).subscribe(user => {
+  //       if (user) {
+  //         this.teacherName = `${user.prenom} ${user.nom}`;
+  //       } else {
+  //         this.teacherName = 'Nom du professeur introuvable';
+  //       }
+  //     });
+  //   } else {
+  //     this.teacherName = 'ID utilisateur manquant';
+  //   }
+  GetTeacherName(professeurId: number) {
+  const teacher = this.filteredUsers.find(user => user.id === professeurId);
+  return teacher ? teacher.nom : 'Non assigné';
+}
 }

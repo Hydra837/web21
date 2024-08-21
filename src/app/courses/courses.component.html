@@ -85,7 +85,6 @@
   </div>
 </div>
 
-
 <!-- Formulaire pour ajouter un professeur au cours -->
 <div *ngIf="showProfessorForm" class="card mb-4 shadow" [class.disabled]="isLoading">
   <div class="card-header bg-primary text-white">
@@ -111,6 +110,7 @@
   </div>
 </div>
 
+<!-- Formulaire pour modifier un cours -->
 <div *ngIf="selectedCourse" class="card mb-4 update-course-form shadow" [class.disabled]="isLoading">
   <div class="card-header bg-warning text-white">
     <h2>Modifier le Cours</h2>
@@ -142,14 +142,7 @@
     </form>
   </div>
 </div>
-<!-- Bouton pour afficher le composant EnrollStudent -->
-<button class="btn btn-secondary mb-4" 
-        [disabled]="isProfessor || isLoading" 
-        (click)="openEnrollStudentDialog()">
-  <i class="fas fa-chalkboard-teacher me-2"></i> Inscrire un Étudiant
-</button>
 
-<!-- Formulaire pour afficher les utilisateurs inscrits et leurs notes -->
 <div *ngIf="selectedCourseWithUsers" class="card mb-4 enrolled-users-form shadow" [class.disabled]="isLoading">
   <div class="card-header bg-info text-white">
     <h2>Utilisateurs inscrits pour le cours {{ selectedCourseWithUsers.Nom }}</h2>
@@ -180,5 +173,23 @@
   </div>
 </div>
 
-<!-- Composant Assignements affiché conditionnellement -->
+<!-- Modal pour afficher les assignements
+<div class="modal fade" id="assignmentsModal" tabindex="-1" aria-labelledby="assignmentsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="assignmentsModalLabel">Assignements</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul>
+          <li *ngFor="let assignment of assignments">{{ assignment.title }}</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div> -->
 <app-assignements *ngIf="selectedCourseIdForAssignments" [courseId]="selectedCourseIdForAssignments" [class.disabled]="isLoading"></app-assignements>

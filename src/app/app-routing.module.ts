@@ -37,7 +37,7 @@ export const routes: Routes = [
   { path: 'assignments/:courseId', component: AssignementsComponent, canActivate: [RoleGuard], data: { roles: ['Professeur', 'Admin'] } },
   { path: 'enroll-student', component: EnrollStudentComponent, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
   { path: 'enrollteacher', component: EnrollteacherComponent, canActivate: [RoleGuard], data: { roles: ['Admin'] } },
-  { path: 'courses-teacher', component: EnrolledCourseTeacherComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Professeur'] } },
+  { path: 'courses-teacher/:id', component: EnrolledCourseTeacherComponent, canActivate: [RoleGuard], data: { roles: ['Admin', 'Professeur'] } },
   { path: 'enrolled-courses', component: EnrolledcourseComponent, canActivate: [RoleGuard], data: { roles: ['Etudiant', 'Admin', 'Professeur'] } },
   { path: 'login', component: LoginComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },

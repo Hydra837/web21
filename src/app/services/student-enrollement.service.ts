@@ -15,11 +15,10 @@ export class StudentEnrollmentService {
 
   enrollStudentCourse(courseId: number, studentId: number): Observable<any> {
     const url = `${this.baseUrl}/Insert?studentId=${studentId}&courseId=${courseId}`;
-    return this.http.post<any>(url, {}).pipe(
+    return this.http.post<any>(url, {}, { observe: 'response' }).pipe(
       catchError(this.handleError('enrollStudentCourse'))
     );
   }
-  
 
   getAllUsersByCourse(courseId: number): Observable<any> {
     const url = `${this.baseUrl}/GetalluserCourse/${courseId}`;

@@ -25,8 +25,8 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { GradeComponent } from './grade/grade.component';
 import { SearchComponent } from './search/search.component';
 import { CourseSearchComponent } from './course-search/course-search.component';
-import { StudentSearchComponent } from './student-search/student-search.component';
-import { ProfesseurSearchComponent } from './professeur-search/professeur-search.component';
+
+
 import { UserSearchComponent } from './user-search/user-search.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { UserSelectionDialogComponent } from './user-selection-dialog/user-selection-dialog.component';
@@ -75,8 +75,7 @@ export function tokenGetter() {
     GradeComponent,
     SearchComponent,
     CourseSearchComponent,
-    StudentSearchComponent,
-    ProfesseurSearchComponent,
+   
     UserSearchComponent,
     ConfirmDialogComponent,
     UserSelectionDialogComponent,
@@ -95,7 +94,7 @@ export function tokenGetter() {
     DelEnrollementComponent,
     RegisterComponent,
     ForgotPasswordComponent,
-    UpdateUserComponent,
+   UpdateUserComponent,
     AccessDeniedComponent,
     AllGradeStudentComponent,
   ],

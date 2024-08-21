@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
@@ -11,13 +11,13 @@ import { UserService } from '../user.service'; // Assurez-vous d'importer le Use
 })
 export class CourseService {
   private apiUrl = 'https://localhost:7233/api/Cours'; 
-  private getCoursesByTeacherUrl = `${this.apiUrl}/Cours/professeur`;
+  private getCoursesByTeacherUrl = `/Cours/${this.apiUrl}/professeur`;
+  private getteacher ='https://localhost:7233/api/Cours/cours/professeur'
   private apiCoursesForUsers = 'https://localhost:7233/api/UsersContoller/GetAllCourseEachCourse';
-  private createCourseUrl = `${this.apiUrl}/Cours`;
+  private createCourseUrl = 'https://localhost:7233/api/Cours/Cours'; // Utilise l'URL de base pour la création
   private availableCoursesUrl = `${this.apiUrl}/available`;
-  private enrollCourseUrl = 'https://localhost:7233/api/StudentEnrollment/Insert?studentId=1&courseId={{{id}}}';
-  private apiUpdate = 'https://localhost:7233/api/Cours/update';
-  private getUnenrolledCoursesUrl = 'https://localhost:7233/api/Cours/UnenrolledCourses'; // Nouvelle URL
+  private apiUpdate = `${this.apiUrl}/update`; // Correction de l'URL
+  private getUnenrolledCoursesUrl = `${this.apiUrl}/UnenrolledCourses`; // Correction de l'URL
 
   constructor(private http: HttpClient, private userService: UserService) {}
 
@@ -29,19 +29,29 @@ export class CourseService {
   }
 
   createCourse(course: Course): Observable<any> {
-    return this.http.post(this.createCourseUrl, course).pipe(
+    return this.http.post(this.createCourseUrl, course)
+    .pipe(
       catchError(this.handleError('createCourse'))
     );
   }
 
-  updateCourse(id: string, course: Course): Observable<any> {
-    return this.http.put(`${this.apiUpdate}/${id}`, course).pipe(
+  updateCourse(id: number, course: Course): Observable<any> {
+    return this.http.put(`${this.apiUpdate}/${id}`, course, { observe: 'response', responseType: 'text' }).pipe(
+      map(response => {
+        try {
+          // Si la réponse est au format JSON, on la parse, sinon on retourne la réponse brute
+          return JSON.parse(response.body || '{}');
+        } catch (e) {
+          return response.body || '';
+        }
+      }),
       catchError(this.handleError('updateCourse'))
     );
   }
 
-  deleteCourse(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+  deleteCourse(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`, { observe: 'response' }).pipe(
+      map(response => response.body),
       catchError(this.handleError('deleteCourse'))
     );
   }
@@ -79,19 +89,18 @@ export class CourseService {
       return of([]);
     }
     
-    return this.http.get<Course[]>(`${this.apiUrl}/search?search=${term}`).pipe(
+    return this.http.get<Course[]>(`${this.apiUrl}/search`, { params: { search: term } }).pipe(
       map(data => data.map(item => this.mapToCourseModel(item))),
       catchError(this.handleError('searchCourses', []))
     );
   }
 
   getCoursesByTeacher(teacherId: number): Observable<Course[]> {
-    return this.http.get<Course[]>(`${this.getCoursesByTeacherUrl}/${teacherId}`).pipe(
+    return this.http.get<Course[]>(`${this.getteacher}/${teacherId}`).pipe(
       catchError(this.handleError('getCoursesByTeacher', []))
     );
   }
 
-  
   getTeacherName(courseId: number): Observable<string> {
     return this.http.get<Course>(`${this.apiUrl}/${courseId}`).pipe(
       map(course => course.professeurId), // Récupère l'ID du professeur
@@ -104,7 +113,6 @@ export class CourseService {
     );
   }
 
- 
   private mapToCourseModel(item: any): Course {
     return {
       id: item.id,
@@ -128,27 +136,35 @@ export class CourseService {
     };
   }
 
-
   private handleError(operation: string, result?: any) {
-    return (error: any): Observable<any> => {
+    return (error: HttpErrorResponse): Observable<any> => {
       let errorMessage = 'Une erreur est survenue.';
 
-      switch (error.status) {
-        case 400:
-          errorMessage = 'Requête invalide. Vérifiez les données envoyées.';
-          break;
-        case 401:
-          errorMessage = 'Non autorisé. Veuillez vérifier vos informations d\'identification.';
-          break;
-        case 404:
-          errorMessage = 'Compte Introuvable.';
-          break;
-        case 500:
-          errorMessage = `Erreur serveur: ${error.error?.Message || error.message}`;
-          break;
-        default:
-          errorMessage = `Erreur inconnue: ${error.message}`;
-          break;
+      if (error.error instanceof ErrorEvent) {
+        // Erreur côté client
+        errorMessage = `Erreur: ${error.error.message}`;
+      } else {
+        // Erreur côté serveur
+        switch (error.status) {
+          case 400:
+            errorMessage = error.error?.Message || 'Requête invalide. Vérifiez les données envoyées.';
+            break;
+          case 401:
+            errorMessage = error.error?.Message || 'Non autorisé. Veuillez vérifier vos informations d\'identification.';
+            break;
+          case 404:
+            errorMessage = error.error?.Message || 'Cours introuvable.';
+            break;
+          case 409:
+            errorMessage = error.error?.Message || 'Conflit de données: Une entrée similaire existe déjà.';
+            break;
+          case 500:
+            errorMessage = error.error?.Message || `Erreur serveur: ${error.message}`;
+            break;
+          default:
+            errorMessage = `Erreur inconnue: ${error.message}`;
+            break;
+        }
       }
 
       console.error(`${operation} a échoué: ${errorMessage}`);

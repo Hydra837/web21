@@ -127,9 +127,14 @@ export class StudentManagementComponent implements OnInit {
     });
   }
   
-  handleUserId(userId: number): void {
-    this.router.navigate(['/all-grade', userId]);
+  handleUserId(user: User): void {
+    if (user.role === 'Professeur') {
+      this.router.navigate(['/enrolled-course-teacher', user.id]);
+    } else {
+      this.router.navigate(['/all-grade', user.id]);
+    }
   }
+
   showEnrolledUsers(courseId: number): void {
     this.selectedCourseWithUsers = this.courses.find(c => c.id === courseId) || null;
     if (this.selectedCourseWithUsers) {
@@ -152,7 +157,7 @@ export class StudentManagementComponent implements OnInit {
       next: (data: Course[]) => {
         this.courses = data;
         console.log('Courses for user:', this.courses);
-      //  this.openCoursesDialog (this.courses);
+        //  this.openCoursesDialog (this.courses);
       },
       error: (err: any) => {
         this.errorMessage = 'Erreur lors de la récupération des cours.';
@@ -171,21 +176,22 @@ export class StudentManagementComponent implements OnInit {
 
     });
   }
+
   deleteEnrollment(userId: number, courseId: number): void {
     this.coursemanagement.deleteEnrollment(userId, courseId).subscribe({
       next: () => {
         alert('Inscription supprimée avec succès.');
       },
       error: (err) => {
- 
         console.error('Erreur lors de la suppression de l\'inscription:', err);
-   
         alert('Une erreur est survenue lors de la suppression de l\'inscription.');
       }
     });
   }
+  redirectToCoursesTeacher(userId: number) {
+    this.router.navigate(['/courses-teacher', userId]);
 }
-  
-
-
-
+redirectToGrades(userId: number): void {
+  this.router.navigate(['/all-grade', userId]); 
+}
+}

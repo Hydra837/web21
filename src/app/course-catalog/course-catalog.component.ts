@@ -79,7 +79,7 @@ export class CourseCatalogComponent implements OnInit {
           this.userId = user.id;
           this.userRole = user.role;
           this.isStudent = this.userRole === 'Etudiant';
-          this.loadCourses(); // Reload courses after setting user info
+          this.loadCourses(); 
         } else {
           this.errorMessage = 'Utilisateur non connecté.';
           console.error('Utilisateur non connecté.');
@@ -98,7 +98,7 @@ export class CourseCatalogComponent implements OnInit {
       this.enrollmentService.enrollStudentCourse(courseId, this.userId!).subscribe({
         next: () => {
           alert('Inscription réussie !');
-          this.loadCourses(); // Recharge les cours après inscription
+          this.loadCourses(); 
         },
         error: (error) => {
           if (error.status === 400 && error.error.message === 'Déjà inscrit') {
