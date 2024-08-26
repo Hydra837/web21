@@ -45,6 +45,9 @@
     </table>
   </div>
 </div>
+<div *ngIf="teacherName" class="mt-3 alert alert-info">
+  <strong>Nom du Professeur :</strong> {{ teacherName }}
+</div>
 
 <!-- Formulaire pour ajouter un cours -->
 <div *ngIf="showAddCourseFormFlag" class="card mb-4 add-course-form shadow" [class.disabled]="isLoading">
